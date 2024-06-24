@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
           onPressed: () {
             context.go('/s/dodu');
           },
-          child: const Text('Go to Details'),
+          child: const Text('Go to Details Page'),
         ),
       ),
     );
