@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       scrollBehavior: const MaterialScrollBehavior().copyWith(
-        dragDevices: {PointerDeviceKind.mouse},
+        dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch},
       ),
       routerDelegate: router.routerDelegate,
       routeInformationParser: router.routeInformationParser,
