@@ -14,7 +14,7 @@ final repositoryProvider = Provider<Repository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return Repository(dio, baseUrl: 'http://$ip');
+    return Repository(dio, baseUrl: 'https://$ip');
   },
 );
 
@@ -73,7 +73,7 @@ final treatmentRepositoryProvider = Provider<TreatmentRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return TreatmentRepository(dio, baseUrl: 'http://$ip');
+    return TreatmentRepository(dio, baseUrl: 'https://$ip');
   },
 );
 
