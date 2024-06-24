@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:numaze_web/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
 
+import 'common/const/data.dart';
 import 'dio.dart';
 import 'list_model.dart';
 import 'model.dart';
@@ -13,7 +14,7 @@ final repositoryProvider = Provider<Repository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return Repository(dio, baseUrl: 'http://127.0.0.1:8000');
+    return Repository(dio, baseUrl: 'http://$ip');
   },
 );
 
@@ -72,7 +73,7 @@ final treatmentRepositoryProvider = Provider<TreatmentRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return TreatmentRepository(dio, baseUrl: 'http://127.0.0.1:8000');
+    return TreatmentRepository(dio, baseUrl: 'http://$ip');
   },
 );
 
