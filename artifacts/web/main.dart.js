@@ -91351,10 +91351,10 @@ A.axG.prototype={
 $1(a){return A.z(t.S,t.u0)},
 $S:560}
 A.axC.prototype={
-$1(a){return new A.Y6(a.bM($.aC8(),t.kE),"http://127.0.0.1:8000")},
+$1(a){return new A.Y6(a.bM($.aC8(),t.kE),"http://192.168.0.32:8000")},
 $S:561}
 A.axS.prototype={
-$1(a){return new A.a_t(a.bM($.aC8(),t.kE),"http://127.0.0.1:8000")},
+$1(a){return new A.a_t(a.bM($.aC8(),t.kE),"http://192.168.0.32:8000")},
 $S:562}
 A.Y6.prototype={
 wP(a){return this.a_U(a)},
