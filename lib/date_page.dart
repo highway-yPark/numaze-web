@@ -254,6 +254,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 top: 102, // Adjust to fit below the top bar
                 bottom: 57, // Adjust to fit above the bottom bar
                 child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
                       TableCalendar(
