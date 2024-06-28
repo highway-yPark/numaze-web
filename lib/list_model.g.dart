@@ -21,3 +21,21 @@ Map<String, dynamic> _$ListModelToJson<T>(
     <String, dynamic>{
       'data': instance.data.map(toJsonT).toList(),
     };
+
+ListModelWithDuration<T> _$ListModelWithDurationFromJson<T>(
+  Map<String, dynamic> json,
+  T Function(Object? json) fromJsonT,
+) =>
+    ListModelWithDuration<T>(
+      duration: (json['duration'] as num).toInt(),
+      data: (json['data'] as List<dynamic>).map(fromJsonT).toList(),
+    );
+
+Map<String, dynamic> _$ListModelWithDurationToJson<T>(
+  ListModelWithDuration<T> instance,
+  Object? Function(T value) toJsonT,
+) =>
+    <String, dynamic>{
+      'data': instance.data.map(toJsonT).toList(),
+      'duration': instance.duration,
+    };

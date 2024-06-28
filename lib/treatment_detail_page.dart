@@ -315,6 +315,16 @@ class TreatmentDetailPage extends ConsumerWidget {
                                         styleId: styleId,
                                         monthlyPickId: monthlyPickId,
                                         treatmentStyleId: treatmentStyleId,
+                                        styleImage: styleId == null
+                                            ? null
+                                            : style!.thumbnail,
+                                        monthlyPickImage: monthlyPickId == null
+                                            ? null
+                                            : monthlyPick!.thumbnail,
+                                        treatmentStyleImage:
+                                            treatmentStyleId == null
+                                                ? null
+                                                : treatmentStyle!.thumbnail,
                                       )
                                     ],
                                   ),
@@ -326,6 +336,16 @@ class TreatmentDetailPage extends ConsumerWidget {
                                         styleId: styleId,
                                         monthlyPickId: monthlyPickId,
                                         treatmentStyleId: treatmentStyleId,
+                                        styleImage: styleId == null
+                                            ? null
+                                            : style!.thumbnail,
+                                        monthlyPickImage: monthlyPickId == null
+                                            ? null
+                                            : monthlyPick!.thumbnail,
+                                        treatmentStyleImage:
+                                            treatmentStyleId == null
+                                                ? null
+                                                : treatmentStyle!.thumbnail,
                                       )
                                     ],
                                   ),
@@ -357,6 +377,19 @@ class TreatmentDetailPage extends ConsumerWidget {
                                                 monthlyPickId: monthlyPickId,
                                                 treatmentStyleId:
                                                     treatmentStyleId,
+                                                styleImage: styleId == null
+                                                    ? null
+                                                    : style!.thumbnail,
+                                                monthlyPickImage:
+                                                    monthlyPickId == null
+                                                        ? null
+                                                        : monthlyPick!
+                                                            .thumbnail,
+                                                treatmentStyleImage:
+                                                    treatmentStyleId == null
+                                                        ? null
+                                                        : treatmentStyle!
+                                                            .thumbnail,
                                               )
                                             ],
                                           ),
@@ -370,6 +403,19 @@ class TreatmentDetailPage extends ConsumerWidget {
                                                 monthlyPickId: monthlyPickId,
                                                 treatmentStyleId:
                                                     treatmentStyleId,
+                                                styleImage: styleId == null
+                                                    ? null
+                                                    : style!.thumbnail,
+                                                monthlyPickImage:
+                                                    monthlyPickId == null
+                                                        ? null
+                                                        : monthlyPick!
+                                                            .thumbnail,
+                                                treatmentStyleImage:
+                                                    treatmentStyleId == null
+                                                        ? null
+                                                        : treatmentStyle!
+                                                            .thumbnail,
                                               )
                                             ],
                                           ),

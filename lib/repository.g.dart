@@ -46,6 +46,34 @@ class _Repository implements Repository {
   }
 
   @override
+  Future<ShopMessageInfo> getShopMessageInfo(
+      {required String shopDomain}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<ShopMessageInfo>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/s/${shopDomain}/messages',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = ShopMessageInfo.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ListModel<ShopAnnouncementsModel>> getShopAnnouncements(
       {required String shopDomain}) async {
     const _extra = <String, dynamic>{};
@@ -205,7 +233,7 @@ class _Repository implements Repository {
   }
 
   @override
-  Future<ListModel<String>> getOccupiedDates({
+  Future<ListModelWithDuration<String>> getOccupiedDates({
     required String shopDomain,
     required String startDate,
     required String endDate,
@@ -219,8 +247,8 @@ class _Repository implements Repository {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ListModel<String>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ListModelWithDuration<String>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -236,7 +264,7 @@ class _Repository implements Repository {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ListModel<String>.fromJson(
+    final value = ListModelWithDuration<String>.fromJson(
       _result.data!,
       (json) => json as String,
     );
@@ -277,6 +305,93 @@ class _Repository implements Repository {
           DesignerAvailableTimeSlots.fromJson(json as Map<String, dynamic>),
     );
     return value;
+  }
+
+  @override
+  Future<BaseResponseModel> createAppointment({
+    required String shopDomain,
+    required CustomerNewAppointmentRequest request,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<BaseResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/s/${shopDomain}/appointment',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = BaseResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CustomerAppointmentResponse> getCustomerAppointment(
+      {required String appointmentId}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CustomerAppointmentResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/appointments/${appointmentId}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = CustomerAppointmentResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<void> customerRequestImages({
+    required String appointmentId,
+    required List<MultipartFile> files,
+  }) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.files.addAll(files.map((i) => MapEntry('files', i)));
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/appointments/${appointmentId}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

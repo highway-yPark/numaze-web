@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:numaze_web/base_response_model.dart';
 import 'package:numaze_web/cursor_pagination_model.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -14,7 +15,7 @@ final repositoryProvider = Provider<Repository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return Repository(dio, baseUrl: 'https://$ip');
+    return Repository(dio, baseUrl: 'http://$ip');
   },
 );
 
@@ -24,6 +25,11 @@ abstract class Repository {
 
   @GET("/s/{shop_domain}")
   Future<ShopBasicInfo> getShopBasicInfo({
+    @Path('shop_domain') required String shopDomain,
+  });
+
+  @GET("/s/{shop_domain}/messages")
+  Future<ShopMessageInfo> getShopMessageInfo({
     @Path('shop_domain') required String shopDomain,
   });
 
@@ -54,7 +60,7 @@ abstract class Repository {
   });
 
   @POST("/s/{shop_domain}/fullBook")
-  Future<ListModel<String>> getOccupiedDates({
+  Future<ListModelWithDuration<String>> getOccupiedDates({
     @Path('shop_domain') required String shopDomain,
     @Query('start_date') required String startDate,
     @Query('end_date') required String endDate,
@@ -67,13 +73,30 @@ abstract class Repository {
     @Query('date') required String date,
     @Body() required SelectedTreatmentsRequest request,
   });
+
+  @POST("/s/{shop_domain}/appointment")
+  Future<BaseResponseModel> createAppointment({
+    @Path('shop_domain') required String shopDomain,
+    @Body() required CustomerNewAppointmentRequest request,
+  });
+
+  @GET("/appointments/{appointment_id}")
+  Future<CustomerAppointmentResponse> getCustomerAppointment({
+    @Path('appointment_id') required String appointmentId,
+  });
+
+  @POST("/appointments/{appointment_id}")
+  Future<void> customerRequestImages({
+    @Path('appointment_id') required String appointmentId,
+    @Part(name: 'files') required List<MultipartFile> files,
+  });
 }
 
 final treatmentRepositoryProvider = Provider<TreatmentRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return TreatmentRepository(dio, baseUrl: 'https://$ip');
+    return TreatmentRepository(dio, baseUrl: 'http://$ip');
   },
 );
 

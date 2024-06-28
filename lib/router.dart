@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/complete_page.dart';
+import 'package:numaze_web/customer_appointment_page.dart';
+import 'package:numaze_web/find_reservation_page.dart';
 import 'package:numaze_web/shop_info_page.dart';
 import 'date_page.dart';
 import 'main.dart';
@@ -25,6 +28,26 @@ final GoRouter _router = GoRouter(
     //   },
     // ),
     GoRoute(
+      path: '/appointment/:appointmentId',
+      builder: (BuildContext context, GoRouterState state) {
+        final String appointmentId = state.pathParameters['appointmentId']!;
+        final String shopDomain = state.uri.queryParameters['shopDomain']!;
+        return CustomerAppointmentPage(
+          shopDomain: shopDomain,
+          appointmentId: appointmentId,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/findReservation',
+      builder: (BuildContext context, GoRouterState state) {
+        final String shopDomain = state.uri.queryParameters['shopDomain']!;
+        return FindReservationPage(
+          shopDomain: shopDomain,
+        );
+      },
+    ),
+    GoRoute(
       path: '/s/:shopDomain',
       builder: (BuildContext context, GoRouterState state) {
         final String shopDomain = state.pathParameters['shopDomain']!;
@@ -49,6 +72,16 @@ final GoRouter _router = GoRouter(
             final String shopDomain = state.pathParameters['shopDomain']!;
             return CalendarScreen(
               shopDomain: shopDomain,
+            );
+          },
+        ),
+        GoRoute(
+          path: 'complete',
+          builder: (BuildContext context, GoRouterState state) {
+            final String shopDomain = state.pathParameters['shopDomain']!;
+            return CompletePage(
+              shopDomain: shopDomain,
+              appointmentId: state.uri.queryParameters['appointmentId']!,
             );
           },
         ),

@@ -37,3 +37,19 @@ class ListModel<T> extends ListBase {
     );
   }
 }
+
+@JsonSerializable(
+  genericArgumentFactories: true,
+)
+class ListModelWithDuration<T> extends ListModel<T> {
+  final int duration;
+
+  ListModelWithDuration({
+    required this.duration,
+    required super.data,
+  });
+
+  factory ListModelWithDuration.fromJson(
+          Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
+      _$ListModelWithDurationFromJson(json, fromJsonT);
+}

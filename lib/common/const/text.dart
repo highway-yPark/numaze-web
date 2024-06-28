@@ -96,6 +96,9 @@ class TextDesign {
   static TextStyle medium16MG = baseMedium.copyWith(
       fontSize: 16, height: 1.5625, color: FontColors.mediumGrey);
 
+  static TextStyle medium16G =
+      baseMedium.copyWith(fontSize: 16, height: 1.5625, color: FontColors.grey);
+
   static TextStyle medium16B = baseMedium.copyWith(
       fontSize: 16, height: 1.5625, color: FontColors.black);
 
@@ -138,14 +141,23 @@ class TextDesign {
   static TextStyle regular14MG = baseRegular.copyWith(
       fontSize: 14, height: 1.43, color: FontColors.mediumGrey);
 
+  static TextStyle regular14BO = baseRegular.copyWith(
+      fontSize: 14, height: 1.43, color: BrandColors.orange);
+
   static TextStyle regular14G =
       baseRegular.copyWith(fontSize: 14, height: 1.43, color: FontColors.grey);
+
+  static TextStyle regular14B =
+      baseRegular.copyWith(fontSize: 14, height: 1.43, color: FontColors.black);
 
   static TextStyle regular16BO = baseRegular.copyWith(
       fontSize: 16, height: 1.5625, color: BrandColors.orange);
 
   static TextStyle medium14G =
       baseMedium.copyWith(fontSize: 14, height: 1.43, color: FontColors.grey);
+
+  static TextStyle medium14CG = baseMedium.copyWith(
+      fontSize: 14, height: 1.43, color: FontColors.calendarGrey);
 
   static TextStyle medium14BO = baseMedium.copyWith(
       fontSize: 14, height: 1.43, color: BrandColors.orange);
@@ -164,6 +176,12 @@ class TextDesign {
 
   static TextStyle semiBold12G =
       baseSemiBold.copyWith(fontSize: 12, color: FontColors.grey);
+
+  static TextStyle bold12B = baseSemiBold.copyWith(
+      fontSize: 12, height: 1.25, color: FontColors.black);
+
+  static TextStyle bold12MG = baseSemiBold.copyWith(
+      fontSize: 12, height: 1.25, color: FontColors.mediumGrey);
 
   static TextStyle bold12W =
       baseBold.copyWith(fontSize: 12, height: 1.25, color: FontColors.white);
@@ -192,6 +210,9 @@ class TextDesign {
   static TextStyle bold18B =
       baseBold.copyWith(fontSize: 18, height: 1.389, color: FontColors.black);
 
+  static TextStyle bold18BO =
+      baseBold.copyWith(fontSize: 18, height: 1.389, color: BrandColors.orange);
+
   static TextStyle bold18W =
       baseBold.copyWith(fontSize: 18, height: 1.389, color: FontColors.white);
 
@@ -206,6 +227,9 @@ class TextDesign {
 
   static TextStyle bold14G =
       baseBold.copyWith(fontSize: 14, height: 1.43, color: FontColors.grey);
+
+  static TextStyle bold14CG = baseBold.copyWith(
+      fontSize: 14, height: 1.43, color: FontColors.calendarGrey);
 
   static TextStyle bold14BO =
       baseBold.copyWith(fontSize: 14, height: 1.43, color: BrandColors.orange);

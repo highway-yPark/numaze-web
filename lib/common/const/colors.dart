@@ -55,6 +55,7 @@ class AppColors {
 
 class BrandColors {
   static const orange = Color(0xFFFF4800);
+  static const lightOrange = Color(0xFFFFF1EC);
 }
 
 class IconColors {
@@ -83,6 +84,7 @@ class FontColors {
   static const mediumGrey = Color(0xFFC4C4C4);
   static const mediumDarkGrey = Color(0xFF4E4E4E);
   static const darkGrey = Color(0xFF1F1F1F);
+  static const calendarGrey = Color(0xFF434343);
 }
 
 class StrokeColors {

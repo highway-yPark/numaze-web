@@ -60,6 +60,44 @@ class ShopBasicInfo extends ShopBasicBase {
       _$ShopBasicInfoFromJson(json);
 }
 
+abstract class ShopMessageBase {}
+
+class ShopMessageError extends ShopMessageBase {
+  final String data;
+
+  ShopMessageError({
+    required this.data,
+  });
+}
+
+class ShopMessageLoading extends ShopMessageBase {}
+
+@JsonSerializable()
+class ShopMessageInfo extends ShopMessageBase {
+  final String domain;
+  final bool hasDeposit;
+  final String depositAmount;
+  final String bankAccount;
+  final int depositTimeLimit;
+  final String reservationMessage;
+  final String additionalMessage;
+  final bool memberReceiveDeposit;
+
+  ShopMessageInfo({
+    required this.domain,
+    required this.hasDeposit,
+    required this.depositAmount,
+    required this.bankAccount,
+    required this.depositTimeLimit,
+    required this.reservationMessage,
+    required this.additionalMessage,
+    required this.memberReceiveDeposit,
+  });
+
+  factory ShopMessageInfo.fromJson(Map<String, dynamic> json) =>
+      _$ShopMessageInfoFromJson(json);
+}
+
 @JsonSerializable()
 class ShopAnnouncementsModel {
   final AnnouncementType announcementType;
@@ -225,6 +263,9 @@ class SelectedTreatment {
   final int? styleId;
   final int? monthlyPickId;
   final int? treatmentStyleId;
+  final String? styleImage;
+  final String? monthlyPickImage;
+  final String? treatmentStyleImage;
 
   SelectedTreatment({
     required this.treatmentId,
@@ -232,6 +273,9 @@ class SelectedTreatment {
     this.styleId,
     this.monthlyPickId,
     this.treatmentStyleId,
+    this.styleImage,
+    this.monthlyPickImage,
+    this.treatmentStyleImage,
   });
 }
 
@@ -289,10 +333,14 @@ class PaginationParams {
 class TreatmentOptionPair {
   final int treatment_id;
   final List<int> option_ids;
+  final int? style_id;
+  final int? monthly_pick_id;
 
   TreatmentOptionPair({
     required this.treatment_id,
     required this.option_ids,
+    this.style_id,
+    this.monthly_pick_id,
   });
 
   factory TreatmentOptionPair.fromJson(Map<String, dynamic> json) =>
@@ -311,6 +359,32 @@ class SelectedTreatmentsRequest {
       _$SelectedTreatmentsRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$SelectedTreatmentsRequestToJson(this);
+}
+
+@JsonSerializable()
+class CustomerNewAppointmentRequest {
+  final int? designer_id;
+  final String appointment_date;
+  final int start_time;
+  final String customer_name;
+  final String customer_phone_number;
+  final String? customer_request;
+  final List<TreatmentOptionPair> treatment_option_pairs;
+
+  CustomerNewAppointmentRequest({
+    required this.designer_id,
+    required this.appointment_date,
+    required this.start_time,
+    required this.customer_name,
+    required this.customer_phone_number,
+    required this.customer_request,
+    required this.treatment_option_pairs,
+  });
+
+  factory CustomerNewAppointmentRequest.fromJson(Map<String, dynamic> json) =>
+      _$CustomerNewAppointmentRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CustomerNewAppointmentRequestToJson(this);
 }
 
 @JsonSerializable()
@@ -350,4 +424,140 @@ class SelectedDateTime {
       selectedTimeSlot: selectedTimeSlot ?? this.selectedTimeSlot,
     );
   }
+}
+
+class SelectedDesigner {
+  final int designerId;
+  final String designerNickname;
+
+  SelectedDesigner({
+    required this.designerId,
+    required this.designerNickname,
+  });
+}
+
+// class CustomerAppointmentResponse(BaseDTO):
+// base64Uuid: str
+// createdAt: str
+// customerName: str
+// customerPhoneNumber: str
+// customerMembershipAmount: int
+// membershipExpirationDate: str | None
+// designerName: str | None
+// treatmentOptionHistory: list[TreatmentHistoryResponse]
+// customerImages: list[str] | None
+// customerRequest: str | None
+// appointmentDate: str
+// startTime: int
+// duration: int
+// confirmed: bool
+// status: str | None
+// membership: bool
+
+// class TreatmentHistoryResponse(BaseDTO):
+// id: int
+// treatmentId: int
+// treatmentCategoryName: str
+// treatmentName: str
+// treatmentPrice: int
+// # TODO: need to include max price and discount
+// treatmentDuration: int
+// thumbnail: str
+// options: list[OptionHistoryResponse] | None
+
+// optionCategoryName: str
+// optionName: str
+// optionPrice: str
+// optionDuration: int
+
+@JsonSerializable()
+class OptionHistoryResponse {
+  final String optionCategoryName;
+  final String optionName;
+  final int optionDuration;
+
+  OptionHistoryResponse({
+    required this.optionCategoryName,
+    required this.optionName,
+    required this.optionDuration,
+  });
+
+  factory OptionHistoryResponse.fromJson(Map<String, dynamic> json) =>
+      _$OptionHistoryResponseFromJson(json);
+}
+
+@JsonSerializable()
+class TreatmentHistoryResponse {
+  final String treatmentCategoryName;
+  final String treatmentName;
+  final int treatmentPrice;
+  final int treatmentDuration;
+  final String thumbnail;
+  final List<OptionHistoryResponse>? options;
+
+  TreatmentHistoryResponse({
+    required this.treatmentCategoryName,
+    required this.treatmentName,
+    required this.treatmentPrice,
+    required this.treatmentDuration,
+    required this.thumbnail,
+    required this.options,
+  });
+
+  factory TreatmentHistoryResponse.fromJson(Map<String, dynamic> json) =>
+      _$TreatmentHistoryResponseFromJson(json);
+}
+
+abstract class CustomerAppointmentBase {}
+
+class CustomerAppointmentError extends CustomerAppointmentBase {
+  final String data;
+
+  CustomerAppointmentError({
+    required this.data,
+  });
+}
+
+class CustomerAppointmentLoading extends CustomerAppointmentBase {}
+
+@JsonSerializable()
+class CustomerAppointmentResponse extends CustomerAppointmentBase {
+  final String base64Uuid;
+  final String createdAt;
+  final String customerName;
+  final String customerPhoneNumber;
+  final int customerMembershipAmount;
+  final String? membershipExpirationDate;
+  final String? designerName;
+  final List<TreatmentHistoryResponse> treatmentOptionHistory;
+  final List<String>? customerImages;
+  final String? customerRequest;
+  final String appointmentDate;
+  final int startTime;
+  final int duration;
+  final bool confirmed;
+  final String? status;
+  final bool membership;
+
+  CustomerAppointmentResponse({
+    required this.base64Uuid,
+    required this.createdAt,
+    required this.customerName,
+    required this.customerPhoneNumber,
+    required this.customerMembershipAmount,
+    required this.membershipExpirationDate,
+    required this.designerName,
+    required this.treatmentOptionHistory,
+    required this.customerImages,
+    required this.customerRequest,
+    required this.appointmentDate,
+    required this.startTime,
+    required this.duration,
+    required this.confirmed,
+    required this.status,
+    required this.membership,
+  });
+
+  factory CustomerAppointmentResponse.fromJson(Map<String, dynamic> json) =>
+      _$CustomerAppointmentResponseFromJson(json);
 }

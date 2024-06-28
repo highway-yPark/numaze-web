@@ -30,8 +30,6 @@ class OccupiedDatesStateNotifier extends BaseStateNotifier {
     required String endDate,
     required SelectedTreatmentsRequest request,
   }) async {
-    print('request: ${request.treatment_option_pairs.first.treatment_id}');
-    print('request: ${request.treatment_option_pairs.first.option_ids}');
     return await handleError(() async {
       state = ListLoading();
       final resp = await repository.getOccupiedDates(

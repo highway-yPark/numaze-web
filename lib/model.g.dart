@@ -50,6 +50,30 @@ Map<String, dynamic> _$ShopBasicInfoToJson(ShopBasicInfo instance) =>
       'selectDesigner': instance.selectDesigner,
     };
 
+ShopMessageInfo _$ShopMessageInfoFromJson(Map<String, dynamic> json) =>
+    ShopMessageInfo(
+      domain: json['domain'] as String,
+      hasDeposit: json['hasDeposit'] as bool,
+      depositAmount: json['depositAmount'] as String,
+      bankAccount: json['bankAccount'] as String,
+      depositTimeLimit: (json['depositTimeLimit'] as num).toInt(),
+      reservationMessage: json['reservationMessage'] as String,
+      additionalMessage: json['additionalMessage'] as String,
+      memberReceiveDeposit: json['memberReceiveDeposit'] as bool,
+    );
+
+Map<String, dynamic> _$ShopMessageInfoToJson(ShopMessageInfo instance) =>
+    <String, dynamic>{
+      'domain': instance.domain,
+      'hasDeposit': instance.hasDeposit,
+      'depositAmount': instance.depositAmount,
+      'bankAccount': instance.bankAccount,
+      'depositTimeLimit': instance.depositTimeLimit,
+      'reservationMessage': instance.reservationMessage,
+      'additionalMessage': instance.additionalMessage,
+      'memberReceiveDeposit': instance.memberReceiveDeposit,
+    };
+
 ShopAnnouncementsModel _$ShopAnnouncementsModelFromJson(
         Map<String, dynamic> json) =>
     ShopAnnouncementsModel(
@@ -202,6 +226,8 @@ TreatmentOptionPair _$TreatmentOptionPairFromJson(Map<String, dynamic> json) =>
       option_ids: (json['option_ids'] as List<dynamic>)
           .map((e) => (e as num).toInt())
           .toList(),
+      style_id: (json['style_id'] as num?)?.toInt(),
+      monthly_pick_id: (json['monthly_pick_id'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$TreatmentOptionPairToJson(
@@ -209,6 +235,8 @@ Map<String, dynamic> _$TreatmentOptionPairToJson(
     <String, dynamic>{
       'treatment_id': instance.treatment_id,
       'option_ids': instance.option_ids,
+      'style_id': instance.style_id,
+      'monthly_pick_id': instance.monthly_pick_id,
     };
 
 SelectedTreatmentsRequest _$SelectedTreatmentsRequestFromJson(
@@ -222,6 +250,32 @@ SelectedTreatmentsRequest _$SelectedTreatmentsRequestFromJson(
 Map<String, dynamic> _$SelectedTreatmentsRequestToJson(
         SelectedTreatmentsRequest instance) =>
     <String, dynamic>{
+      'treatment_option_pairs': instance.treatment_option_pairs,
+    };
+
+CustomerNewAppointmentRequest _$CustomerNewAppointmentRequestFromJson(
+        Map<String, dynamic> json) =>
+    CustomerNewAppointmentRequest(
+      designer_id: (json['designer_id'] as num?)?.toInt(),
+      appointment_date: json['appointment_date'] as String,
+      start_time: (json['start_time'] as num).toInt(),
+      customer_name: json['customer_name'] as String,
+      customer_phone_number: json['customer_phone_number'] as String,
+      customer_request: json['customer_request'] as String?,
+      treatment_option_pairs: (json['treatment_option_pairs'] as List<dynamic>)
+          .map((e) => TreatmentOptionPair.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$CustomerNewAppointmentRequestToJson(
+        CustomerNewAppointmentRequest instance) =>
+    <String, dynamic>{
+      'designer_id': instance.designer_id,
+      'appointment_date': instance.appointment_date,
+      'start_time': instance.start_time,
+      'customer_name': instance.customer_name,
+      'customer_phone_number': instance.customer_phone_number,
+      'customer_request': instance.customer_request,
       'treatment_option_pairs': instance.treatment_option_pairs,
     };
 
@@ -253,4 +307,93 @@ Map<String, dynamic> _$SelectedDateTimeToJson(SelectedDateTime instance) =>
     <String, dynamic>{
       'selectedDate': instance.selectedDate,
       'selectedTimeSlot': instance.selectedTimeSlot,
+    };
+
+OptionHistoryResponse _$OptionHistoryResponseFromJson(
+        Map<String, dynamic> json) =>
+    OptionHistoryResponse(
+      optionCategoryName: json['optionCategoryName'] as String,
+      optionName: json['optionName'] as String,
+      optionDuration: (json['optionDuration'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$OptionHistoryResponseToJson(
+        OptionHistoryResponse instance) =>
+    <String, dynamic>{
+      'optionCategoryName': instance.optionCategoryName,
+      'optionName': instance.optionName,
+      'optionDuration': instance.optionDuration,
+    };
+
+TreatmentHistoryResponse _$TreatmentHistoryResponseFromJson(
+        Map<String, dynamic> json) =>
+    TreatmentHistoryResponse(
+      treatmentCategoryName: json['treatmentCategoryName'] as String,
+      treatmentName: json['treatmentName'] as String,
+      treatmentPrice: (json['treatmentPrice'] as num).toInt(),
+      treatmentDuration: (json['treatmentDuration'] as num).toInt(),
+      thumbnail: json['thumbnail'] as String,
+      options: (json['options'] as List<dynamic>?)
+          ?.map(
+              (e) => OptionHistoryResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$TreatmentHistoryResponseToJson(
+        TreatmentHistoryResponse instance) =>
+    <String, dynamic>{
+      'treatmentCategoryName': instance.treatmentCategoryName,
+      'treatmentName': instance.treatmentName,
+      'treatmentPrice': instance.treatmentPrice,
+      'treatmentDuration': instance.treatmentDuration,
+      'thumbnail': instance.thumbnail,
+      'options': instance.options,
+    };
+
+CustomerAppointmentResponse _$CustomerAppointmentResponseFromJson(
+        Map<String, dynamic> json) =>
+    CustomerAppointmentResponse(
+      base64Uuid: json['base64Uuid'] as String,
+      createdAt: json['createdAt'] as String,
+      customerName: json['customerName'] as String,
+      customerPhoneNumber: json['customerPhoneNumber'] as String,
+      customerMembershipAmount:
+          (json['customerMembershipAmount'] as num).toInt(),
+      membershipExpirationDate: json['membershipExpirationDate'] as String?,
+      designerName: json['designerName'] as String?,
+      treatmentOptionHistory: (json['treatmentOptionHistory'] as List<dynamic>)
+          .map((e) =>
+              TreatmentHistoryResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      customerImages: (json['customerImages'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      customerRequest: json['customerRequest'] as String?,
+      appointmentDate: json['appointmentDate'] as String,
+      startTime: (json['startTime'] as num).toInt(),
+      duration: (json['duration'] as num).toInt(),
+      confirmed: json['confirmed'] as bool,
+      status: json['status'] as String?,
+      membership: json['membership'] as bool,
+    );
+
+Map<String, dynamic> _$CustomerAppointmentResponseToJson(
+        CustomerAppointmentResponse instance) =>
+    <String, dynamic>{
+      'base64Uuid': instance.base64Uuid,
+      'createdAt': instance.createdAt,
+      'customerName': instance.customerName,
+      'customerPhoneNumber': instance.customerPhoneNumber,
+      'customerMembershipAmount': instance.customerMembershipAmount,
+      'membershipExpirationDate': instance.membershipExpirationDate,
+      'designerName': instance.designerName,
+      'treatmentOptionHistory': instance.treatmentOptionHistory,
+      'customerImages': instance.customerImages,
+      'customerRequest': instance.customerRequest,
+      'appointmentDate': instance.appointmentDate,
+      'startTime': instance.startTime,
+      'duration': instance.duration,
+      'confirmed': instance.confirmed,
+      'status': instance.status,
+      'membership': instance.membership,
     };

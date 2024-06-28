@@ -27,7 +27,7 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
   @override
   void initState() {
     super.initState();
-    selectedDesignerId = ref.read(selectedDesignerProvider);
+    // selectedDesignerId = ref.read(selectedDesignerProvider).designerId;
   }
 
   @override
@@ -125,8 +125,12 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
                           ref
                               .read(selectedDateTimeProvider.notifier)
                               .clearTimeSlot();
-                          ref.read(selectedDesignerProvider.notifier).state =
-                              designer.designerId;
+                          ref
+                              .read(selectedDesignerProvider.notifier)
+                              .setSelectedDesigner(
+                                designer.designerId,
+                                designer.designerNickname,
+                              );
                           setState(() {
                             selectedDesignerId = designer.designerId;
                           });
@@ -151,6 +155,12 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
             slots: morningSlots,
             selectedDateTime: selectedDateTime,
             selectedDesignerId: selectedDesignerId,
+            nickname: selectedDesignerId != null
+                ? filteredDesigners
+                    .firstWhere(
+                        (designer) => designer.designerId == selectedDesignerId)
+                    .designerNickname
+                : null,
           ),
           const SizedBox(height: 10),
           SlotRow(
@@ -158,6 +168,12 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
             slots: afternoonSlots,
             selectedDateTime: selectedDateTime,
             selectedDesignerId: selectedDesignerId,
+            nickname: selectedDesignerId != null
+                ? filteredDesigners
+                    .firstWhere(
+                        (designer) => designer.designerId == selectedDesignerId)
+                    .designerNickname
+                : null,
           ),
         ],
       ),
@@ -170,6 +186,7 @@ class SlotRow extends ConsumerWidget {
   final List<int> slots;
   final SelectedDateTime selectedDateTime;
   final int? selectedDesignerId;
+  final String? nickname;
 
   const SlotRow({
     super.key,
@@ -177,6 +194,7 @@ class SlotRow extends ConsumerWidget {
     required this.slots,
     required this.selectedDateTime,
     required this.selectedDesignerId,
+    required this.nickname,
   });
 
   @override
@@ -201,7 +219,8 @@ class SlotRow extends ConsumerWidget {
                             if (selectedDesignerId != null) {
                               ref
                                   .read(selectedDesignerProvider.notifier)
-                                  .state = selectedDesignerId;
+                                  .setSelectedDesigner(
+                                      selectedDesignerId!, nickname!);
                             }
                           },
                           child: SlotBox(

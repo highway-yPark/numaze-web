@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +14,53 @@ import 'repository.dart';
 //
 //   return state.data.firstWhereOrNull((element) => element.id == id);
 // });
+
+final shopMessageProvider = StateNotifierProvider.family<
+    ShopMessageStateNotifier, ShopMessageBase, String>(
+  (ref, domain) {
+    final repository = ref.watch(repositoryProvider);
+    // Extract the shopId if the state is UserModel
+    return ShopMessageStateNotifier(
+      repository: repository,
+      shopDomain: domain,
+      //uuid: uuid,
+    );
+  },
+);
+
+class ShopMessageStateNotifier extends StateNotifier<ShopMessageBase> {
+  final Repository repository;
+  final String shopDomain;
+
+  ShopMessageStateNotifier({
+    required this.repository,
+    required this.shopDomain,
+  }) : super(ShopMessageLoading()) {
+    getShopMessageInfo();
+  }
+
+  Future<void> getShopMessageInfo() async {
+    try {
+      final response = await repository.getShopMessageInfo(
+        shopDomain: shopDomain,
+      );
+      print(response);
+      state = response;
+      // return response;
+      // if (response.data.isEmpty) {
+      //   // Handle empty state
+      //   state = ListEmpty();
+      // } else {
+      //   // Update the state with the fetched appointments
+      //
+      // }
+    } catch (e, stackTrace) {
+      // Log the error and stack trace for better
+      print('Error fetching appointments: $e');
+      print(stackTrace);
+    }
+  }
+}
 
 final shopBasicInfoProvider = StateNotifierProvider.family<
     ShopBasicInfoStateNotifier, ShopBasicBase, String>(
@@ -170,3 +216,5 @@ class ShopBasicInfoStateNotifier extends StateNotifier<ShopBasicBase> {
 //     StateProvider<SelectedTreatment?>((ref) => null);
 final selectedTreatmentProvider =
     StateProvider<Map<int, SelectedCategory>>((ref) => {});
+
+final durationProvider = StateProvider<int>((ref) => 0);

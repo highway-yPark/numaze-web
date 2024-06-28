@@ -42,9 +42,28 @@ class TimeSlotsStateNotifier extends BaseStateNotifier {
   }
 }
 
-final selectedDesignerProvider = StateProvider<int?>((ref) {
-  return null;
-});
+// final selectedDesignerProvider = StateProvider<int?>((ref) {
+//   return null;
+// });
+
+final selectedDesignerProvider =
+    StateNotifierProvider<SelectedDesignerNotifier, SelectedDesigner?>(
+        (ref) => SelectedDesignerNotifier());
+
+class SelectedDesignerNotifier extends StateNotifier<SelectedDesigner?> {
+  SelectedDesignerNotifier() : super(null);
+
+  void setSelectedDesigner(int designerId, String nickname) {
+    state = SelectedDesigner(
+      designerId: designerId,
+      designerNickname: nickname,
+    );
+  }
+
+  void clearSelection() {
+    state = null;
+  }
+}
 
 final selectedDateTimeProvider =
     StateNotifierProvider<SelectedDateTimeNotifier, SelectedDateTime>(

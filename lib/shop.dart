@@ -140,40 +140,65 @@ class _ShopPageState extends ConsumerState<ShopPage> {
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  if (shopData.backgroundImage != null)
-                    SliverAppBar(
-                      expandedHeight: 200.0,
-                      flexibleSpace: FlexibleSpaceBar(
-                        title: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 500),
-                        ),
-                        background: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final width =
-                                MediaQuery.of(context).size.width > 500
-                                    ? 500.0
-                                    : MediaQuery.of(context).size.width;
-                            final height = width / 2.6;
-                            return Center(
-                              child: ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 500),
-                                child: Image.network(
-                                  shopData.backgroundImage!,
-                                  height: height,
-                                  width: width,
-                                  fit: BoxFit.cover,
+                  SliverAppBar(
+                    expandedHeight: 272.0,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final width = MediaQuery.of(context).size.width > 500
+                              ? 500.0
+                              : MediaQuery.of(context).size.width;
+                          final height = width / 2.6 + 72;
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 72,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    // vertical: 10.0,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Image.asset(
+                                        'assets/images/numaze_logo.png',
+                                        height: 29,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          context.go(
+                                              '/findReservation?shopDomain=${widget.shopDomain}');
+                                        },
+                                        child: Icon(
+                                          Icons.search,
+                                          size: 32,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                              if (shopData.backgroundImage != null)
+                                Flexible(
+                                  child: Image.network(
+                                    shopData.backgroundImage!,
+                                    height: height,
+                                    width: width,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
-                      // bottom: PreferredSize(
-                      //   preferredSize: const Size.fromHeight(0),
-                      //   child: Container(),
-                      // ),
                     ),
+                    // bottom: PreferredSize(
+                    //   preferredSize: const Size.fromHeight(0),
+                    //   child: Container(),
+                    // ),
+                  ),
                   SliverToBoxAdapter(
                     child: Column(
                       children: [

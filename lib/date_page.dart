@@ -116,7 +116,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       );
     }
 
-    final occupiedDates = (occupiedDatesState as ListModel<String>).data;
+    final tempOccupiedDates =
+        occupiedDatesState as ListModelWithDuration<String>;
+    final occupiedDates = tempOccupiedDates.data;
+    final duration = tempOccupiedDates.duration;
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
 
     final DateTime firstDayOfCurrentMonth =
@@ -129,7 +132,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return Scaffold(
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(
+            maxWidth: 500,
+          ),
           child: Stack(
             children: [
               Positioned(
@@ -234,8 +239,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           print('디자이너${selectedDateTime.selectedTimeSlot}');
                           print('디자이너아이디${ref.read(selectedDesignerProvider)}');
                           // Navigate or perform actions
+                          ref.read(durationProvider.notifier).state = duration;
+                          context.go('/s/${widget.shopDomain}/reservation');
                         }
-                        context.go('/s/${widget.shopDomain}/reservation');
                       },
                       child: Ink(
                         color: buttonColor,
@@ -254,10 +260,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 top: 102, // Adjust to fit below the top bar
                 bottom: 57, // Adjust to fit above the bottom bar
                 child: SingleChildScrollView(
+                  primary: false,
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
                     children: [
                       TableCalendar(
+                        availableGestures: AvailableGestures.horizontalSwipe,
                         locale: 'ko_KR',
                         headerVisible: false,
                         rowHeight: 85,
@@ -298,8 +306,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                     selectedTreatments,
                                   ),
                                 );
-                            ref.read(selectedDesignerProvider.notifier).state =
-                                null;
+                            ref
+                                .read(selectedDesignerProvider.notifier)
+                                .clearSelection();
                             ref
                                 .read(selectedDateTimeProvider.notifier)
                                 .clearSelections();
