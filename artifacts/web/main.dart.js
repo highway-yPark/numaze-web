@@ -105286,10 +105286,10 @@ A.aDY.prototype={
 $1(a){return 0},
 $S:585}
 A.aEK.prototype={
-$1(a){return new A.a1C(a.bF($.aK_(),t.kE),"http://api.numaze.kr")},
+$1(a){return new A.a1C(a.bF($.aK_(),t.kE),"https://api.numaze.kr")},
 $S:586}
 A.aF0.prototype={
-$1(a){return new A.a3Z(a.bF($.aK_(),t.kE),"http://api.numaze.kr")},
+$1(a){return new A.a3Z(a.bF($.aK_(),t.kE),"https://api.numaze.kr")},
 $S:587}
 A.a1C.prototype={
 zk(a){return this.a44(a)},
