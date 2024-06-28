@@ -100,7 +100,7 @@ class ProgressIndicator extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 9,
         ),
         SizedBox(

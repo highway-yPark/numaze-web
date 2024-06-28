@@ -171,7 +171,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                                           context.go(
                                               '/findReservation?shopDomain=${widget.shopDomain}');
                                         },
-                                        child: Icon(
+                                        child: const Icon(
                                           Icons.search,
                                           size: 32,
                                         ),

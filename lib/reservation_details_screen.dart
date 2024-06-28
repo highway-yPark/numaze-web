@@ -1,15 +1,11 @@
 import 'dart:async';
-import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:dio/dio.dart';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_web/image_picker_web.dart';
@@ -947,7 +943,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           borderRadius: BorderRadius.circular(3),
         ),
         child: isLoading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : image != null
@@ -993,7 +989,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                       ),
                     ],
                   )
-                : Center(
+                : const Center(
                     child: Icon(
                       Icons.add,
                       color: Colors.grey,
@@ -1763,7 +1759,7 @@ class _ReservationBottomSheetState
                 value: value,
                 onChanged: onChanged,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 11,
               ),
               Text(
@@ -1834,7 +1830,7 @@ class _ReservationBottomSheetState
               ),
               color: ContainerColors.mediumGrey,
               child: Text(
-                content!,
+                content,
                 style: TextDesign.medium14CG,
               ),
             ),

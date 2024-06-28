@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/inkwell_button.dart';
 import 'package:numaze_web/common/components/progress_indicator.dart' as pi;
 import 'package:numaze_web/customer_appointment_provider.dart';
 
@@ -312,7 +311,7 @@ class _CustomerAppointmentPageState
                                       ],
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   if (shopMessages.memberReceiveDeposit ||
@@ -345,14 +344,14 @@ class _CustomerAppointmentPageState
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 20,
                                         ),
                                         Text(
                                           '※ 예약자명과 예금주명을 반드시 통일해주세요.',
                                           style: TextDesign.medium14BO,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 20,
                                         ),
                                         Text(
@@ -366,7 +365,7 @@ class _CustomerAppointmentPageState
                                       '※ 회원권 고객님의 경우 예약금 입금 없이 정액권에서 차감됩니다.',
                                       style: TextDesign.medium14BO,
                                     ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                 ],

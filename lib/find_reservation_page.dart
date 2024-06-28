@@ -31,7 +31,7 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
     return Scaffold(
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 500),
+          constraints: const BoxConstraints(maxWidth: 500),
           child: Stack(
             children: [
               Positioned.fill(
@@ -43,14 +43,14 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(height: 171),
-                              Icon(Icons.search),
-                              SizedBox(height: 12),
+                              const SizedBox(height: 171),
+                              const Icon(Icons.search),
+                              const SizedBox(height: 12),
                               Text(
                                 '예약 내역을 조회해보세요.',
                                 style: TextDesign.bold26B,
                               ),
-                              SizedBox(height: 40),
+                              const SizedBox(height: 40),
                               TextFormField(
                                 controller: _controller,
                                 scrollPadding:
@@ -77,14 +77,14 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(height: 171),
-                              Icon(Icons.close),
-                              SizedBox(height: 12),
+                              const SizedBox(height: 171),
+                              const Icon(Icons.close),
+                              const SizedBox(height: 12),
                               Text(
                                 '내역이 발견되지 않았어요!',
                                 style: TextDesign.bold26B,
                               ),
-                              SizedBox(height: 12),
+                              const SizedBox(height: 12),
                               Text(
                                 '최근 예약 내역이 없어요.\n누메이즈에서 원하는 시술을 만나보세요.',
                                 style: TextDesign.medium16G,
