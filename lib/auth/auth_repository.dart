@@ -11,7 +11,7 @@ final authRepositoryProvider = Provider<AuthRepository>(
 
     return AuthRepository(
       dio: dio,
-      baseUrl: 'http://$ip/api/v1/auth',
+      baseUrl: 'https://$ip/api/v1/auth',
     );
   },
 );
