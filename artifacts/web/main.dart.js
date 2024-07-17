@@ -109189,7 +109189,7 @@ case 1:return A.N(q,r)}})
 return A.O($async$$0,r)},
 $S:44}
 A.aLF.prototype={
-$1(a){return new A.qg("http://api.numaze.kr/api/v1/auth",a.bK($.aNP(),t.kE))},
+$1(a){return new A.qg("https://api.numaze.kr/api/v1/auth",a.bK($.aNP(),t.kE))},
 $S:578}
 A.qg.prototype={
 Br(a,b){return this.a98(a,!1)},
@@ -110060,10 +110060,10 @@ A.aM7.prototype={
 $1(a){return 0},
 $S:602}
 A.aMY.prototype={
-$1(a){return new A.a66(a.bK($.aNP(),t.kE),"http://api.numaze.kr")},
+$1(a){return new A.a66(a.bK($.aNP(),t.kE),"https://api.numaze.kr")},
 $S:603}
 A.aNl.prototype={
-$1(a){return new A.a8w(a.bK($.aNP(),t.kE),"http://api.numaze.kr")},
+$1(a){return new A.a8w(a.bK($.aNP(),t.kE),"https://api.numaze.kr")},
 $S:604}
 A.a66.prototype={
 B4(a){return this.a8E(a)},
