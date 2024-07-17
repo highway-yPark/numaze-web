@@ -26,7 +26,7 @@ class ConstWidgets {
   static greyBox() {
     return Container(
       color: ContainerColors.mediumGrey,
-      height: 15,
+      height: 8,
     );
   }
 
@@ -70,6 +70,33 @@ class CommonWidgets {
       ),
       borderRadius: BorderRadius.circular(3.0),
       // color: ContainerColors.white,
+    );
+  }
+
+  static sixteenTenPadding() {
+    return const EdgeInsets.symmetric(
+      vertical: 10,
+      horizontal: 16,
+    );
+  }
+
+  static greyBorder(Color color) {
+    return BoxDecoration(
+      border: Border.all(
+        color: StrokeColors.grey,
+        width: 1.0,
+      ),
+      borderRadius: BorderRadius.circular(3.0),
+      color: color,
+    );
+  }
+
+  static ctaPadding() {
+    return const EdgeInsets.only(
+      top: 14,
+      bottom: 15,
+      left: 20,
+      right: 20,
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/const/colors.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'router.dart';
 
@@ -30,6 +31,10 @@ class MyApp extends StatelessWidget {
           PointerDeviceKind.touch,
           PointerDeviceKind.stylus
         },
+      ),
+      theme: ThemeData(
+        fontFamily: 'Pretendard',
+        scaffoldBackgroundColor: ContainerColors.white,
       ),
       routerDelegate: router.routerDelegate,
       routeInformationParser: router.routeInformationParser,

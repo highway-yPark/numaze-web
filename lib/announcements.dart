@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'announcements_provider.dart';
 import 'common/components/custom_dialog.dart';
 import 'common/const/colors.dart';
+import 'common/const/icons.dart';
 import 'common/const/text.dart';
 import 'common/const/widgets.dart';
 import 'list_model.dart';
@@ -21,7 +21,7 @@ class Announcements extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final shopAnnouncementsState =
-    ref.watch(shopAnnouncementsProvider(shopDomain));
+        ref.watch(shopAnnouncementsProvider(shopDomain));
     if (shopAnnouncementsState is ListLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -32,7 +32,7 @@ class Announcements extends ConsumerWidget {
       );
     }
     final announcements =
-    shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
+        shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -65,55 +65,66 @@ class Announcements extends ConsumerWidget {
               },
               child: Container(
                 width: width * 312 / 389,
+                // height: 500,
                 margin: const EdgeInsets.only(
                   left: 16,
                 ),
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16),
                 decoration: CommonWidgets.commonDecoration(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 21,
-                          decoration: const BoxDecoration(
-                            color: BrandColors.orange,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 64,
+                                height: 21,
+                                color: BrandColors.orange,
+                                child: Center(
+                                  child: Text(
+                                    announcement.announcementType.name ==
+                                            'notice'
+                                        ? 'NOTICE'
+                                        : 'EVENT',
+                                    style: TextDesign.bold12W,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  announcement.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextDesign.bold16B,
+                                ),
+                              ),
+                            ],
                           ),
-                          child: Center(
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Expanded(
                             child: Text(
-                              announcement.announcementType.name == 'notice'
-                                  ? 'NOTICE'
-                                  : 'EVENT',
-                              style: TextDesign.bold12W,
+                              announcement.content,
+                              style: TextDesign.regular14G,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        Expanded(
-                          child: Text(
-                            announcement.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextDesign.bold16B,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Expanded(
-                      child: Text(
-                        announcement.content,
-                        style: TextDesign.regular14G,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        ],
                       ),
                     ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    CommonIcons.rightArrow(),
                   ],
                 ),
               ),

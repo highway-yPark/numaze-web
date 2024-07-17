@@ -74,6 +74,8 @@ class ContainerColors {
   static const mediumGrey2 = Color(0xFFC7C7C7);
   static const darkGrey = Color(0xFF8D8D8D);
   static const peach = Color(0xFFFFF1EC);
+  static const ctaGrey = Color(0xFFCCCCCC);
+  static const sbGrey = Color(0xFFEEEEEE);
 }
 
 class FontColors {
@@ -93,4 +95,5 @@ class StrokeColors {
   static const grey = Color(0xFFDCDCDC);
   static const lightGrey = Color(0xFFEFEFEF);
   static const mediumGrey = Color(0xFFB1B1B1);
+  static const ctaGrey = Color(0xFFF2F2F2);
 }

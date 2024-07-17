@@ -6,6 +6,7 @@ import 'package:numaze_web/find_reservation_page.dart';
 import 'package:numaze_web/shop_info_page.dart';
 import 'date_page.dart';
 import 'main.dart';
+import 'payment_complete_screen.dart';
 import 'reservation_details_screen.dart';
 import 'shop.dart';
 import 'styles_screen.dart';
@@ -20,13 +21,6 @@ final GoRouter _router = GoRouter(
         return const HomePage();
       },
     ),
-    // GoRoute(
-    //   path: '/details/:id',
-    //   builder: (BuildContext context, GoRouterState state) {
-    //     final String id = state.params['id']!;
-    //     return DetailsPage(id: id);
-    //   },
-    // ),
     GoRoute(
       path: '/appointment/:appointmentId',
       builder: (BuildContext context, GoRouterState state) {
@@ -37,6 +31,18 @@ final GoRouter _router = GoRouter(
           appointmentId: appointmentId,
         );
       },
+      routes: <GoRoute>[
+        GoRoute(
+          path: 'payment',
+          builder: (BuildContext context, GoRouterState state) {
+            final String appointmentId = state.pathParameters['appointmentId']!;
+            print('appointmentId: $appointmentId');
+            return PaymentCompleteScreen(
+              appointmentId: appointmentId,
+            );
+          },
+        ),
+      ],
     ),
     GoRoute(
       path: '/findReservation',

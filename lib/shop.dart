@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/components/common_image.dart';
+import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/list_model.dart';
 import 'package:numaze_web/treatment_box.dart';
 import 'announcements.dart';
+import 'common/components/tag_item.dart';
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
 import 'common/const/widgets.dart';
@@ -141,104 +144,196 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                 controller: _scrollController,
                 slivers: [
                   SliverAppBar(
-                    expandedHeight: 272.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final width = MediaQuery.of(context).size.width > 500
-                              ? 500.0
-                              : MediaQuery.of(context).size.width;
-                          final height = width / 2.6 + 72;
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 72,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                    // vertical: 10.0,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/numaze_logo.png',
-                                        height: 29,
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          context.go(
-                                              '/findReservation?shopDomain=${widget.shopDomain}');
-                                        },
-                                        child: const Icon(
-                                          Icons.search,
-                                          size: 32,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                    backgroundColor: ContainerColors.white,
+                    flexibleSpace: SizedBox(
+                      height: 52,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          // vertical: 10.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.asset(
+                              'assets/images/numaze_logo.png',
+                              height: 29,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                context.go(
+                                    '/findReservation?shopDomain=${widget.shopDomain}');
+                              },
+                              child: const Icon(
+                                Icons.search,
+                                size: 32,
                               ),
-                              if (shopData.backgroundImage != null)
-                                Flexible(
-                                  child: Image.network(
-                                    shopData.backgroundImage!,
-                                    height: height,
-                                    width: width,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    // bottom: PreferredSize(
-                    //   preferredSize: const Size.fromHeight(0),
-                    //   child: Container(),
-                    // ),
                   ),
+                  if (shopData.backgroundImage != null)
+                    SliverToBoxAdapter(
+                      child: CommonImage(
+                        imageUrl: shopData.backgroundImage!,
+                        width: MediaQuery.of(context).size.width > 500
+                            ? 500.0
+                            : MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width > 500
+                            ? 500.0 / 3.25
+                            : MediaQuery.of(context).size.width / 3.25,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  // SliverAppBar(
+                  //   backgroundColor: ContainerColors.white,
+                  //   expandedHeight: 52 +
+                  //       ((shopData.backgroundImage != null)
+                  //           ? (MediaQuery.of(context).size.width > 500
+                  //               ? 500.0 / 3.25
+                  //               : MediaQuery.of(context).size.width / 3.25)
+                  //           : 0),
+                  //   flexibleSpace: LayoutBuilder(
+                  //     builder: (context, constraints) {
+                  //       final width = MediaQuery.of(context).size.width > 500
+                  //           ? 500.0
+                  //           : MediaQuery.of(context).size.width;
+                  //       final height = width / 3.25 + 52;
+                  //       return Column(
+                  //         children: [
+                  //           SizedBox(
+                  //             height: 52,
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.symmetric(
+                  //                 horizontal: 16.0,
+                  //                 // vertical: 10.0,
+                  //               ),
+                  //               child: Row(
+                  //                 mainAxisAlignment:
+                  //                     MainAxisAlignment.spaceBetween,
+                  //                 children: [
+                  //                   Image.asset(
+                  //                     'assets/images/numaze_logo.png',
+                  //                     height: 29,
+                  //                   ),
+                  //                   InkWell(
+                  //                     onTap: () {
+                  //                       context.go(
+                  //                           '/findReservation?shopDomain=${widget.shopDomain}');
+                  //                     },
+                  //                     child: const Icon(
+                  //                       Icons.search,
+                  //                       size: 32,
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           if (shopData.backgroundImage != null)
+                  //             Flexible(
+                  //               child: Image.network(
+                  //                 shopData.backgroundImage!,
+                  //                 height: height,
+                  //                 width: width,
+                  //                 fit: BoxFit.cover,
+                  //               ),
+                  //             ),
+                  //         ],
+                  //       );
+                  //     },
+                  //   ),
+                  // ),
+                  // SliverToBoxAdapter(
+                  //   child: Column(
+                  //     children: [
+                  //       SizedBox(
+                  //         height: 52,
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.symmetric(
+                  //             horizontal: 16.0,
+                  //             // vertical: 10.0,
+                  //           ),
+                  //           child: Row(
+                  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //             children: [
+                  //               Image.asset(
+                  //                 'assets/images/numaze_logo.png',
+                  //                 height: 29,
+                  //               ),
+                  //               InkWell(
+                  //                 onTap: () {
+                  //                   context.go(
+                  //                       '/findReservation?shopDomain=${widget.shopDomain}');
+                  //                 },
+                  //                 child: const Icon(
+                  //                   Icons.search,
+                  //                   size: 32,
+                  //                 ),
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       if (shopData.backgroundImage != null)
+                  //         Flexible(
+                  //           child: Image.network(
+                  //             shopData.backgroundImage!,
+                  //             width: MediaQuery.of(context).size.width > 500
+                  //                 ? 500.0
+                  //                 : MediaQuery.of(context).size.width,
+                  //             height: MediaQuery.of(context).size.width > 500
+                  //                 ? 500.0 / 3.25
+                  //                 : MediaQuery.of(context).size.width / 3.25,
+                  //             fit: BoxFit.cover,
+                  //           ),
+                  //         ),
+                  //     ],
+                  //   ),
+                  // ),
                   SliverToBoxAdapter(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 16.0),
+                          padding: CommonWidgets.sixteenTenPadding(),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ClipOval(
-                                child: SizedBox(
+                                child: CommonImage(
+                                  imageUrl: shopData.profileImage,
                                   width: 65,
                                   height: 65,
-                                  child: Image.network(
-                                    shopData.profileImage,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(width: 16.0),
+                              const SizedBox(width: 25.0),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       shopData.name,
-                                      style: const TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
+                                      style: TextDesign.bold20B,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
                                     ),
                                     Text(
                                       shopData.englishName,
-                                      style: const TextStyle(
-                                          fontSize: 16, color: Colors.grey),
+                                      style: TextDesign.medium14G,
                                     ),
                                     Text(
                                       shopData.description,
-                                      maxLines: 3,
+                                      maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(fontSize: 16),
+                                      style: TextDesign.regular14B,
                                     ),
                                   ],
                                 ),
@@ -246,21 +341,35 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                             ],
                           ),
                         ),
-                        Wrap(
-                          alignment: WrapAlignment.start,
-                          spacing: 8.0,
-                          runSpacing: 8.0,
-                          children: [
-                            Chip(
-                              label: Text(
-                                  '${shopData.shopType} | ${shopData.simpleAddress}'),
-                              backgroundColor: Colors.black,
-                              labelStyle: const TextStyle(color: Colors.white),
+                        Padding(
+                          padding: CommonWidgets.sixteenTenPadding(),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Wrap(
+                              alignment: WrapAlignment.start,
+                              spacing: 8.0,
+                              runSpacing: 8.0,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0,
+                                    vertical: 5.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: ContainerColors.black,
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Text(
+                                    '${shopData.shopType} | ${shopData.simpleAddress}',
+                                    style: TextDesign.regular12W,
+                                  ),
+                                ),
+                                ...shopData.tags.map(
+                                  (tag) => TagItem(tag: tag),
+                                ),
+                              ],
                             ),
-                            ...shopData.tags.map(
-                              (tag) => TagItem(tag: tag),
-                            ),
-                          ],
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
@@ -273,35 +382,35 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         ConstWidgets.greyBox(),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 10,
-                            left: 16,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
-                                child: Text(
-                                  'Monthly pick art',
-                                  style: TextDesign.bold18B,
-                                ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: CommonWidgets.sixteenTenPadding(),
+                              child: Text(
+                                'Monthly pick art',
+                                style: TextDesign.bold18B,
                               ),
-                              const SizedBox(
-                                height: 10,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 10,
                               ),
-                              SizedBox(
-                                height: 176,
+                              child: SizedBox(
+                                height: 183,
                                 child: MonthlyPicks(
                                   shopDomain: widget.shopDomain,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         ConstWidgets.greyBox(),
                       ],
@@ -356,7 +465,10 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                       minHeight: 65,
                       child: Container(
                         color: ContainerColors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        padding: const EdgeInsets.symmetric(
+                          // horizontal: 16,
+                          vertical: 15,
+                        ),
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: treatments.length,
@@ -371,9 +483,12 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 5),
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                                  horizontal: 15,
+                                  vertical: 5,
+                                ),
+                                margin: EdgeInsets.only(
+                                  left: index == 0 ? 16 : 8,
+                                ),
                                 decoration: BoxDecoration(
                                   color: _selectedCategoryIndex == index
                                       ? ContainerColors.black
@@ -389,7 +504,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                                 child: Text(
                                   category.name,
                                   style: _selectedCategoryIndex == index
-                                      ? TextDesign.medium16W
+                                      ? TextDesign.regular16W
                                       : TextDesign.regular16G,
                                 ),
                               ),
@@ -409,16 +524,10 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 16.0,
-                                ),
+                                padding: CommonWidgets.sixteenTenPadding(),
                                 child: Text(
                                   treatments[i].name,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: TextDesign.bold16B,
                                 ),
                               ),
                               ...treatments[i].treatments.map(
@@ -440,14 +549,63 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                   // i want empty sized box with height 300
                   SliverToBoxAdapter(
                     child: Container(
-                      height: 50,
+                      height: selectedTreatments.isEmpty ? 30 : 110,
                     ),
                   ),
                   if (selectedTreatments.isEmpty)
                     SliverToBoxAdapter(
                       child: Container(
                         height: 95,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 29.5,
+                          vertical: 20,
+                        ),
                         color: ContainerColors.black,
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CommonIcons.adFree(),
+                              SizedBox(
+                                width: 30,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '누메이즈의 ',
+                                        style: TextDesign.bold18W,
+                                      ),
+                                      Text(
+                                        '예약 • 관리 서비스,',
+                                        style: TextDesign.bold18BO,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        '원장님! 지금 ',
+                                        style: TextDesign.bold18W,
+                                      ),
+                                      Text(
+                                        '무료',
+                                        style: TextDesign.bold18BO,
+                                      ),
+                                      Text(
+                                        '로 경험해보세요.',
+                                        style: TextDesign.bold18W,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                 ],
@@ -523,31 +681,5 @@ class _CustomHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return true;
-  }
-}
-
-class TagItem extends StatelessWidget {
-  final String tag;
-
-  const TagItem({
-    super.key,
-    required this.tag,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Text(
-        tag,
-        style: TextStyle(
-          color: Colors.grey[800],
-        ),
-      ),
-    );
   }
 }

@@ -436,40 +436,6 @@ class SelectedDesigner {
   });
 }
 
-// class CustomerAppointmentResponse(BaseDTO):
-// base64Uuid: str
-// createdAt: str
-// customerName: str
-// customerPhoneNumber: str
-// customerMembershipAmount: int
-// membershipExpirationDate: str | None
-// designerName: str | None
-// treatmentOptionHistory: list[TreatmentHistoryResponse]
-// customerImages: list[str] | None
-// customerRequest: str | None
-// appointmentDate: str
-// startTime: int
-// duration: int
-// confirmed: bool
-// status: str | None
-// membership: bool
-
-// class TreatmentHistoryResponse(BaseDTO):
-// id: int
-// treatmentId: int
-// treatmentCategoryName: str
-// treatmentName: str
-// treatmentPrice: int
-// # TODO: need to include max price and discount
-// treatmentDuration: int
-// thumbnail: str
-// options: list[OptionHistoryResponse] | None
-
-// optionCategoryName: str
-// optionName: str
-// optionPrice: str
-// optionDuration: int
-
 @JsonSerializable()
 class OptionHistoryResponse {
   final String optionCategoryName;
@@ -490,17 +456,23 @@ class OptionHistoryResponse {
 class TreatmentHistoryResponse {
   final String treatmentCategoryName;
   final String treatmentName;
-  final int treatmentPrice;
+  final int treatmentMinPrice;
+  final int? treatmentMaxPrice;
+  final int discount;
   final int treatmentDuration;
   final String thumbnail;
+  final int treatmentType;
   final List<OptionHistoryResponse>? options;
 
   TreatmentHistoryResponse({
     required this.treatmentCategoryName,
     required this.treatmentName,
-    required this.treatmentPrice,
+    required this.treatmentMinPrice,
+    this.treatmentMaxPrice,
+    required this.discount,
     required this.treatmentDuration,
     required this.thumbnail,
+    required this.treatmentType,
     required this.options,
   });
 

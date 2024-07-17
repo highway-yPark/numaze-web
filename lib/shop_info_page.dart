@@ -325,7 +325,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                             ),
                           ),
                           const SizedBox(
-                            height: 114,
+                            height: 110,
                           ),
                         ],
                       ),

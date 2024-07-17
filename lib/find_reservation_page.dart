@@ -98,31 +98,28 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: SizedBox(
-                    height: 57,
-                    child: BlackInkwellButton(
-                        onTap: () async {
-                          if (!notFound) {
-                            final resp = await ref
-                                .read(customerAppointmentProvider(
-                                        _controller.text)
-                                    .notifier)
-                                .getCustomerAppointment();
-                            if (!context.mounted) return;
-                            if (resp == 200) {
-                              context.go(
-                                  '/appointment/${_controller.text}?shopDomain=${widget.shopDomain}');
-                            } else {
-                              setState(() {
-                                notFound = true;
-                              });
-                            }
+                  child: BlackInkwellButton(
+                      onTap: () async {
+                        if (!notFound) {
+                          final resp = await ref
+                              .read(
+                                  customerAppointmentProvider(_controller.text)
+                                      .notifier)
+                              .getCustomerAppointment();
+                          if (!context.mounted) return;
+                          if (resp == 200) {
+                            context.go(
+                                '/appointment/${_controller.text}?shopDomain=${widget.shopDomain}');
                           } else {
-                            context.go('/s/${widget.shopDomain}');
+                            setState(() {
+                              notFound = true;
+                            });
                           }
-                        },
-                        text: !notFound ? '조회하기' : '예약하러 가기'),
-                  ),
+                        } else {
+                          context.go('/s/${widget.shopDomain}');
+                        }
+                      },
+                      text: !notFound ? '조회하기' : '예약하러 가기'),
                 ),
             ],
           ),

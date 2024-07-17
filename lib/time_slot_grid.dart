@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:numaze_web/common/components/common_title.dart';
+import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/model.dart';
 import 'package:numaze_web/time_slots_provider.dart';
 
@@ -27,7 +29,6 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
   @override
   void initState() {
     super.initState();
-    // selectedDesignerId = ref.read(selectedDesignerProvider).designerId;
   }
 
   @override
@@ -104,76 +105,102 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
       width: double.infinity,
       color: ContainerColors.mediumGrey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(
+            height: 10,
+          ),
           if (widget.selectDesigner) ...[
-            Text('디자이너', style: TextDesign.bold18B),
-            const SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: filteredDesigners.map((designer) {
-                  bool isSelected = selectedDesignerId == designer.designerId;
-                  return Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          ref
-                              .read(selectedDateTimeProvider.notifier)
-                              .clearTimeSlot();
-                          ref
-                              .read(selectedDesignerProvider.notifier)
-                              .setSelectedDesigner(
-                                designer.designerId,
-                                designer.designerNickname,
-                              );
-                          setState(() {
-                            selectedDesignerId = designer.designerId;
-                          });
-                        },
-                        child: SlotBox(
-                          text: designer.designerNickname,
-                          isSelected: isSelected,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                  );
-                }).toList(),
+            Padding(
+              padding: CommonWidgets.sixteenTenPadding(),
+              child: const CommonTitle(
+                title: '디자이너',
               ),
             ),
-            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 16,
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: filteredDesigners.map((designer) {
+                    bool isSelected = selectedDesignerId == designer.designerId;
+                    return Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            ref
+                                .read(selectedDateTimeProvider.notifier)
+                                .clearTimeSlot();
+                            ref
+                                .read(selectedDesignerProvider.notifier)
+                                .setSelectedDesigner(
+                                  designer.designerId,
+                                  designer.designerNickname,
+                                );
+                            setState(() {
+                              selectedDesignerId = designer.designerId;
+                            });
+                          },
+                          child: SlotBox(
+                            text: designer.designerNickname,
+                            isSelected: isSelected,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
           ],
-          Text('시간', style: TextDesign.bold18B),
-          const SizedBox(height: 10),
-          SlotRow(
-            label: '오전',
-            slots: morningSlots,
-            selectedDateTime: selectedDateTime,
-            selectedDesignerId: selectedDesignerId,
-            nickname: selectedDesignerId != null
-                ? filteredDesigners
-                    .firstWhere(
-                        (designer) => designer.designerId == selectedDesignerId)
-                    .designerNickname
-                : null,
+          Padding(
+            padding: CommonWidgets.sixteenTenPadding(),
+            child: const CommonTitle(
+              title: '시간',
+            ),
           ),
-          const SizedBox(height: 10),
-          SlotRow(
-            label: '오후',
-            slots: afternoonSlots,
-            selectedDateTime: selectedDateTime,
-            selectedDesignerId: selectedDesignerId,
-            nickname: selectedDesignerId != null
-                ? filteredDesigners
-                    .firstWhere(
-                        (designer) => designer.designerId == selectedDesignerId)
-                    .designerNickname
-                : null,
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 16,
+            ),
+            child: SlotRow(
+              label: '오전',
+              slots: morningSlots,
+              selectedDateTime: selectedDateTime,
+              selectedDesignerId: selectedDesignerId,
+              nickname: selectedDesignerId != null
+                  ? filteredDesigners
+                      .firstWhere((designer) =>
+                          designer.designerId == selectedDesignerId)
+                      .designerNickname
+                  : null,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 16,
+            ),
+            child: SlotRow(
+              label: '오후',
+              slots: afternoonSlots,
+              selectedDateTime: selectedDateTime,
+              selectedDesignerId: selectedDesignerId,
+              nickname: selectedDesignerId != null
+                  ? filteredDesigners
+                      .firstWhere((designer) =>
+                          designer.designerId == selectedDesignerId)
+                      .designerNickname
+                  : null,
+            ),
+          ),
+          const SizedBox(
+            height: 16,
           ),
         ],
       ),
@@ -202,8 +229,12 @@ class SlotRow extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextDesign.medium14G),
-        const SizedBox(height: 5),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 5,
+          ),
+          child: Text(label, style: TextDesign.medium14G),
+        ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -271,7 +302,10 @@ class SlotBox extends StatelessWidget {
     return Container(
       height: 45,
       width: 92,
-      padding: const EdgeInsets.symmetric(vertical: 12.5, horizontal: 15.0),
+      padding: const EdgeInsets.symmetric(
+        vertical: 11.5,
+        horizontal: 14.0,
+      ),
       decoration: BoxDecoration(
         color: isSelected ? ContainerColors.black : ContainerColors.white,
         border: Border.all(

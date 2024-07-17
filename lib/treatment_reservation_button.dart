@@ -57,62 +57,62 @@ class TreatmentReservationButton extends ConsumerWidget {
       bottom: 0,
       left: 0,
       right: 0,
-      child: SizedBox(
-        height: 57,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              for (final entry in selectedTreatments.entries) {
-                print('Category ID: ${entry.key}');
-                for (final treatment in entry.value.selectedTreatments) {
-                  print('Treatment ID: ${treatment.treatmentId}');
-                  print('options: ${treatment.selectedOptions}');
-                  print('styleId: ${treatment.styleId}');
-                  print('monthlyPick: ${treatment.monthlyPickId}');
-                  print('treatmentStyleId: ${treatment.treatmentStyleId}');
-                }
-              }
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            // for (final entry in selectedTreatments.entries) {
+            //   print('Category ID: ${entry.key}');
+            //   for (final treatment in entry.value.selectedTreatments) {
+            //     print('Treatment ID: ${treatment.treatmentId}');
+            //     print('options: ${treatment.selectedOptions}');
+            //     print('styleId: ${treatment.styleId}');
+            //     print('monthlyPick: ${treatment.monthlyPickId}');
+            //     print('treatmentStyleId: ${treatment.treatmentStyleId}');
+            //   }
+            // }
 
-              final startDate = DateTime.now();
-              final endDate =
-                  DateTime.now().add(Duration(days: futureReservationDays));
+            final startDate = DateTime.now();
+            final endDate =
+                DateTime.now().add(Duration(days: futureReservationDays));
 
-              ref
-                  .read(occupiedDatesProvider(shopDomain).notifier)
-                  .getOccupiedDates(
-                    startDate: DataUtils.apiDateFormat(startDate),
-                    endDate: DataUtils.apiDateFormat(endDate),
-                    request:
-                        createSelectedTreatmentsRequest(selectedTreatments),
-                  );
-              context.go('/s/$shopDomain/calendar');
-            },
-            child: Ink(
-              color: BrandColors.orange,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    '예약하기',
-                    style: TextDesign.bold16W,
+            ref
+                .read(occupiedDatesProvider(shopDomain).notifier)
+                .getOccupiedDates(
+                  startDate: DataUtils.apiDateFormat(startDate),
+                  endDate: DataUtils.apiDateFormat(endDate),
+                  request: createSelectedTreatmentsRequest(selectedTreatments),
+                );
+            context.go('/s/$shopDomain/calendar');
+          },
+          child: Ink(
+            height: 72,
+            color: ContainerColors.black,
+            padding: const EdgeInsets.symmetric(
+              vertical: 23.5,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '예약하기',
+                  style: TextDesign.bold20BO,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: const BoxDecoration(
+                    color: BrandColors.orange,
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(
-                    width: 5,
+                  child: Text(
+                    '${selectedTreatments.length}',
+                    style: TextDesign.bold12W,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: const BoxDecoration(
-                      color: ContainerColors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Text(
-                      '${selectedTreatments.length}',
-                      style: TextDesign.bold12BO,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

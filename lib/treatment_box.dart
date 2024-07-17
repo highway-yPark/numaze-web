@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/components/common_image.dart';
 import 'package:numaze_web/common/components/custom_snackbar.dart';
 import 'package:numaze_web/common/const/colors.dart';
+import 'package:numaze_web/common/const/icons.dart';
+import 'package:numaze_web/common/const/widgets.dart';
 
 import 'common/const/text.dart';
 import 'model.dart';
@@ -32,7 +35,7 @@ class TreatmentBox extends ConsumerWidget {
                 .selectedTreatments
                 .any((t) => t.treatmentId == treatment.id);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      padding: CommonWidgets.sixteenTenPadding(),
       child: InkWell(
         onTap: () {
           if (isSelected) {
@@ -46,10 +49,8 @@ class TreatmentBox extends ConsumerWidget {
                 ref.read(selectedTreatmentProvider.notifier).state;
             if (selectedCategory.containsKey(categoryId) &&
                 selectedCategory[categoryId]!.selectedTreatments.isNotEmpty) {
-              customSnackBar('카테고리당 하나의 시술담 담을 수 있어요.', context);
-              // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              //     content:
-              //         Text('You can only select one treatment per category.')));
+              onlyOneSnackBar(context: context);
+              return;
             } else {
               context.go('/s/$shopDomain/sisul?treatmentId=${treatment.id}');
             }
@@ -60,20 +61,16 @@ class TreatmentBox extends ConsumerWidget {
           children: [
             Stack(
               children: [
-                Image.network(
-                  treatment.thumbnail,
+                CommonImage(
+                  imageUrl: treatment.thumbnail,
                   width: 115,
                   height: 115,
                 ),
                 if (isSelected)
-                  const Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Icon(
-                      Icons.check_circle,
-                      color: BrandColors.orange,
-                      size: 24,
-                    ),
+                  Positioned(
+                    right: 8,
+                    bottom: 9,
+                    child: CommonIcons.check(),
                   ),
               ],
             ),
@@ -88,10 +85,11 @@ class TreatmentBox extends ConsumerWidget {
                     treatment.name,
                     style: TextDesign.bold16B,
                     textAlign: TextAlign.start,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(
-                    height: 11,
+                    height: 5,
                   ),
                   Text(
                     treatment.description,
@@ -101,7 +99,7 @@ class TreatmentBox extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(
-                    height: 11,
+                    height: 5,
                   ),
                   if (treatment.discount > 0)
                     Column(
@@ -111,27 +109,28 @@ class TreatmentBox extends ConsumerWidget {
                           children: [
                             Text(
                               '${treatment.discount}%',
-                              style: TextDesign.medium14BO,
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
+                              style: TextDesign.bold12BO,
                             ),
                             const SizedBox(
-                              width: 10,
+                              width: 3,
                             ),
                             Text(
                               "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
                               style: TextDesign.regular12G.copyWith(
                                 decoration: TextDecoration.lineThrough,
                               ),
-                              textAlign: TextAlign.start,
+                              maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
+                        SizedBox(
+                          height: 3,
+                        ),
                         Text(
                           "${DataUtils.formatKoreanWon(treatment.minPrice * (100 - treatment.discount) ~/ 100)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
                           style: TextDesign.bold16B,
-                          textAlign: TextAlign.start,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -140,20 +139,19 @@ class TreatmentBox extends ConsumerWidget {
                     Text(
                       "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
                       style: TextDesign.bold16B,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   const SizedBox(
-                    height: 11,
+                    height: 5,
                   ),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.lock_clock,
-                      ),
+                      CommonIcons.clock(),
                       Text(
                         '소요시간 : ${DataUtils.formatDurationWithZero(treatment.duration)}',
                         style: TextDesign.regular14G,
-                        textAlign: TextAlign.start,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

@@ -330,9 +330,12 @@ TreatmentHistoryResponse _$TreatmentHistoryResponseFromJson(
     TreatmentHistoryResponse(
       treatmentCategoryName: json['treatmentCategoryName'] as String,
       treatmentName: json['treatmentName'] as String,
-      treatmentPrice: (json['treatmentPrice'] as num).toInt(),
+      treatmentMinPrice: (json['treatmentMinPrice'] as num).toInt(),
+      treatmentMaxPrice: (json['treatmentMaxPrice'] as num?)?.toInt(),
+      discount: (json['discount'] as num).toInt(),
       treatmentDuration: (json['treatmentDuration'] as num).toInt(),
       thumbnail: json['thumbnail'] as String,
+      treatmentType: (json['treatmentType'] as num).toInt(),
       options: (json['options'] as List<dynamic>?)
           ?.map(
               (e) => OptionHistoryResponse.fromJson(e as Map<String, dynamic>))
@@ -344,9 +347,12 @@ Map<String, dynamic> _$TreatmentHistoryResponseToJson(
     <String, dynamic>{
       'treatmentCategoryName': instance.treatmentCategoryName,
       'treatmentName': instance.treatmentName,
-      'treatmentPrice': instance.treatmentPrice,
+      'treatmentMinPrice': instance.treatmentMinPrice,
+      'treatmentMaxPrice': instance.treatmentMaxPrice,
+      'discount': instance.discount,
       'treatmentDuration': instance.treatmentDuration,
       'thumbnail': instance.thumbnail,
+      'treatmentType': instance.treatmentType,
       'options': instance.options,
     };
 

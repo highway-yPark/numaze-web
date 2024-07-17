@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image/image.dart' as img;
 import 'package:dio/dio.dart';
 
@@ -9,10 +11,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker_web/image_picker_web.dart';
+import 'package:numaze_web/common/components/inkwell_button.dart';
+import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
 
+import 'auth/auth_repository.dart';
+import 'common/components/common_image.dart';
+import 'common/components/common_input_field.dart';
+import 'common/components/common_title.dart';
+import 'common/components/custom_snackbar.dart';
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
 import 'list_model.dart';
@@ -38,11 +47,114 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   String name = '';
   String phoneNumber = '';
   String verificationCode = '';
-  bool codeSent = false;
   bool codeVerified = false;
+  bool codeNotMatch = false;
+  // TextEditingController nameController = TextEditingController();
+  // FocusNode _focusNode = FocusNode();
 
   Timer? _timer;
   int _start = 180;
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer?.cancel();
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_start == 0) {
+          setState(() {
+            timer.cancel();
+            codeVerified = false;
+            customSnackBar(
+              message: '인증번호 유효시간이 만료되었어요.',
+              context: context,
+              error: true,
+            );
+          });
+        } else {
+          setState(() {
+            _start--;
+          });
+        }
+      },
+    );
+  }
+
+  Future<void> sendVerificationCode(BuildContext context, WidgetRef ref) async {
+    if (phoneNumber.length == 11) {
+      final resp = await ref
+          .read(authRepositoryProvider)
+          .sendVerificationCode(phoneNumber: phoneNumber, register: false);
+      if (!context.mounted) return;
+      if (resp == 200) {
+        setState(() {
+          codeVerified = false;
+          verificationCode = '';
+        });
+        if (_timer != null && _start < 180) {
+          _start = 180;
+        }
+        startTimer();
+      } else if (resp == 400) {
+        /** for register only
+         * 400: PHONE_NUMBER_ALREADY_REGISTERED
+         */
+        customSnackBar(
+          message: '이미 등록된 전화번호 입니다',
+          context: context,
+          error: true,
+        );
+      } else {
+        customSnackBar(
+            message: '잠시 후 다시 시도해주세요', context: context, error: true);
+      }
+    } else if (phoneNumber.length == 11 && _start == 0) {
+      setState(() {
+        codeVerified = false;
+        codeNotMatch = false;
+        _start = 180;
+        _timer?.cancel();
+        verificationCode = '';
+      });
+    }
+    FocusScope.of(context).unfocus();
+  }
+
+  Future<void> verifyCode(BuildContext context, WidgetRef ref) async {
+    if (_start > 0 && _start < 180) {
+      final resp =
+          await ref.read(authRepositoryProvider).verifyVerificationCode(
+                phoneNumber: phoneNumber,
+                code: verificationCode,
+              );
+      if (!context.mounted) return;
+      if (resp == 200) {
+        setState(() {
+          codeVerified = true;
+          codeNotMatch = false;
+        });
+        // widget.onVerified(phoneNumber);
+      } else if (resp == 400) {
+        setState(() {
+          codeNotMatch = true;
+          codeVerified = false;
+        });
+        customSnackBar(
+          message: '인증번호를 다시 확인해주세요.',
+          context: context,
+          error: true,
+        );
+      } else {
+        setState(() {
+          codeVerified = false;
+        });
+        errorSnackBar(
+          context: context,
+        );
+      }
+    }
+    FocusScope.of(context).unfocus();
+  }
 
   int duration = 0;
 
@@ -52,7 +164,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   Uint8List? imageTwo;
   Uint8List? imageThree;
   Uint8List? imageFour;
-  Uint8List? imageFive;
 
   // bool isLoading = false;
   //
@@ -98,7 +209,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   bool isLoadingTwo = false;
   bool isLoadingThree = false;
   bool isLoadingFour = false;
-  bool isLoadingFive = false;
 
   int heavyComputation(int input) {
     // Simulate a heavy computation task
@@ -133,9 +243,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           case 4:
             isLoadingFour = true;
             break;
-          case 5:
-            isLoadingFive = true;
-            break;
         }
       });
 
@@ -156,9 +263,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
               break;
             case 4:
               imageFour = processImage(bytesFromPicker);
-            case 5:
-              imageFive = processImage(bytesFromPicker);
-              break;
           }
         });
       }
@@ -178,9 +282,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
             break;
           case 4:
             isLoadingFour = false;
-            break;
-          case 5:
-            isLoadingFive = false;
             break;
         }
       });
@@ -279,23 +380,15 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
   }
 
-  void startTimer() {
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (_start == 0) {
-          setState(() {
-            timer.cancel();
-            codeSent = false;
-          });
-        } else {
-          setState(() {
-            _start--;
-          });
-        }
-      },
-    );
+  int sumOfEachTreatmentOptionDuration(TreatmentHistoryResponse treatment) {
+    int sum = 0;
+    sum += treatment.treatmentDuration;
+    if (treatment.options != null) {
+      for (var option in treatment.options!) {
+        sum += option.optionDuration;
+      }
+    }
+    return sum;
   }
 
   @override
@@ -318,13 +411,32 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     bool isKeyboardOpen = bottomInsets != 0;
 
-    final treatmentsState = ref.watch(treatmentProvider(widget.shopDomain));
-    final optionsState = ref.watch(optionsProvider(widget.shopDomain));
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
-    final shopMessagesState = ref.watch(shopMessageProvider(widget.shopDomain));
 
     final selectedDateTime = ref.watch(selectedDateTimeProvider);
     final selectedDesigner = ref.watch(selectedDesignerProvider);
+
+    if (selectedDateTime.selectedDate == null ||
+        selectedDateTime.selectedTimeSlot == null ||
+        selectedTreatments.isEmpty) {
+      // clear all the images
+      imageOne = null;
+      imageTwo = null;
+      imageThree = null;
+      imageFour = null;
+      // context.go('/s/${widget.shopDomain}');
+      return IconButton(
+        onPressed: () {
+          context.go('/s/${widget.shopDomain}');
+        },
+        icon: CommonIcons.home(),
+      );
+    }
+
+    final treatmentsState = ref.watch(treatmentProvider(widget.shopDomain));
+    final optionsState = ref.watch(optionsProvider(widget.shopDomain));
+    final shopMessagesState = ref.watch(shopMessageProvider(widget.shopDomain));
+
     if (treatmentsState is ListLoading ||
         optionsState is ListLoading ||
         shopMessagesState is ShopMessageLoading) {
@@ -338,12 +450,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       return const Center(
         child: Text('에러가 발생했습니다.'),
       );
-    }
-
-    if (selectedDateTime.selectedDate == null ||
-        selectedDateTime.selectedTimeSlot == null ||
-        selectedTreatments.isEmpty) {
-      context.go('/s/${widget.shopDomain}');
     }
 
     final treatments = (treatmentsState as ListModel<TreatmentCategory>).data;
@@ -370,505 +476,143 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: SizedBox(
-                  height: 57,
-                  child: InkWell(
-                    onTap: () {
-                      if (buttonColor == Colors.black) {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (context) {
-                            // return FutureBuilder<List<Uint8List>>(
-                            //   future: processImages(images),
-                            //   builder: (context, snapshot) {
-                            //     if (snapshot.connectionState ==
-                            //         ConnectionState.waiting) {
-                            //       return Center(
-                            //           child: CircularProgressIndicator());
-                            //     } else if (snapshot.hasError) {
-                            //       return Center(
-                            //           child: Text('Error processing images'));
-                            //     } else {
-                            //       final resizedImages = snapshot.data!;
-                            //       return ReservationBottomSheet(
-                            //         shopDomain: widget.shopDomain,
-                            //         shopMessages: shopMessages,
-                            //         name: name,
-                            //         phoneNumber: phoneNumber,
-                            //         customerRequest:
-                            //             customerRequestController.text,
-                            //         images: resizedImages,
-                            //       );
-                            //     }
-                            //   },
-                            // );
-                            // final resizedImages = images
-                            //     .map((image) => processImage(image))
-                            //     .toList();
-                            // combine the non null ones out of five images into a list of Uint8List
-                            final images = [
-                              imageOne,
-                              imageTwo,
-                              imageThree,
-                              imageFour,
-                              imageFive,
-                            ].whereType<Uint8List>().toList();
-                            print(images.length);
-                            return ReservationBottomSheet(
-                              shopDomain: widget.shopDomain,
-                              shopMessages: shopMessages,
-                              name: name,
-                              phoneNumber: phoneNumber,
-                              customerRequest: customerRequestController.text,
-                              images: images,
-                            );
-                          },
-                        );
-                      }
-                    },
-                    child: Container(
-                      color: buttonColor,
-                      child: Center(
-                        child: Text(
-                          '다음',
-                          style: TextDesign.bold16W,
-                        ),
-                      ),
-                    ),
-                  ),
+                child: ConditionalInkwellButton(
+                  onTap: () {
+                    if (buttonColor == Colors.black) {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          final images = [
+                            imageOne,
+                            imageTwo,
+                            imageThree,
+                            imageFour,
+                          ].whereType<Uint8List>().toList();
+                          return ReservationBottomSheet(
+                            shopDomain: widget.shopDomain,
+                            shopMessages: shopMessages,
+                            name: name,
+                            phoneNumber: phoneNumber,
+                            customerRequest: customerRequestController.text,
+                            images: images,
+                          );
+                        },
+                      );
+                    }
+                  },
+                  condition: buttonColor == Colors.grey,
+                  text: '다음',
                 ),
               ),
               Positioned.fill(
-                bottom: 57,
+                bottom: 72,
                 child: ListView(
                   children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: CommonWidgets.sixteenTenPadding(),
+                          child: const CommonTitle(
+                            title: '선택한 시술',
+                          ),
+                        ),
+                        ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: selectedTreatments.length,
+                          itemBuilder: (context, index) {
+                            final selectedCategory =
+                                selectedTreatments.entries.toList()[index];
+
+                            final selectedTreatment =
+                                selectedCategory.value.selectedTreatments.first;
+
+                            final treatment = treatments
+                                .expand((category) => category.treatments)
+                                .firstWhere((t) =>
+                                    t.id == selectedTreatment.treatmentId);
+
+                            final selectedOptions = options
+                                .map((category) => category.copyWith(
+                                      options: category.options
+                                          .where((option) => selectedTreatment
+                                              .selectedOptions.values
+                                              .contains(option.id))
+                                          .toList(),
+                                    ))
+                                .toList();
+
+                            selectedOptions.removeWhere(
+                                (element) => element.options.isEmpty);
+
+                            final categoryName = treatments
+                                .firstWhere((category) =>
+                                    category.id == selectedCategory.key)
+                                .name;
+
+                            /// 0 is treatment, 1 is style, 2 is monthly pick
+                            int treatmentType =
+                                selectedTreatment.styleId == null
+                                    ? selectedTreatment.monthlyPickId == null
+                                        ? 0
+                                        : 2
+                                    : 1;
+
+                            return Column(
+                              children: [
+                                TreatmentWidget(
+                                  categoryName: categoryName,
+                                  treatment: treatment,
+                                  treatmentType: treatmentType,
+                                  options: selectedOptions,
+                                  thumbnail: selectedTreatment.styleImage ==
+                                          null
+                                      ? selectedTreatment.monthlyPickImage ==
+                                              null
+                                          ? selectedTreatment
+                                                      .treatmentStyleImage ==
+                                                  null
+                                              ? treatment.thumbnail
+                                              : selectedTreatment
+                                                  .treatmentStyleImage!
+                                          : selectedTreatment.monthlyPickImage!
+                                      : selectedTreatment.styleImage!,
+                                  //treatmentOptions,
+                                  // selectedTreatments: selectedTreatments,
+                                ),
+                                const SizedBox(
+                                  height: 9,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
-                    const CommonTitle(
-                      title: '예약자 정보',
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12.5,
-                      ),
-                      child: CommonInputField(
-                        title: '이름',
-                        maxLength: 20,
-                        hint: '이름을 입력해 주세요',
-                        onChanged: (value) {
-                          setState(() {
-                            name = value;
-                          });
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12.5,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CommonInputField(
-                              title: '휴대폰 번호',
-                              maxLength: 11,
-                              hint: '전화번호를 입력해 주세요',
-                              onChanged: (value) {
-                                setState(() {
-                                  phoneNumber = value;
-                                });
-                              },
-                              isNumber: true,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              if (phoneNumber.length == 11) {
-                                setState(() {
-                                  codeSent = true;
-                                });
-                                if (_start == 0) {
-                                  _start = 180;
-                                }
-                                // only start the timer if time is not running
-                                if (_start == 180) {
-                                  startTimer();
-                                }
-                              }
-                              FocusScope.of(context).unfocus();
-                            },
-                            child: Container(
-                              height: 45,
-                              width: 85,
-                              decoration: BoxDecoration(
-                                color: phoneNumber.length == 11
-                                    ? ContainerColors.black
-                                    : ContainerColors.darkGrey,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  _start > 0 ? '인증' : '재전송',
-                                  style: TextDesign.medium14W,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12.5,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Stack(
-                              children: [
-                                CommonInputField(
-                                  title: '인증번호',
-                                  maxLength: 6,
-                                  hint: '인증번호를 입력해 주세요',
-                                  onChanged: (value) {
-                                    if (codeSent) {
-                                      setState(() {
-                                        verificationCode = value;
-                                      });
-                                    }
-                                  },
-                                  isNumber: true,
-                                  remainingTime: _start,
-                                ),
-                                Positioned(
-                                  right: 16,
-                                  top: 0,
-                                  bottom: 0,
-                                  child: Center(
-                                    child: CountdownTimerWidget(
-                                        remainingTime: _start),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              if (verificationCode == '999999' && codeSent) {
-                                print('verify code');
-                                setState(() {
-                                  codeVerified = true;
-                                });
-                              }
-                              FocusScope.of(context).unfocus();
-                            },
-                            child: Container(
-                              height: 45,
-                              width: 85,
-                              decoration: BoxDecoration(
-                                color: verificationCode.length == 6 && codeSent
-                                    ? ContainerColors.black
-                                    : ContainerColors.darkGrey,
-                                borderRadius: BorderRadius.circular(3),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '확인',
-                                  style: TextDesign.medium14W,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                     ConstWidgets.greyBox(),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 20),
+                      padding: CommonWidgets.sixteenTenPadding(),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CommonTitle(
-                            title: '요청사항',
-                          ),
-                          TextFormField(
-                            controller: customerRequestController,
-                            scrollPadding: const EdgeInsets.only(bottom: 100),
-                            maxLength: 300,
-                            style: TextDesign.medium14G,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: ContainerColors.mediumGrey,
-                              hintStyle: TextDesign.medium14G,
-                              border: InputBorder.none,
-                              counterText: '',
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10,
                             ),
-                            cursorColor: StrokeColors.black,
-                            maxLines: null,
-                            onTapOutside: (PointerDownEvent event) {
-                              FocusScope.of(context).unfocus();
-                            },
-                          ),
-                          // i want to show selected images with x button at top right corner to delete the image
-                          // i want to show a button to add more images
-                          GridView.count(
-                            shrinkWrap: true,
-                            crossAxisCount: 5,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            children: [
-                              _buildImageBox(imageOne, isLoadingOne, 1),
-                              _buildImageBox(imageTwo, isLoadingTwo, 2),
-                              _buildImageBox(imageThree, isLoadingThree, 3),
-                              _buildImageBox(imageFour, isLoadingFour, 4),
-                              _buildImageBox(imageFive, isLoadingFive, 5),
-                            ],
-                          ),
-                          // if (images.isNotEmpty)
-                          //   Column(
-                          //     children: [
-                          //       const SizedBox(
-                          //         height: 10,
-                          //       ),
-                          //       SizedBox(
-                          //         height: 74,
-                          //         child: ListView.builder(
-                          //           scrollDirection: Axis.horizontal,
-                          //           itemCount: images.length,
-                          //           itemBuilder: (context, index) {
-                          //             final image = images[index];
-                          //             return Container(
-                          //               margin:
-                          //                   const EdgeInsets.only(right: 10),
-                          //               height: 74,
-                          //               width: 74,
-                          //               child: Stack(
-                          //                 children: [
-                          //                   Positioned(
-                          //                     left: 0,
-                          //                     bottom: 0,
-                          //                     child: Image.memory(
-                          //                       image,
-                          //                       width: 64,
-                          //                       height: 64,
-                          //                       fit: BoxFit.cover,
-                          //                     ),
-                          //                   ),
-                          //                   Positioned(
-                          //                     top: 0,
-                          //                     right: 0,
-                          //                     child: GestureDetector(
-                          //                       onTap: () {
-                          //                         setState(() {
-                          //                           images.removeAt(index);
-                          //                         });
-                          //                       },
-                          //                       child: const Icon(
-                          //                         Icons.close_outlined,
-                          //                         size: 16,
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //                 ],
-                          //               ),
-                          //             );
-                          //             // return Stack(
-                          //             //   children: [
-                          //             //     Positioned(
-                          //             //       left: 0,
-                          //             //       bottom: 0,
-                          //             //       child: Container(
-                          //             //         height: 64,
-                          //             //         width: 64,
-                          //             //         decoration: BoxDecoration(
-                          //             //           image: DecorationImage(
-                          //             //             image: MemoryImage(image),
-                          //             //             fit: BoxFit.cover,
-                          //             //           ),
-                          //             //         ),
-                          //             //       ),
-                          //             //     ),
-                          //             //     Positioned(
-                          //             //       top: 0,
-                          //             //       right: 0,
-                          //             //       child: GestureDetector(
-                          //             //         onTap: () {
-                          //             //           setState(() {
-                          //             //             images.removeAt(index);
-                          //             //           });
-                          //             //         },
-                          //             //         child: const Icon(
-                          //             //           Icons.close_outlined,
-                          //             //           size: 16,
-                          //             //         ),
-                          //             //       ),
-                          //             //       // IconButton(
-                          //             //       //   onPressed: () {
-                          //             //       //     setState(() {
-                          //             //       //       images.removeAt(index);
-                          //             //       //     });
-                          //             //       //   },
-                          //             //       //   icon: const Icon(Icons.close_outlined),
-                          //             //       // ),
-                          //             //     ),
-                          //             //   ],
-                          //             // );
-                          //           },
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // // Use Flexible to handle ListView inside a Column
-                          // if (images.length < 5)
-                          //   Column(
-                          //     children: [
-                          //       const SizedBox(
-                          //         height: 10,
-                          //       ),
-                          //       InkWell(
-                          //         onTap: pickAndCropImages,
-                          //         child: Container(
-                          //           height: 50,
-                          //           width: MediaQuery.of(context).size.width,
-                          //           decoration: BoxDecoration(
-                          //             border: Border.all(
-                          //               color: StrokeColors.grey,
-                          //               width: 1,
-                          //             ),
-                          //             borderRadius: BorderRadius.circular(3),
-                          //           ),
-                          //           child: Row(
-                          //             mainAxisAlignment:
-                          //                 MainAxisAlignment.center,
-                          //             children: [
-                          //               const Icon(
-                          //                 Icons.add,
-                          //                 color: BrandColors.orange,
-                          //                 size: 10,
-                          //               ),
-                          //               const SizedBox(width: 10),
-                          //               Text(
-                          //                 '사진 추가',
-                          //                 style: TextDesign.medium14B,
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                        ],
-                      ),
-                    ),
-                    ConstWidgets.greyBox(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 20),
-                      child: Column(
-                        children: [
-                          const CommonTitle(
-                            title: '선택한 시술',
-                          ),
-                          // Use Flexible to handle ListView inside a Column
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: selectedTreatments.length,
-                            itemBuilder: (context, index) {
-                              final selectedCategory =
-                                  selectedTreatments.entries.toList()[index];
-                              final selectedTreatment = selectedCategory
-                                  .value.selectedTreatments.first;
-
-                              final treatment = treatments
-                                  .expand((category) => category.treatments)
-                                  .firstWhere((t) =>
-                                      t.id == selectedTreatment.treatmentId);
-
-                              final selectedOptions = options
-                                  .map((category) => category.copyWith(
-                                        options: category.options
-                                            .where((option) => selectedTreatment
-                                                .selectedOptions.values
-                                                .contains(option.id))
-                                            .toList(),
-                                      ))
-                                  .toList();
-
-                              selectedOptions.removeWhere(
-                                  (element) => element.options.isEmpty);
-
-                              final categoryName = treatments
-                                  .firstWhere((category) =>
-                                      category.id == selectedCategory.key)
-                                  .name;
-
-                              // if (duration == 0) {
-                              //   final optionDuration = selectedOptions
-                              //           .isNotEmpty
-                              //       ? selectedOptions
-                              //           .map((e) => e.options.first)
-                              //           .map((e) => e.duration)
-                              //           .reduce(
-                              //               (value, element) => value + element)
-                              //       : 0;
-                              //   duration +=
-                              //       (optionDuration + treatment.duration);
-                              // }
-
-                              return Column(
-                                children: [
-                                  TreatmentWidget(
-                                    categoryName: categoryName,
-                                    treatment: treatment,
-                                    options: selectedOptions,
-                                    thumbnail: selectedTreatment.styleImage ==
-                                            null
-                                        ? selectedTreatment.monthlyPickImage ==
-                                                null
-                                            ? selectedTreatment
-                                                        .treatmentStyleImage ==
-                                                    null
-                                                ? treatment.thumbnail
-                                                : selectedTreatment
-                                                    .treatmentStyleImage!
-                                            : selectedTreatment
-                                                .monthlyPickImage!
-                                        : selectedTreatment.styleImage!,
-                                    //treatmentOptions,
-                                    // selectedTreatments: selectedTreatments,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    ConstWidgets.greyBox(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 20),
-                      child: Column(
-                        children: [
-                          const CommonTitle(
-                            title: '예약 정보',
+                            child: CommonTitle(
+                              title: '예약 정보',
+                            ),
                           ),
                           TextWithTitle(
                               title: '날짜',
@@ -886,40 +630,217 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                               title: '디자이너',
                               text: selectedDesigner.designerNickname,
                             ),
-                          // Use Flexible to handle ListView inside a Column
                         ],
                       ),
-                      // ListView.builder(
-                      //   physics: const NeverScrollableScrollPhysics(),
-                      //   shrinkWrap: true,
-                      //   itemCount: 1,
-                      //   itemBuilder: (context, index) {
-                      //     return Column(
-                      //       children: [
-                      //         const CommonTitle(
-                      //           title: '예약 정보',
-                      //         ),
-                      //         TextWithTitle(
-                      //             title: '날짜',
-                      //             text: DataUtils.formatDateWithDay(
-                      //                 selectedDateTime.selectedDate!)),
-                      //         TextWithTitle(
-                      //           title: '시간',
-                      //           text: DataUtils.convertTime(
-                      //             selectedDateTime.selectedTimeSlot!,
-                      //             duration,
-                      //           ),
-                      //         ),
-                      //         if (selectedDesigner != null)
-                      //           TextWithTitle(
-                      //             title: '디자이너',
-                      //             text: selectedDesigner.designerNickname,
-                      //           ),
-                      //         // Use Flexible to handle ListView inside a Column
-                      //       ],
-                      //     );
-                      //   },
-                      // ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ConstWidgets.greyBox(),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: CommonWidgets.sixteenTenPadding(),
+                      child: const CommonTitle(
+                        title: '예약자 정보',
+                      ),
+                    ),
+                    Padding(
+                      padding: CommonWidgets.sixteenTenPadding(),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 81,
+                            child: Text(
+                              '이름',
+                              style: TextDesign.medium14G,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: CommonInputField(
+                              maxLength: 10,
+                              // controller: nameController,
+                              onChanged: (value) {
+                                setState(() {
+                                  name = value;
+                                });
+                              },
+                              isLogin: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: CommonWidgets.sixteenTenPadding(),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 81,
+                            child: Text(
+                              '전화번호',
+                              style: TextDesign.medium14G,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                            child: CommonInputField(
+                              onChanged: (value) {
+                                setState(() {
+                                  phoneNumber = value;
+                                });
+                              },
+                              isPhoneNumber: true,
+                              maxLength: 11,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await sendVerificationCode(context, ref);
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 85,
+                              decoration: BoxDecoration(
+                                color: phoneNumber.length == 11
+                                    ? ContainerColors.black
+                                    : ContainerColors.darkGrey,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  _start == 180 ? '인증' : '재인증',
+                                  style: TextDesign.medium14W,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: CommonWidgets.sixteenTenPadding(),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 81,
+                            child: Text(
+                              '인증번호',
+                              style: TextDesign.medium14G,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Expanded(
+                            child: Stack(
+                              children: [
+                                CommonInputField(
+                                  maxLength: 6,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      verificationCode = value;
+                                    });
+                                  },
+                                  isPhoneNumber: true,
+                                ),
+                                if (_start < 180)
+                                  Positioned(
+                                    right: 16,
+                                    top: 0,
+                                    bottom: 0,
+                                    child: Center(
+                                      child: CountdownTimerWidget(
+                                          remainingTime: _start),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await verifyCode(context, ref);
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 85,
+                              decoration: BoxDecoration(
+                                color: verificationCode.length == 6 &&
+                                        _start > 0 &&
+                                        _start < 180
+                                    ? ContainerColors.black
+                                    : ContainerColors.darkGrey,
+                                borderRadius: BorderRadius.circular(3),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '확인',
+                                  style: TextDesign.medium14W,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ConstWidgets.greyBox(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: CommonWidgets.sixteenTenPadding(),
+                          child: const CommonTitle(
+                            title: '요청사항',
+                          ),
+                        ),
+                        Padding(
+                          padding: CommonWidgets.sixteenTenPadding(),
+                          child: CommonInputField(
+                            controller: customerRequestController,
+                            hintText: '요청사항을 입력해주세요',
+                            isCentered: false,
+                            isPhoneNumber: false,
+                            maxLength: 30,
+                            isLogin: true,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: GridView.count(
+                            shrinkWrap: true,
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            children: [
+                              _buildImageBox(imageOne, isLoadingOne, 1),
+                              _buildImageBox(imageTwo, isLoadingTwo, 2),
+                              _buildImageBox(imageThree, isLoadingThree, 3),
+                              _buildImageBox(imageFour, isLoadingFour, 4),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -935,6 +856,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     return GestureDetector(
       onTap: () => pickAndCropImage(index),
       child: Container(
+        height: 82,
+        width: 82,
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.grey,
@@ -943,18 +866,17 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           borderRadius: BorderRadius.circular(3),
         ),
         child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
+            ? Container(
+                color: ContainerColors.sbGrey,
+                child: Center(
+                  child: Text(
+                    '준비중..',
+                    style: TextDesign.medium14G,
+                  ),
+                ))
             : image != null
                 ? Stack(
                     children: [
-                      Positioned.fill(
-                        child: Image.memory(
-                          image,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
                       Positioned(
                         top: 0,
                         right: 0,
@@ -974,17 +896,16 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                                 case 4:
                                   imageFour = null;
                                   break;
-                                case 5:
-                                  imageFive = null;
-                                  break;
                               }
                             });
                           },
-                          child: const Icon(
-                            Icons.close_outlined,
-                            size: 16,
-                            color: Colors.white,
-                          ),
+                          child: CommonIcons.close(),
+                        ),
+                      ),
+                      Positioned.fill(
+                        child: Image.memory(
+                          image,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ],
@@ -1034,6 +955,7 @@ class TextWithTitle extends StatelessWidget {
 class TreatmentWidget extends StatelessWidget {
   final String categoryName;
   final TreatmentModel treatment;
+  final int treatmentType;
   final List<OptionCategory?> options;
   final String thumbnail;
   // final Map<int, SelectedCategory> selectedTreatments;
@@ -1042,6 +964,7 @@ class TreatmentWidget extends StatelessWidget {
     super.key,
     required this.categoryName,
     required this.treatment,
+    required this.treatmentType,
     required this.options,
     required this.thumbnail,
     // required this.selectedTreatments,
@@ -1049,145 +972,177 @@ class TreatmentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: StrokeColors.grey,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            thumbnail,
-            width: 115,
-            height: 115,
-          ),
-          const SizedBox(
-              width: 20), // Add some space between the image and the text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 9.0, left: 15, right: 15),
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: CommonWidgets.greyBorder(ContainerColors.white),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
                 Text(
-                  '$categoryName > ${treatment.name}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextDesign.bold16B,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (options.isNotEmpty)
-                  ...options.map((optionCategory) {
-                    return Column(
-                      children: [
-                        Text(
-                          '${optionCategory!.name}: ${optionCategory.options.first.name}',
-                          style: TextDesign.medium14G,
-                        ),
-                        const SizedBox(
-                          height: 7,
-                        ),
-                      ],
-                    );
-                  }),
-                const SizedBox(
-                  height: 3,
+                  DataUtils.getTreatmentText(treatmentType),
+                  style: TextDesign.bold14B,
                 ),
                 Text(
-                  DataUtils.formatDurationWithZero(
-                    treatment.duration +
-                        // options
-                        //     .map((e) => e.options.isNotEmpty
-                        //         ? e.options.first.duration
-                        //         : 0)
-                        //     .reduce((value, element) => value + element)),
-                        (options.isNotEmpty
-                            ? options
-                                .map((e) => e!.options.first.duration)
-                                .reduce((value, element) => value + element)
-                            : 0),
-                  ),
-                  style: TextDesign.regular14B,
+                  ' 예약',
+                  style: TextDesign.medium14B,
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(
+              height: 10,
+            ),
+            CommonWidgets.customDivider(StrokeColors.lightGrey),
+            const SizedBox(
+              height: 13,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonImage(
+                  imageUrl: thumbnail,
+                  width: 98,
+                  height: 98,
+                ),
+                const SizedBox(
+                  width: 17,
+                ), // Add some space between the image and the text
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$categoryName > ${treatment.name}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextDesign.bold14B,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      if (options.isNotEmpty)
+                        ...options.map((optionCategory) {
+                          return Column(
+                            children: [
+                              Text(
+                                '${optionCategory!.name}: ${optionCategory.options.first.name}',
+                                style: TextDesign.medium14G,
+                              ),
+                              const SizedBox(
+                                height: 7,
+                              ),
+                            ],
+                          );
+                        }),
+                      Text(
+                        '소요시간 : ${DataUtils.formatDuration(
+                          treatment.duration +
+                              (options.isNotEmpty
+                                  ? options
+                                      .map((e) => e!.options.first.duration)
+                                      .reduce(
+                                          (value, element) => value + element)
+                                  : 0),
+                        )}',
+                        style: TextDesign.regular12DG,
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          if (treatment.discount > 0)
+                            Text(
+                              '${treatment.discount}% ',
+                              style: TextDesign.bold12BO,
+                            ),
+                          Text(
+                            "${DataUtils.formatKoreanWon(treatment.minPrice * (100 - treatment.discount) ~/ 100)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
+                            style: TextDesign.bold14B,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-class CommonInputField extends StatelessWidget {
-  final String title;
-  final int maxLength;
-  final String? initialText;
-  final String hint;
-  final Function(String) onChanged;
-  final bool isNumber;
-  final int? remainingTime;
-
-  const CommonInputField({
-    super.key,
-    required this.title,
-    required this.maxLength,
-    this.initialText,
-    required this.hint,
-    required this.onChanged,
-    this.isNumber = false,
-    this.remainingTime,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 70,
-          child: Text(
-            title,
-            style: TextDesign.medium14G,
-            textAlign: TextAlign.left,
-          ),
-        ),
-        Expanded(
-          child: SizedBox(
-            height: 45, // Ensure fixed height for the input field
-            child: TextFormField(
-              scrollPadding: const EdgeInsets.only(bottom: 100),
-              maxLength: maxLength,
-              initialValue: initialText,
-              style: TextDesign.medium14G,
-              keyboardType:
-                  isNumber ? TextInputType.number : TextInputType.text,
-              // prevent input from desktop as well
-              inputFormatters: [
-                if (isNumber) FilteringTextInputFormatter.digitsOnly,
-              ],
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: ContainerColors.mediumGrey,
-                hintText: hint,
-                hintStyle: TextDesign.medium14G,
-                border: InputBorder.none,
-                counterText: '',
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              ),
-              cursorColor: StrokeColors.black,
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
+//
+// class CommonInputField extends StatelessWidget {
+//   final String title;
+//   final int maxLength;
+//   final String? initialText;
+//   final String hint;
+//   final Function(String) onChanged;
+//   final bool isNumber;
+//   final int? remainingTime;
+//
+//   const CommonInputField({
+//     super.key,
+//     required this.title,
+//     required this.maxLength,
+//     this.initialText,
+//     required this.hint,
+//     required this.onChanged,
+//     this.isNumber = false,
+//     this.remainingTime,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       mainAxisAlignment: MainAxisAlignment.start,
+//       children: [
+//         SizedBox(
+//           width: 70,
+//           child: Text(
+//             title,
+//             style: TextDesign.medium14G,
+//             textAlign: TextAlign.left,
+//           ),
+//         ),
+//         Expanded(
+//           child: SizedBox(
+//             height: 45, // Ensure fixed height for the input field
+//             child: TextFormField(
+//               scrollPadding: const EdgeInsets.only(bottom: 100),
+//               maxLength: maxLength,
+//               initialValue: initialText,
+//               style: TextDesign.medium14G,
+//               keyboardType:
+//                   isNumber ? TextInputType.number : TextInputType.text,
+//               // prevent input from desktop as well
+//               inputFormatters: [
+//                 if (isNumber) FilteringTextInputFormatter.digitsOnly,
+//               ],
+//               decoration: InputDecoration(
+//                 filled: true,
+//                 fillColor: ContainerColors.mediumGrey,
+//                 hintText: hint,
+//                 hintStyle: TextDesign.medium14G,
+//                 border: InputBorder.none,
+//                 counterText: '',
+//                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+//               ),
+//               cursorColor: StrokeColors.black,
+//               onChanged: onChanged,
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class CountdownTimerWidget extends StatelessWidget {
   final int remainingTime;
@@ -1215,28 +1170,28 @@ class CountdownTimerWidget extends StatelessWidget {
   }
 }
 
-class CommonTitle extends StatelessWidget {
-  final String title;
-
-  const CommonTitle({
-    super.key,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 45,
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Text(
-        title,
-        style: TextDesign.bold18B,
-        textAlign: TextAlign.left,
-      ),
-    );
-  }
-}
+// class CommonTitle extends StatelessWidget {
+//   final String title;
+//
+//   const CommonTitle({
+//     super.key,
+//     required this.title,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       height: 45,
+//       width: MediaQuery.of(context).size.width,
+//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+//       child: Text(
+//         title,
+//         style: TextDesign.bold18B,
+//         textAlign: TextAlign.left,
+//       ),
+//     );
+//   }
+// }
 
 class ReservationBottomSheet extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -1302,40 +1257,6 @@ class _ReservationBottomSheetState
     });
   }
 
-  Uint8List processImage(Uint8List imageBytes) {
-    final image = img.decodeImage(imageBytes)!;
-
-    const size = 720;
-
-    int x, y, cropSize;
-    if (image.width > image.height) {
-      cropSize = image.height;
-      x = (image.width - cropSize) ~/ 2;
-      y = 0;
-    } else {
-      cropSize = image.width;
-      x = 0;
-      y = (image.height - cropSize) ~/ 2;
-    }
-
-    final cropped = img.copyCrop(
-      image,
-      x: x,
-      y: y,
-      width: cropSize,
-      height: cropSize,
-    );
-
-    final resized = img.copyResize(
-      cropped,
-      width: size,
-      height: size,
-      interpolation: img.Interpolation.cubic,
-    );
-
-    return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
-  }
-
   TreatmentOptionPair convertToTreatmentOptionPair(
       SelectedTreatment selectedTreatment) {
     return TreatmentOptionPair(
@@ -1371,8 +1292,8 @@ class _ReservationBottomSheetState
   Widget build(BuildContext context) {
     return SafeArea(
       child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        constraints: const BoxConstraints(
+          // maxHeight: MediaQuery.of(context).size.height * 0.8,
           maxWidth: 500,
         ),
         child: Stack(
@@ -1657,26 +1578,20 @@ class _ReservationBottomSheetState
               bottom: 0,
               left: 0,
               right: 0,
-              child: SizedBox(
-                height: 57,
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () async {
-                      if (!_depositRuleAccepted ||
-                          !_changeCancelRuleAccepted ||
-                          !_otherInfoAccepted ||
-                          !_serviceAgreementAccepted) {
-                        return;
-                      }
-                      final designer = ref.read(selectedDesignerProvider);
-                      final selectedDateTime =
-                          ref.read(selectedDateTimeProvider);
-                      final selectedTreatments =
-                          ref.read(selectedTreatmentProvider);
-                      final resp = await ref
-                          .read(repositoryProvider)
-                          .createAppointment(
+              child: InkWell(
+                onTap: () async {
+                  if (!_depositRuleAccepted ||
+                      !_changeCancelRuleAccepted ||
+                      !_otherInfoAccepted ||
+                      !_serviceAgreementAccepted) {
+                    return;
+                  }
+                  final designer = ref.read(selectedDesignerProvider);
+                  final selectedDateTime = ref.read(selectedDateTimeProvider);
+                  final selectedTreatments =
+                      ref.read(selectedTreatmentProvider);
+                  final resp =
+                      await ref.read(repositoryProvider).createAppointment(
                             shopDomain: widget.shopDomain,
                             request: CustomerNewAppointmentRequest(
                               designer_id: designer?.designerId,
@@ -1691,40 +1606,37 @@ class _ReservationBottomSheetState
                             ),
                           );
 
-                      List<MultipartFile> multipartFiles =
-                          widget.images.map((image) {
-                        return MultipartFile.fromBytes(
-                          image,
-                          filename:
-                              '${DateTime.now().millisecondsSinceEpoch}.jpeg',
-                          // contentType: MediaType('image', 'jpeg'),
-                        );
-                      }).toList();
+                  List<MultipartFile> multipartFiles =
+                      widget.images.map((image) {
+                    return MultipartFile.fromBytes(
+                      image,
+                      filename: '${DateTime.now().millisecondsSinceEpoch}.jpeg',
+                      // contentType: MediaType('image', 'jpeg'),
+                    );
+                  }).toList();
 
-                      ref.read(repositoryProvider).customerRequestImages(
-                            appointmentId: resp.data,
-                            files: multipartFiles,
-                          );
+                  ref.read(repositoryProvider).customerRequestImages(
+                        appointmentId: resp.data,
+                        files: multipartFiles,
+                      );
 
-                      if (!context.mounted) return;
-                      context.go(
-                          '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
+                  if (!context.mounted) return;
+                  context.go(
+                      '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
 
-                      // ref.read(selectedTreatmentProvider.notifier).state = {};
-                    },
-                    child: Ink(
-                      color: _depositRuleAccepted &&
-                              _changeCancelRuleAccepted &&
-                              _otherInfoAccepted &&
-                              _serviceAgreementAccepted
-                          ? Colors.black
-                          : Colors.grey,
-                      child: Center(
-                        child: Text(
-                          '예약 신청하기',
-                          style: TextDesign.bold16W,
-                        ),
-                      ),
+                  // ref.read(selectedTreatmentProvider.notifier).state = {};
+                },
+                child: Ink(
+                  color: _depositRuleAccepted &&
+                          _changeCancelRuleAccepted &&
+                          _otherInfoAccepted &&
+                          _serviceAgreementAccepted
+                      ? Colors.black
+                      : Colors.grey,
+                  child: Center(
+                    child: Text(
+                      '예약 신청하기',
+                      style: TextDesign.bold16W,
                     ),
                   ),
                 ),

@@ -15,7 +15,7 @@ final repositoryProvider = Provider<Repository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return Repository(dio, baseUrl: 'https://$ip');
+    return Repository(dio, baseUrl: 'http://$ip');
   },
 );
 
@@ -90,13 +90,30 @@ abstract class Repository {
     @Path('appointment_id') required String appointmentId,
     @Part(name: 'files') required List<MultipartFile> files,
   });
+
+  @POST("/appointments/{appointment_id}/payment")
+  Future<void> paymentMade({
+    @Path('appointment_id') required String appointmentId,
+  });
+
+  // @POST("/api/v1/auth/sms")
+  // Future<void> requestVerificationCode({
+  //   @Query('phone_number') required String phoneNumber,
+  //   @Query('register') bool register = false,
+  // });
+  //
+  // @POST("/api/v1/auth/sms/verify")
+  // Future<void> verifyVerificationCode({
+  //   @Query('phone_number') required String phoneNumber,
+  //   @Query('verification_code') required String verificationCode,
+  // });
 }
 
 final treatmentRepositoryProvider = Provider<TreatmentRepository>(
   (ref) {
     final dio = ref.watch(dioProvider);
 
-    return TreatmentRepository(dio, baseUrl: 'https://$ip');
+    return TreatmentRepository(dio, baseUrl: 'http://$ip');
   },
 );
 
@@ -110,26 +127,3 @@ abstract class TreatmentRepository {
     @Queries() PaginationParams? paginationParams,
   });
 }
-// final newsNotificationRepositoryProvider = Provider<NewsNotificationRepository>(
-//   (ref) {
-//     final dio = ref.watch(dioProvider);
-//
-//     return NewsNotificationRepository(dio,
-//         baseUrl: 'http://$ip/api/v1/user/news');
-//   },
-// );
-//
-// @RestApi()
-// abstract class NewsNotificationRepository
-//     implements IBasePaginationRepository<NotificationModel> {
-//   factory NewsNotificationRepository(Dio dio, {String baseUrl}) =
-//       _NewsNotificationRepository;
-//
-//   @GET("")
-//   @Headers({
-//     'accessToken': 'true',
-//   })
-//   Future<CursorPagination<NotificationModel>> paginate({
-//     @Queries() PaginationParams? paginationParams = const PaginationParams(),
-//   });
-// }

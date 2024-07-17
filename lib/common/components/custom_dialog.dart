@@ -59,18 +59,15 @@ class CustomDialog extends StatelessWidget {
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Flexible(child: child!),
+                child: child!,
               ),
             ],
             const SizedBox(height: 16),
-            SizedBox(
-              height: 57,
-              child: BlackInkwellButton(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                text: '확인',
-              ),
+            BlackInkwellButton(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              text: '확인',
             ),
           ],
         ),

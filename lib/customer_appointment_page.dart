@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/components/progress_indicator.dart' as pi;
 import 'package:numaze_web/customer_appointment_provider.dart';
 
+import 'common/components/common_image.dart';
+import 'common/components/common_title.dart';
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
 import 'common/const/widgets.dart';
@@ -29,6 +31,133 @@ class CustomerAppointmentPage extends ConsumerStatefulWidget {
 
 class _CustomerAppointmentPageState
     extends ConsumerState<CustomerAppointmentPage> {
+  int sumOfEachTreatmentOptionDuration(TreatmentHistoryResponse treatment) {
+    int sum = 0;
+    sum += treatment.treatmentDuration;
+    if (treatment.options != null) {
+      for (var option in treatment.options!) {
+        sum += option.optionDuration;
+      }
+    }
+    return sum;
+  }
+
+  String getTreatmentText(int treatmentType) {
+    switch (treatmentType) {
+      case 0:
+        return '시술';
+      case 1:
+        return '스타일';
+      case 2:
+        return 'Monthly Pick';
+      default:
+        return '시술';
+    }
+  }
+
+  Widget _treatmentInfo(List<TreatmentHistoryResponse> treatmentHistories) {
+    return Column(
+      children: [
+        for (var treatment in treatmentHistories)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0, left: 16, right: 16),
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: CommonWidgets.greyBorder(ContainerColors.white),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        getTreatmentText(treatment.treatmentType),
+                        style: TextDesign.bold14B,
+                      ),
+                      Text(
+                        ' 예약',
+                        style: TextDesign.medium14B,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  CommonWidgets.customDivider(StrokeColors.lightGrey),
+                  const SizedBox(
+                    height: 13,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonImage(
+                        imageUrl: treatment.thumbnail,
+                        width: 98,
+                        height: 98,
+                      ),
+                      const SizedBox(
+                        width: 17,
+                      ), // Add some space between the image and the text
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${treatment.treatmentCategoryName} > ${treatment.treatmentName}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextDesign.bold14B,
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            if (treatment.options != null)
+                              for (var option in treatment.options!)
+                                Column(
+                                  children: [
+                                    Text(
+                                      '${option.optionCategoryName} : ${option.optionName}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextDesign.regular12DG,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                  ],
+                                ),
+                            Text(
+                              '소요시간 : ${DataUtils.formatDuration(sumOfEachTreatmentOptionDuration(treatment))}',
+                              style: TextDesign.regular12DG,
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Row(
+                              children: [
+                                if (treatment.discount > 0)
+                                  Text(
+                                    '${treatment.discount}% ',
+                                    style: TextDesign.bold12BO,
+                                  ),
+                                Text(
+                                  "${DataUtils.formatKoreanWon(treatment.treatmentMinPrice * (100 - treatment.discount) ~/ 100)}${treatment.treatmentMaxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.treatmentMaxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
+                                  style: TextDesign.bold14B,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final shopBasicInfoState =
@@ -82,9 +211,6 @@ class _CustomerAppointmentPageState
     final customerAppointment =
         customerAppointmentState as CustomerAppointmentResponse;
 
-    // visited = "visited"
-    // absent = "absent"
-    // cancelled = "cancelled"
     String getStatus(String status) {
       switch (status) {
         case 'visited':
@@ -173,8 +299,27 @@ class _CustomerAppointmentPageState
                         ),
                       ),
                       ConstWidgets.greyBox(),
-                      ...customerAppointment.treatmentOptionHistory.map(
-                          (treatment) => TreatmentWidget(treatment: treatment)),
+                      // ...customerAppointment.treatmentOptionHistory.map(
+                      //     (treatment) => TreatmentWidget(treatment: treatment)),
+                      Column(
+                        children: [
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding: CommonWidgets.sixteenTenPadding(),
+                            child: const CommonTitle(
+                              title: '예약한 시술',
+                            ),
+                          ),
+                          _treatmentInfo(
+                            customerAppointment.treatmentOptionHistory,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                        ],
+                      ),
                       ConstWidgets.greyBox(),
                       const SizedBox(
                         height: 10,
@@ -336,9 +481,15 @@ class _CustomerAppointmentPageState
                                                 const SizedBox(
                                                   width: 4,
                                                 ),
-                                                Text(
-                                                  'https://numaze.kr/appointment/${customerAppointment.base64Uuid}/payment',
-                                                  style: TextDesign.bold14BO,
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    context.go(
+                                                        '/appointment/${customerAppointment.base64Uuid}/payment');
+                                                  },
+                                                  child: Text(
+                                                    'https://numaze.kr/appointment/${customerAppointment.base64Uuid}/payment',
+                                                    style: TextDesign.bold14BO,
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -531,81 +682,97 @@ class _CustomerAppointmentPageState
     );
   }
 }
-
-class TreatmentWidget extends StatelessWidget {
-  final TreatmentHistoryResponse treatment;
-
-  const TreatmentWidget({
-    super.key,
-    required this.treatment,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: StrokeColors.grey,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.network(
-            treatment.thumbnail,
-            width: 115,
-            height: 115,
-          ),
-          const SizedBox(
-              width: 20), // Add some space between the image and the text
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${treatment.treatmentCategoryName} > ${treatment.treatmentName}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextDesign.bold16B,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                if (treatment.options != null)
-                  ...treatment.options!.map((optionCategory) {
-                    return Column(
-                      children: [
-                        Text(
-                          '${optionCategory.optionCategoryName}: ${optionCategory.optionName}',
-                          style: TextDesign.medium14G,
-                        ),
-                        const SizedBox(
-                          height: 7,
-                        ),
-                      ],
-                    );
-                  }),
-                const SizedBox(
-                  height: 3,
-                ),
-                Text(
-                  DataUtils.formatDurationWithZero(
-                    treatment.treatmentDuration +
-                        (treatment.options != null
-                            ? treatment.options!
-                                .map((e) => e.optionDuration)
-                                .reduce((value, element) => value + element)
-                            : 0),
-                  ),
-                  style: TextDesign.regular14B,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//
+// class TreatmentWidget extends StatelessWidget {
+//   final TreatmentHistoryResponse treatment;
+//
+//   const TreatmentWidget({
+//     super.key,
+//     required this.treatment,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+//       decoration: BoxDecoration(
+//         border: Border.all(
+//           color: StrokeColors.grey,
+//           width: 1,
+//         ),
+//       ),
+//       child: Row(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Image.network(
+//             treatment.thumbnail,
+//             width: 115,
+//             height: 115,
+//           ),
+//           const SizedBox(
+//               width: 20), // Add some space between the image and the text
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   '${treatment.treatmentCategoryName} > ${treatment.treatmentName}',
+//                   maxLines: 1,
+//                   overflow: TextOverflow.ellipsis,
+//                   style: TextDesign.bold16B,
+//                 ),
+//                 const SizedBox(
+//                   height: 5,
+//                 ),
+//                 if (treatment.options != null)
+//                   ...treatment.options!.map((optionCategory) {
+//                     return Column(
+//                       children: [
+//                         Text(
+//                           '${optionCategory.optionCategoryName}: ${optionCategory.optionName}',
+//                           style: TextDesign.regular12G,
+//                         ),
+//                         const SizedBox(
+//                           height: 5,
+//                         ),
+//                       ],
+//                     );
+//                   }),
+//                 const SizedBox(
+//                   height: 5,
+//                 ),
+//                 Text(
+//                   '소요시간 : ${DataUtils.formatDurationWithZero(
+//                     treatment.treatmentDuration +
+//                         (treatment.options != null
+//                             ? treatment.options!
+//                                 .map((e) => e.optionDuration)
+//                                 .reduce((value, element) => value + element)
+//                             : 0),
+//                   )}',
+//                   style: TextDesign.regular12G,
+//                 ),
+//                 const SizedBox(
+//                   height: 5,
+//                 ),
+//                 Row(
+//                   children: [
+//                     if (treatment.discount > 0)
+//                       Text(
+//                         '${treatment.discount}% ',
+//                         style: TextDesign.bold12BO,
+//                       ),
+//                     Text(
+//                       "${DataUtils.formatKoreanWon(treatment.treatmentMinPrice * (100 - treatment.discount) ~/ 100)}${treatment.treatmentMaxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.treatmentMaxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
+//                       style: TextDesign.bold14B,
+//                     ),
+//                   ],
+//                 )
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

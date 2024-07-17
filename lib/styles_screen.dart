@@ -81,8 +81,9 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
             constraints: const BoxConstraints(maxWidth: 500),
             child: Column(
               children: [
-                const CommonAppBar(
+                CommonAppBar(
                   title: '스타일',
+                  shopDomain: widget.shopDomain,
                 ),
                 Expanded(
                   child: GridView.builder(

@@ -93,6 +93,9 @@ class TextDesign {
   static TextStyle bold20B =
       baseBold.copyWith(fontSize: 20, height: 1.25, color: FontColors.black);
 
+  static TextStyle bold20BO =
+      baseBold.copyWith(fontSize: 20, height: 1.25, color: BrandColors.orange);
+
   static TextStyle medium16MG = baseMedium.copyWith(
       fontSize: 16, height: 1.5625, color: FontColors.mediumGrey);
 
@@ -116,6 +119,9 @@ class TextDesign {
 
   static TextStyle regular12G =
       baseRegular.copyWith(fontSize: 12, height: 1.25, color: FontColors.grey);
+
+  static TextStyle regular12W =
+      baseRegular.copyWith(fontSize: 12, height: 1.25, color: FontColors.white);
 
   static TextStyle regular12B =
       baseRegular.copyWith(fontSize: 12, height: 1.25, color: FontColors.black);
@@ -207,6 +213,9 @@ class TextDesign {
   static TextStyle regular12DG = baseRegular.copyWith(
       fontSize: 12, height: 1.25, color: FontColors.darkGrey);
 
+  static TextStyle regular12MG = baseRegular.copyWith(
+      fontSize: 12, height: 1.25, color: FontColors.mediumGrey);
+
   static TextStyle bold18B =
       baseBold.copyWith(fontSize: 18, height: 1.389, color: FontColors.black);
 
@@ -227,6 +236,9 @@ class TextDesign {
 
   static TextStyle bold14G =
       baseBold.copyWith(fontSize: 14, height: 1.43, color: FontColors.grey);
+
+  static TextStyle bold14B =
+      baseBold.copyWith(fontSize: 14, height: 1.43, color: FontColors.black);
 
   static TextStyle bold14CG = baseBold.copyWith(
       fontSize: 14, height: 1.43, color: FontColors.calendarGrey);

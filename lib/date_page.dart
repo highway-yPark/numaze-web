@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:numaze_web/common/components/inkwell_button.dart';
+import 'package:numaze_web/common/const/icons.dart';
+import 'package:numaze_web/common/const/widgets.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:numaze_web/time_slot_grid.dart';
 
@@ -144,11 +147,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 child: Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 16.0,
-                      ),
-                      color: Colors.white,
+                      padding: CommonWidgets.sixteenTenPadding(),
                       child: Column(
                         children: [
                           Row(
@@ -162,8 +161,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 children: [
                                   if (focusedDate.year > today.year ||
                                       focusedDate.month > today.month)
-                                    IconButton(
-                                      onPressed: () {
+                                    InkWell(
+                                      onTap: () {
                                         setState(() {
                                           focusedDate = DateTime(
                                             focusedDate.year,
@@ -171,9 +170,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                           );
                                         });
                                       },
-                                      icon:
-                                          const Icon(Icons.keyboard_arrow_left),
-                                      iconSize: 24,
+                                      child: CommonIcons.calendarLeftArrow(),
                                     ),
                                   if (focusedDate
                                           .isBefore(lastAvailableMonth) &&
@@ -181,8 +178,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                               lastAvailableMonth.year ||
                                           focusedDate.month !=
                                               lastAvailableMonth.month))
-                                    IconButton(
-                                      onPressed: () {
+                                    InkWell(
+                                      onTap: () {
                                         setState(() {
                                           focusedDate = DateTime(
                                             focusedDate.year,
@@ -190,9 +187,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                           );
                                         });
                                       },
-                                      icon: const Icon(
-                                          Icons.keyboard_arrow_right),
-                                      iconSize: 24,
+                                      child: CommonIcons.calendarRightArrow(),
                                     ),
                                 ],
                               ),
@@ -226,39 +221,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: SizedBox(
-                  height: 57,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        if (buttonColor == Colors.black) {
-                          final selectedDateTime =
-                              ref.read(selectedDateTimeProvider);
-                          print('시간${selectedDateTime.selectedDate}');
-                          print('디자이너${selectedDateTime.selectedTimeSlot}');
-                          print('디자이너아이디${ref.read(selectedDesignerProvider)}');
-                          // Navigate or perform actions
-                          ref.read(durationProvider.notifier).state = duration;
-                          context.go('/s/${widget.shopDomain}/reservation');
-                        }
-                      },
-                      child: Ink(
-                        color: buttonColor,
-                        child: Center(
-                          child: Text(
-                            '예약하기',
-                            style: TextDesign.bold16W,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                child: ConditionalInkwellButton(
+                  onTap: () {
+                    if (buttonColor == Colors.black) {
+                      // final selectedDateTime =
+                      //     ref.read(selectedDateTimeProvider);
+                      ref.read(durationProvider.notifier).state = duration;
+                      context.go('/s/${widget.shopDomain}/reservation');
+                    }
+                  },
+                  text: '다음',
+                  condition: buttonColor == Colors.grey,
                 ),
               ),
               Positioned.fill(
                 top: 102, // Adjust to fit below the top bar
-                bottom: 57, // Adjust to fit above the bottom bar
+                bottom: 72, // Adjust to fit above the bottom bar
                 child: SingleChildScrollView(
                   primary: false,
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -268,8 +246,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         availableGestures: AvailableGestures.horizontalSwipe,
                         locale: 'ko_KR',
                         headerVisible: false,
-                        rowHeight: 85,
-                        sixWeekMonthsEnforced: true,
+                        rowHeight: 70,
                         focusedDay: focusedDate,
                         firstDay: firstDayOfCurrentMonth,
                         lastDay: DateTime(
@@ -329,7 +306,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             return Column(
                               children: [
                                 SizedBox(
-                                  height: 45,
+                                  height: 40,
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
@@ -338,7 +315,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 40,
+                                  height: 30,
                                 ),
                               ],
                             );
@@ -347,7 +324,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             return Column(
                               children: [
                                 SizedBox(
-                                  height: 45,
+                                  height: 40,
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
@@ -356,7 +333,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 40,
+                                  height: 30,
                                 ),
                               ],
                             );
@@ -365,7 +342,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             return Column(
                               children: [
                                 SizedBox(
-                                  height: 45,
+                                  height: 40,
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
@@ -374,26 +351,29 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 40,
+                                  height: 30,
                                 ),
                               ],
                             );
                           },
                           selectedBuilder: (context, day, focusedDay) {
+                            bool isToday = isSameDay(day, today);
                             return Column(
                               children: [
                                 Container(
                                   color: ContainerColors.black,
-                                  height: 45,
+                                  height: 40,
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
-                                      style: TextDesign.regular16W,
+                                      style: isToday
+                                          ? TextDesign.regular16BO
+                                          : TextDesign.regular16W,
                                     ),
                                   ),
                                 ),
                                 Container(
-                                  height: 40,
+                                  height: 30,
                                   color: ContainerColors.black,
                                 ),
                               ],
@@ -404,7 +384,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             return Column(
                               children: [
                                 SizedBox(
-                                  height: 45,
+                                  height: 40,
                                   child: Center(
                                     child: Text(
                                       '${day.day}',
@@ -415,7 +395,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 40,
+                                  height: 30,
                                   child: day.isAfter(lastDayOfReservation) ||
                                           occupiedDates.contains(
                                               DateFormat('yyyy-MM-dd')
@@ -427,7 +407,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                                 : '마감',
                                             style: isToday
                                                 ? TextDesign.regular16BO
-                                                : TextDesign.regular16MG,
+                                                : TextDesign.regular12MG,
                                           ),
                                         )
                                       : null,

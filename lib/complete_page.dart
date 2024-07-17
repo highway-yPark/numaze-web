@@ -267,15 +267,12 @@ class _CompletePageState extends ConsumerState<CompletePage> {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: SizedBox(
-                    height: 57,
-                    child: BlackInkwellButton(
-                      onTap: () {
-                        context.go(
-                            '/appointment/${widget.appointmentId}?shopDomain=${widget.shopDomain}');
-                      },
-                      text: '나의 예약 확인하기',
-                    ),
+                  child: BlackInkwellButton(
+                    onTap: () {
+                      context.go(
+                          '/appointment/${widget.appointmentId}?shopDomain=${widget.shopDomain}');
+                    },
+                    text: '나의 예약 확인하기',
                   ),
                 ),
               ],

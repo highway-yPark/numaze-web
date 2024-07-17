@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class DataUtils {
   static DateTime sundayOfGivenDate(DateTime date) {
     return date.subtract(Duration(days: date.weekday % 7));
@@ -172,6 +171,19 @@ class DataUtils {
     } catch (e) {
       print(e);
       return 'Invalid Unicode';
+    }
+  }
+
+  static String getTreatmentText(int treatmentType) {
+    switch (treatmentType) {
+      case 0:
+        return '시술';
+      case 1:
+        return '스타일';
+      case 2:
+        return 'Monthly Pick';
+      default:
+        return '시술';
     }
   }
 }

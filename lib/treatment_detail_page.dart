@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/components/common_image.dart';
+import 'package:numaze_web/common/const/icons.dart';
+import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/common_app_bar.dart';
 import 'package:numaze_web/provider.dart';
 import 'package:numaze_web/styles_provider.dart';
@@ -146,295 +149,270 @@ class TreatmentDetailPage extends ConsumerWidget {
           constraints: const BoxConstraints(
             maxWidth: 500,
           ),
-          child: SafeArea(
-            child: Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CommonAppBar(
-                        title: '',
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonAppBar(
+                      title: '',
+                      shopDomain: shopDomain,
+                    ),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Stack(
+                          children: [
+                            Column(
+                              children: [
+                                CommonImage(
+                                  imageUrl: styleId == null
+                                      ? monthlyPickId == null
+                                          ? treatmentStyleId == null
+                                              ? treatment.thumbnail
+                                              : treatmentStyle!.thumbnail
+                                          : monthlyPick!.thumbnail
+                                      : style!.thumbnail,
+                                  width: constraints.maxWidth,
+                                  height: constraints.maxWidth,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  height: 23.5,
+                                  color: ContainerColors.white,
+                                )
+                              ],
+                            ),
+                            if (treatment.styleCount > 0)
+                              Positioned(
+                                bottom: 0,
+                                right: 27,
+                                child: OverlayImageWithText(
+                                  shopDomain: shopDomain,
+                                  treatmentId: treatmentId,
+                                  styleCount: treatment.styleCount,
+                                  thumbnail: treatmentStyles.first.thumbnail,
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
                       ),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Stack(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${category.name} > ${treatment.name}',
+                            style: TextDesign.bold18B,
+                          ),
+                          const SizedBox(
+                            height: 10.0,
+                          ),
+                          Text(
+                            treatment.description,
+                            style: TextDesign.regular14G,
+                          ),
+                          const SizedBox(
+                            height: 10.0,
+                          ),
+                          if (treatment.discount > 0)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${treatment.discount}%',
+                                      style: TextDesign.bold14BO,
+                                    ),
+                                    const SizedBox(
+                                      width: 3,
+                                    ),
+                                    Text(
+                                      "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
+                                      style: TextDesign.regular14G.copyWith(
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "${DataUtils.formatKoreanWon(treatment.minPrice * (100 - treatment.discount) ~/ 100)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
+                                  style: TextDesign.bold20B,
+                                ),
+                              ],
+                            )
+                          else
+                            Text(
+                              "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
+                              style: TextDesign.bold20B,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
                             children: [
-                              Column(
-                                children: [
-                                  Image.network(
-                                    styleId == null
-                                        ? monthlyPickId == null
-                                            ? treatmentStyleId == null
-                                                ? treatment.thumbnail
-                                                : treatmentStyle!.thumbnail
-                                            : monthlyPick!.thumbnail
+                              CommonIcons.clock(),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                '소요시간 ${DataUtils.formatDurationWithZero(treatment.duration)}',
+                                style: TextDesign.medium14G,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 110,
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: BlackInkwellButton(
+                    onTap: () {
+                      final isSelected = ref
+                          .watch(selectedTreatmentProvider)
+                          .containsKey(category.id);
+                      if (isSelected) {
+                        onlyOneSnackBar(context: context);
+                        return;
+                      }
+                      if (relatedOptions.isEmpty) {
+                        ref
+                            .read(selectedTreatmentProvider.notifier)
+                            .state
+                            .update(
+                              category.id,
+                              (value) => SelectedCategory(
+                                selectedTreatments: [
+                                  SelectedTreatment(
+                                    treatmentId: treatmentId,
+                                    selectedOptions: {},
+                                    styleId: styleId,
+                                    monthlyPickId: monthlyPickId,
+                                    treatmentStyleId: treatmentStyleId,
+                                    styleImage: styleId == null
+                                        ? null
                                         : style!.thumbnail,
-                                    width: constraints.maxWidth,
-                                    height: constraints.maxWidth,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Container(
-                                    height: 23.5,
-                                    color: ContainerColors.white,
+                                    monthlyPickImage: monthlyPickId == null
+                                        ? null
+                                        : monthlyPick!.thumbnail,
+                                    treatmentStyleImage:
+                                        treatmentStyleId == null
+                                            ? null
+                                            : treatmentStyle!.thumbnail,
                                   )
                                 ],
                               ),
-                              if (treatment.styleCount > 0)
-                                Positioned(
-                                  bottom: 0,
-                                  right: 27,
-                                  child: OverlayImageWithText(
-                                    shopDomain: shopDomain,
+                              ifAbsent: () => SelectedCategory(
+                                selectedTreatments: [
+                                  SelectedTreatment(
                                     treatmentId: treatmentId,
-                                    styleCount: treatment.styleCount,
-                                    thumbnail: treatmentStyles.first.thumbnail,
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${category.name} > ${treatment.name}',
-                              style: TextDesign.bold20B,
-                            ),
-                            const SizedBox(
-                              height: 15.0,
-                            ),
-                            Text(
-                              treatment.description,
-                              style: TextDesign.regular14G,
-                            ),
-                            const SizedBox(
-                              height: 15.0,
-                            ),
-                            if (treatment.discount > 0)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '${treatment.discount}%',
-                                        style: TextDesign.bold14BO,
-                                        textAlign: TextAlign.start,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
-                                        style: TextDesign.regular14G.copyWith(
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                        ),
-                                        textAlign: TextAlign.start,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "${DataUtils.formatKoreanWon(treatment.minPrice * (100 - treatment.discount) ~/ 100)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
-                                    style: TextDesign.bold20B,
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                    selectedOptions: {},
+                                    styleId: styleId,
+                                    monthlyPickId: monthlyPickId,
+                                    treatmentStyleId: treatmentStyleId,
+                                    styleImage: styleId == null
+                                        ? null
+                                        : style!.thumbnail,
+                                    monthlyPickImage: monthlyPickId == null
+                                        ? null
+                                        : monthlyPick!.thumbnail,
+                                    treatmentStyleImage:
+                                        treatmentStyleId == null
+                                            ? null
+                                            : treatmentStyle!.thumbnail,
+                                  )
                                 ],
-                              )
-                            else
-                              Text(
-                                "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
-                                style: TextDesign.bold20B,
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.lock_clock,
-                                ),
-                                Text(
-                                  '소요시간 : ${DataUtils.formatDurationWithZero(treatment.duration)}',
-                                  style: TextDesign.medium14G,
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 114,
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: SizedBox(
-                      height: 57,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: BlackInkwellButton(
-                        onTap: () {
-                          final isSelected = ref
-                              .watch(selectedTreatmentProvider)
-                              .containsKey(category.id);
-                          if (isSelected) {
-                            customSnackBar('카테고리당 하나의 시술만 담을 수 있어요.', context);
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //     const SnackBar(
-                            //         content: Text(
-                            //             'You can only select one treatment per category.')));
-                            // context.go('/s/$shopDomain');
-                            return;
-                          }
-                          if (relatedOptions.isEmpty) {
-                            ref
-                                .read(selectedTreatmentProvider.notifier)
-                                .state
-                                .update(
-                                  category.id,
-                                  (value) => SelectedCategory(
-                                    selectedTreatments: [
-                                      SelectedTreatment(
-                                        treatmentId: treatmentId,
-                                        selectedOptions: {},
-                                        styleId: styleId,
-                                        monthlyPickId: monthlyPickId,
-                                        treatmentStyleId: treatmentStyleId,
-                                        styleImage: styleId == null
-                                            ? null
-                                            : style!.thumbnail,
-                                        monthlyPickImage: monthlyPickId == null
-                                            ? null
-                                            : monthlyPick!.thumbnail,
-                                        treatmentStyleImage:
-                                            treatmentStyleId == null
+                            );
+                        Navigator.of(context).pop();
+                        context.go('/s/$shopDomain');
+                      } else {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            return OptionsBottomSheet(
+                              relatedOptions: relatedOptions,
+                              shopDomain: shopDomain,
+                              onOptionSelected: (selectedOptions) {
+                                ref
+                                    .read(selectedTreatmentProvider.notifier)
+                                    .state
+                                    .update(
+                                      category.id,
+                                      (value) => SelectedCategory(
+                                        selectedTreatments: [
+                                          SelectedTreatment(
+                                            treatmentId: treatmentId,
+                                            selectedOptions: selectedOptions,
+                                            styleId: styleId,
+                                            monthlyPickId: monthlyPickId,
+                                            treatmentStyleId: treatmentStyleId,
+                                            styleImage: styleId == null
                                                 ? null
-                                                : treatmentStyle!.thumbnail,
-                                      )
-                                    ],
-                                  ),
-                                  ifAbsent: () => SelectedCategory(
-                                    selectedTreatments: [
-                                      SelectedTreatment(
-                                        treatmentId: treatmentId,
-                                        selectedOptions: {},
-                                        styleId: styleId,
-                                        monthlyPickId: monthlyPickId,
-                                        treatmentStyleId: treatmentStyleId,
-                                        styleImage: styleId == null
-                                            ? null
-                                            : style!.thumbnail,
-                                        monthlyPickImage: monthlyPickId == null
-                                            ? null
-                                            : monthlyPick!.thumbnail,
-                                        treatmentStyleImage:
-                                            treatmentStyleId == null
+                                                : style!.thumbnail,
+                                            monthlyPickImage:
+                                                monthlyPickId == null
+                                                    ? null
+                                                    : monthlyPick!.thumbnail,
+                                            treatmentStyleImage:
+                                                treatmentStyleId == null
+                                                    ? null
+                                                    : treatmentStyle!.thumbnail,
+                                          )
+                                        ],
+                                      ),
+                                      ifAbsent: () => SelectedCategory(
+                                        selectedTreatments: [
+                                          SelectedTreatment(
+                                            treatmentId: treatmentId,
+                                            selectedOptions: selectedOptions,
+                                            styleId: styleId,
+                                            monthlyPickId: monthlyPickId,
+                                            treatmentStyleId: treatmentStyleId,
+                                            styleImage: styleId == null
                                                 ? null
-                                                : treatmentStyle!.thumbnail,
-                                      )
-                                    ],
-                                  ),
-                                );
-                            Navigator.of(context).pop();
-                            context.go('/s/$shopDomain');
-                          } else {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return OptionsBottomSheet(
-                                  relatedOptions: relatedOptions,
-                                  shopDomain: shopDomain,
-                                  onOptionSelected: (selectedOptions) {
-                                    ref
-                                        .read(
-                                            selectedTreatmentProvider.notifier)
-                                        .state
-                                        .update(
-                                          category.id,
-                                          (value) => SelectedCategory(
-                                            selectedTreatments: [
-                                              SelectedTreatment(
-                                                treatmentId: treatmentId,
-                                                selectedOptions:
-                                                    selectedOptions,
-                                                styleId: styleId,
-                                                monthlyPickId: monthlyPickId,
-                                                treatmentStyleId:
-                                                    treatmentStyleId,
-                                                styleImage: styleId == null
+                                                : style!.thumbnail,
+                                            monthlyPickImage:
+                                                monthlyPickId == null
                                                     ? null
-                                                    : style!.thumbnail,
-                                                monthlyPickImage:
-                                                    monthlyPickId == null
-                                                        ? null
-                                                        : monthlyPick!
-                                                            .thumbnail,
-                                                treatmentStyleImage:
-                                                    treatmentStyleId == null
-                                                        ? null
-                                                        : treatmentStyle!
-                                                            .thumbnail,
-                                              )
-                                            ],
-                                          ),
-                                          ifAbsent: () => SelectedCategory(
-                                            selectedTreatments: [
-                                              SelectedTreatment(
-                                                treatmentId: treatmentId,
-                                                selectedOptions:
-                                                    selectedOptions,
-                                                styleId: styleId,
-                                                monthlyPickId: monthlyPickId,
-                                                treatmentStyleId:
-                                                    treatmentStyleId,
-                                                styleImage: styleId == null
+                                                    : monthlyPick!.thumbnail,
+                                            treatmentStyleImage:
+                                                treatmentStyleId == null
                                                     ? null
-                                                    : style!.thumbnail,
-                                                monthlyPickImage:
-                                                    monthlyPickId == null
-                                                        ? null
-                                                        : monthlyPick!
-                                                            .thumbnail,
-                                                treatmentStyleImage:
-                                                    treatmentStyleId == null
-                                                        ? null
-                                                        : treatmentStyle!
-                                                            .thumbnail,
-                                              )
-                                            ],
-                                          ),
-                                        );
-                                  },
-                                );
+                                                    : treatmentStyle!.thumbnail,
+                                          )
+                                        ],
+                                      ),
+                                    );
                               },
                             );
-                          }
+                          },
+                        );
+                      }
 
-                          // if (!context.mounted) return;
-                        },
-                        text: relatedOptions.isEmpty ? '담기' : '옵션 선택하기',
-                      ),
-                    ),
+                      // if (!context.mounted) return;
+                    },
+                    text: relatedOptions.isEmpty ? '담기' : '옵션 선택하기',
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -561,127 +539,135 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: ContainerColors.white,
-      height: MediaQuery.of(context).size.height * 0.71,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        maxWidth: 500,
+      ),
+      child: Container(
+        color: ContainerColors.white,
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 4,
+              width: 68,
+              decoration: BoxDecoration(
+                color: ContainerColors.grey,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(
+              height: 23,
+            ),
+            Expanded(
               child: ListView(
-                // shrinkWrap: true,
                 children: [
                   ...widget.relatedOptions.map((category) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: (isExpanded[category.name] == true)
-                                  ? StrokeColors.black
-                                  : StrokeColors.grey,
-                              width: 1.0,
-                            ),
+                    return Padding(
+                      padding: CommonWidgets.sixteenTenPadding(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            // color: (isExpanded[category.name] == true)
+                            //     ? StrokeColors.black
+                            //     : StrokeColors.grey,
+                            color: StrokeColors.grey,
+                            width: 1.0,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  handleCategoryTap(category.name,
-                                      !(isExpanded[category.name] ?? false));
-                                },
-                                child: Container(
-                                  height: 50,
-                                  padding: const EdgeInsets.all(15.0),
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: StrokeColors.grey,
-                                        width: 1.0,
-                                      ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                handleCategoryTap(category.name,
+                                    !(isExpanded[category.name] ?? false));
+                              },
+                              child: Container(
+                                height: 44,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                ),
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: StrokeColors.grey,
+                                      width: 1.0,
                                     ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        selectedOptions[category.name] != null
-                                            ? category.options
-                                                .firstWhere((option) =>
-                                                    option.id ==
-                                                    selectedOptions[
-                                                        category.name])
-                                                .name
-                                            : category.name,
-                                        style: TextDesign.medium14B,
-                                      ),
-                                      Icon(
-                                        isExpanded[category.name] ?? false
-                                            ? Icons.keyboard_arrow_up
-                                            : Icons.keyboard_arrow_down,
-                                      ),
-                                    ],
                                   ),
                                 ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      selectedOptions[category.name] != null
+                                          ? '${category.name} : ${category.options.firstWhere((option) => option.id == selectedOptions[category.name]).name} (+${DataUtils.formatDurationWithZero(category.options.firstWhere((option) => option.id == selectedOptions[category.name]).duration)})'
+                                          : category.name,
+                                      style: TextDesign.medium14B,
+                                    ),
+                                    // Icon(
+                                    //   isExpanded[category.name] ?? false
+                                    //       ? Icons.keyboard_arrow_up
+                                    //       : Icons.keyboard_arrow_down,
+                                    // ),
+                                    CommonIcons.arrowDown(),
+                                  ],
+                                ),
                               ),
-                              if (isExpanded[category.name] ?? false)
-                                ...category.options.map((option) {
-                                  return InkWell(
-                                    onTap: () {
-                                      handleOptionSelected(
-                                          category.name, option.id);
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(15.0),
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: StrokeColors.grey,
-                                            width: 1.0,
-                                          ),
+                            ),
+                            if (isExpanded[category.name] ?? false)
+                              ...category.options.map((option) {
+                                return InkWell(
+                                  onTap: () {
+                                    handleOptionSelected(
+                                        category.name, option.id);
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(15.0),
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: StrokeColors.grey,
+                                          width: 1.0,
                                         ),
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${option.name} (+${DataUtils.formatDurationWithZero(option.duration)})',
-                                            style: TextDesign.medium14B,
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            option.description,
-                                            style: TextDesign.medium12G,
-                                          ),
-                                        ],
-                                      ),
                                     ),
-                                  );
-                                }),
-                            ],
-                          ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${option.name} (+${DataUtils.formatDurationWithZero(option.duration)})',
+                                          style: TextDesign.medium14B,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          option.description,
+                                          style: TextDesign.medium12G,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 9,
-                        ),
-                      ],
+                      ),
                     );
                   }),
                 ],
               ),
             ),
-          ),
-          if (areAllOptionsSelected() && areAllCategoriesCollapsed()) ...[
-            SizedBox(
-              height: 57,
-              child: BlackInkwellButton(
+            if (areAllOptionsSelected() && areAllCategoriesCollapsed()) ...[
+              BlackInkwellButton(
                 onTap: () {
                   widget.onOptionSelected(selectedOptions);
                   Navigator.of(context).pop();
@@ -689,9 +675,9 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 },
                 text: '담기',
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
