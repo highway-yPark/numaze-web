@@ -52,6 +52,18 @@ void onlyOneSnackBar({
   );
 }
 
+void copySnackBar({
+  required BuildContext context,
+  String message = '복사했어요.',
+  bool error = false,
+}) {
+  customSnackBar(
+    message: message,
+    context: context,
+    error: error,
+  );
+}
+
 void errorSnackBar({
   required BuildContext context,
   String message = '오류가 발생했어요.',

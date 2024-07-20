@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' as html;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -10,12 +11,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_cropper_for_web/image_cropper_for_web.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_for_web/image_picker_for_web.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+
+// import 'package:image_picker_web/image_picker_web.dart';
 import 'package:numaze_web/common/components/inkwell_button.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'auth/auth_repository.dart';
 import 'common/components/common_image.dart';
@@ -165,66 +173,10 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   Uint8List? imageThree;
   Uint8List? imageFour;
 
-  // bool isLoading = false;
-  //
-  // Future<void> pickAndCropImage(int index) async {
-  //   try {
-  //     setState(() {
-  //       isLoading = true;
-  //     });
-  //
-  //     Uint8List? bytesFromPicker = await ImagePickerWeb.getImageAsBytes();
-  //
-  //     if (bytesFromPicker != null) {
-  //       Uint8List processedImage = await compute(processImage, bytesFromPicker);
-  //       setState(() {
-  //         switch (index) {
-  //           case 1:
-  //             imageOne = processedImage;
-  //             break;
-  //           case 2:
-  //             imageTwo = processedImage;
-  //             break;
-  //           case 3:
-  //             imageThree = processedImage;
-  //             break;
-  //           case 4:
-  //             imageFour = processedImage;
-  //             break;
-  //           case 5:
-  //             imageFive = processedImage;
-  //             break;
-  //         }
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('An error occurred while picking images: $e');
-  //   } finally {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
   bool isLoadingOne = false;
   bool isLoadingTwo = false;
   bool isLoadingThree = false;
   bool isLoadingFour = false;
-
-  int heavyComputation(int input) {
-    // Simulate a heavy computation task
-    int result = 0;
-    for (int i = 0; i < input; i++) {
-      result += i;
-    }
-    return result;
-  }
-
-  void _runComputation(Uint8List image) async {
-    Uint8List result = await compute(processImage, image);
-    setState(() {
-      imageOne = result;
-    });
-  }
 
   Future<void> pickAndCropImage(int index) async {
     try {
@@ -232,7 +184,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         switch (index) {
           case 1:
             isLoadingOne = true;
-            // _runComputation;
             break;
           case 2:
             isLoadingTwo = true;
@@ -246,17 +197,61 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         }
       });
 
-      Uint8List? bytesFromPicker = await ImagePickerWeb.getImageAsBytes();
+      // Uint8List? bytesFromPicker = await ImagePickerWeb.getImageAsBytes();
+      final imagePicker = ImagePickerPlugin();
+      // final imagePicker = ImagePicker();
+      final pickedFile = await imagePicker.getImageFromSource(
+        source: ImageSource.gallery,
+        options: const ImagePickerOptions(
+          maxWidth: 720,
+          maxHeight: 720,
+          imageQuality: 60,
+        ),
+      );
+      // final imageCropper = ImageCropperPlugin();
+      final imageCropper = ImageCropper();
 
-      if (bytesFromPicker != null) {
+      print(pickedFile);
+      // await imagePicker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        // final croppedFile = await imageCropper.cropImage(
+        //   sourcePath: pickedFile.path,
+        //   // uiSettings: const IOSUiSettings(
+        //   //   minimumAspectRatio: 1.0,
+        //   // ),
+        //   aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+        // );
+        final bytesFromPicker = await pickedFile.readAsBytes();
+        // if (croppedFile == null) {
+        //   setState(() {
+        //     switch (index) {
+        //       case 1:
+        //         isLoadingOne = false;
+        //         break;
+        //       case 2:
+        //         isLoadingTwo = false;
+        //         break;
+        //       case 3:
+        //         isLoadingThree = false;
+        //         break;
+        //       case 4:
+        //         isLoadingFour = false;
+        //         break;
+        //     }
+        //   });
+        //   return;
+        // }
+        // final bytesFromPicker = await croppedFile.readAsBytes();
         setState(() {
           switch (index) {
             case 1:
-              imageOne = processImage(bytesFromPicker);
+              // imageOne = processImage(bytesFromPicker);
+              imageOne = bytesFromPicker;
               // _runComputation(bytesFromPicker);
               break;
             case 2:
-              imageTwo = processImage(bytesFromPicker);
+              // imageTwo = processImage(bytesFromPicker);
+              imageTwo = bytesFromPicker;
               break;
             case 3:
               imageThree = processImage(bytesFromPicker);
@@ -265,10 +260,85 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
               imageFour = processImage(bytesFromPicker);
           }
         });
+      } else {
+        setState(() {
+          switch (index) {
+            case 1:
+              isLoadingOne = false;
+              break;
+            case 2:
+              isLoadingTwo = false;
+              break;
+            case 3:
+              isLoadingThree = false;
+              break;
+            case 4:
+              isLoadingFour = false;
+              break;
+          }
+        });
       }
+      // if (bytesFromPicker != null) {
+      //   setState(() {
+      //     switch (index) {
+      //       case 1:
+      //         imageOne = bytesFromPicker;
+      //         // _runComputation(bytesFromPicker);
+      //         break;
+      //       case 2:
+      //         imageTwo = bytesFromPicker;
+      //         break;
+      //       case 3:
+      //         imageThree = bytesFromPicker;
+      //         break;
+      //       case 4:
+      //         imageFour = bytesFromPicker;
+      //     }
+      //   });
+      // }
+      // if (bytesFromPicker != null) {
+      //   setState(() {
+      //     switch (index) {
+      //       case 1:
+      //         imageOne = processImage(bytesFromPicker);
+      //         // _runComputation(bytesFromPicker);
+      //         break;
+      //       case 2:
+      //         imageTwo = processImage(bytesFromPicker);
+      //         break;
+      //       case 3:
+      //         imageThree = processImage(bytesFromPicker);
+      //         break;
+      //       case 4:
+      //         imageFour = processImage(bytesFromPicker);
+      //     }
+      //   });
+      // } else {
+      //   setState(() {
+      //     switch (index) {
+      //       case 1:
+      //         isLoadingOne = false;
+      //         break;
+      //       case 2:
+      //         isLoadingTwo = false;
+      //         break;
+      //       case 3:
+      //         isLoadingThree = false;
+      //         break;
+      //       case 4:
+      //         isLoadingFour = false;
+      //         break;
+      //     }
+      //   });
+      //   print(isLoadingOne);
+      //   print(isLoadingTwo);
+      //   print(isLoadingThree);
+      //   print(isLoadingFour);
+      // }
     } catch (e) {
       print('An error occurred while picking images: $e');
     } finally {
+      print('image picked');
       setState(() {
         switch (index) {
           case 1:
@@ -380,6 +450,35 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
   }
 
+  // Uint8List processImage(Uint8List imageBytes) {
+  //   final image = img.decodeImage(imageBytes)!;
+  //
+  //   const size = 720;
+  //
+  //   // Determine the crop area
+  //   int x, y, cropSize;
+  //   if (image.width > image.height) {
+  //     cropSize = image.height;
+  //     x = (image.width - cropSize) ~/ 2;
+  //     y = 0;
+  //   } else {
+  //     cropSize = image.width;
+  //     x = 0;
+  //     y = (image.height - cropSize) ~/ 2;
+  //   }
+  //
+  //   // Crop the image
+  //   final cropped =
+  //       img.copyCrop(image, x: x, y: y, height: cropSize, width: cropSize);
+  //
+  //   // Resize the image using the Lanczos3 interpolation method for better performance
+  //   final resized = img.copyResize(cropped,
+  //       width: size, height: size, interpolation: img.Interpolation.nearest);
+  //
+  //   // Encode the resized image to JPEG
+  //   return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
+  // }
+
   int sumOfEachTreatmentOptionDuration(TreatmentHistoryResponse treatment) {
     int sum = 0;
     sum += treatment.treatmentDuration;
@@ -391,11 +490,16 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     return sum;
   }
 
+  // bool isKeyboardOpen = false;
+
   @override
   void initState() {
     super.initState();
     customerRequestController = TextEditingController();
     duration = ref.read(durationProvider);
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _checkKeyboardState();
+    // });
   }
 
   @override
@@ -406,10 +510,17 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     super.dispose();
   }
 
+  // void _checkKeyboardState() {
+  //   final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+  //   setState(() {
+  //     isKeyboardOpen = bottomInsets != 0;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
-    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-    bool isKeyboardOpen = bottomInsets != 0;
+    // final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    // bool isKeyboardOpen = bottomInsets != 0;
 
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
 
@@ -424,7 +535,12 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       imageTwo = null;
       imageThree = null;
       imageFour = null;
-      // context.go('/s/${widget.shopDomain}');
+
+      // remove all images from memory
+      SystemChannels.platform.invokeMethod(
+          'SystemChannels.platform.invokeMethod',
+          'SystemChannels.platform.invokeMethod');
+
       return IconButton(
         onPressed: () {
           context.go('/s/${widget.shopDomain}');
@@ -472,6 +588,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           ),
           child: Stack(
             children: [
+              // if (!isKeyboardOpen)
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -824,17 +941,46 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 16),
-                          child: GridView.count(
-                            shrinkWrap: true,
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            children: [
-                              _buildImageBox(imageOne, isLoadingOne, 1),
-                              _buildImageBox(imageTwo, isLoadingTwo, 2),
-                              _buildImageBox(imageThree, isLoadingThree, 3),
-                              _buildImageBox(imageFour, isLoadingFour, 4),
-                            ],
+                          // child: GridView.count(
+                          //   shrinkWrap: true,
+                          //   crossAxisCount: 4,
+                          //   crossAxisSpacing: 10,
+                          //   mainAxisSpacing: 10,
+                          //   children: [
+                          //     _buildImageBox(imageOne, isLoadingOne, 1),
+                          //     _buildImageBox(imageTwo, isLoadingTwo, 2),
+                          //     _buildImageBox(imageThree, isLoadingThree, 3),
+                          //     _buildImageBox(imageFour, isLoadingFour, 4),
+                          //   ],
+                          // ),
+                          child: SizedBox(
+                            height: 82,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 4,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 16),
+                                  child: _buildImageBox(
+                                    index == 0
+                                        ? imageOne
+                                        : index == 1
+                                            ? imageTwo
+                                            : index == 2
+                                                ? imageThree
+                                                : imageFour,
+                                    index == 0
+                                        ? isLoadingOne
+                                        : index == 1
+                                            ? isLoadingTwo
+                                            : index == 2
+                                                ? isLoadingThree
+                                                : isLoadingFour,
+                                    index + 1,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -877,6 +1023,12 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
             : image != null
                 ? Stack(
                     children: [
+                      Positioned.fill(
+                        child: Image.memory(
+                          image,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                       Positioned(
                         top: 0,
                         right: 0,
@@ -900,12 +1052,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                             });
                           },
                           child: CommonIcons.close(),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Image.memory(
-                          image,
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ],
@@ -1220,7 +1366,11 @@ class _ReservationBottomSheetState
   bool _depositRuleAccepted = false;
   bool _changeCancelRuleAccepted = false;
   bool _otherInfoAccepted = false;
-  bool _serviceAgreementAccepted = false;
+
+  bool above14 = false;
+  bool allChecked = false;
+  bool privacyAgree = false;
+  bool thirdPartyAgree = false;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -1257,6 +1407,46 @@ class _ReservationBottomSheetState
     });
   }
 
+  // Uint8List processImage(Uint8List imageBytes) {
+  //   final image = img.decodeImage(imageBytes)!;
+  //
+  //   const size = 720;
+  //
+  //   int x, y, cropSize;
+  //   if (image.width > image.height) {
+  //     cropSize = image.height;
+  //     x = (image.width - cropSize) ~/ 2;
+  //     y = 0;
+  //   } else {
+  //     cropSize = image.width;
+  //     x = 0;
+  //     y = (image.height - cropSize) ~/ 2;
+  //   }
+  //
+  //   final cropped = img.copyCrop(
+  //     image,
+  //     x: x,
+  //     y: y,
+  //     width: cropSize,
+  //     height: cropSize,
+  //   );
+  //
+  //   final resized = img.copyResize(
+  //     cropped,
+  //     width: size,
+  //     height: size,
+  //     interpolation: img.Interpolation.cubic,
+  //   );
+  //
+  //   return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
+  // }
+  Future<void> launch(String url, {bool isNewTab = true}) async {
+    await launchUrl(
+      Uri.parse(url),
+      webOnlyWindowName: isNewTab ? '_blank' : '_self',
+    );
+  }
+
   TreatmentOptionPair convertToTreatmentOptionPair(
       SelectedTreatment selectedTreatment) {
     return TreatmentOptionPair(
@@ -1288,6 +1478,13 @@ class _ReservationBottomSheetState
         treatment_option_pairs: treatmentOptionPairs);
   }
 
+  bool checkConditions() {
+    return !_depositRuleAccepted ||
+        !_changeCancelRuleAccepted ||
+        !_otherInfoAccepted ||
+        !allChecked;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -1303,147 +1500,176 @@ class _ReservationBottomSheetState
               child: ListView(
                 controller: _scrollController,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 30,
-                        ),
-                        const Icon(
-                          Icons.alarm,
-                          size: 62,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '예약 전 유의 사항',
-                          style: TextDesign.bold26B,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          '반드시 하단의 안내 사항을 모두 읽어주세요',
-                          style: TextDesign.medium16BO,
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 20,
-                          ),
-                          color: ContainerColors.mediumGrey,
-                          child: Column(
-                            children: [
-                              TextWithNumber(
-                                text: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                          text: '발송된 ',
-                                          style: TextDesign.medium14CG),
-                                      TextSpan(
-                                        text: '안내 메시지',
-                                        style: TextDesign.bold14CG,
-                                      ),
-                                      TextSpan(
-                                        text: '를 반드시 확인해주세요',
-                                        style: TextDesign.medium14CG,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                number: '01',
+                  Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/triangle_alert.png',
+                              width: 100,
+                              height: 100,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              '예약 전 유의 사항',
+                              style: TextDesign.bold26B,
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              '반드시 하단의 안내 사항을 모두 읽어주세요',
+                              style: TextDesign.medium16BO,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 20,
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              TextWithNumber(
-                                text: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                          text: '안내된 계좌번호로 ',
-                                          style: TextDesign.medium14CG),
-                                      TextSpan(
-                                        text: '예약금',
-                                        style: TextDesign.bold14CG,
+                              color: ContainerColors.mediumGrey,
+                              child: Column(
+                                children: [
+                                  TextWithNumber(
+                                    text: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: '발송된 ',
+                                            style: TextDesign.medium14CG,
+                                          ),
+                                          TextSpan(
+                                            text: '안내 메시지',
+                                            style: TextDesign.bold14CG,
+                                          ),
+                                          TextSpan(
+                                            text: '를 반드시 확인해주세요',
+                                            style: TextDesign.medium14CG,
+                                          ),
+                                        ],
                                       ),
-                                      TextSpan(
-                                        text: '을 입금해주세요',
-                                        style: TextDesign.medium14CG,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                number: '02',
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              TextWithNumber(
-                                text: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: '예약자명과 ',
-                                        style: TextDesign.medium14CG,
-                                      ),
-                                      TextSpan(
-                                        text: '예금주명',
-                                        style: TextDesign.bold14CG,
-                                      ),
-                                      TextSpan(
-                                        text: '을 일치시켜주세요',
-                                        style: TextDesign.medium14CG,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                number: '03',
-                              ),
-                              if (widget.shopMessages.hasDeposit)
-                                Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 20,
                                     ),
-                                    TextWithNumber(
-                                      text: RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: '입금 후 ',
-                                              style: TextDesign.medium14CG,
-                                            ),
-                                            TextSpan(
-                                              text: '예약 확인 요청 링크',
-                                              style: TextDesign.bold14CG,
-                                            ),
-                                            TextSpan(
-                                              text: '를 반드시 눌러주세요',
-                                              style: TextDesign.medium14CG,
-                                            ),
-                                          ],
+                                    number: '01',
+                                  ),
+                                  if (widget.shopMessages.hasDeposit)
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
                                         ),
-                                      ),
-                                      number: '04',
+                                        TextWithNumber(
+                                          text: RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                    text: '안내된 계좌번호로 ',
+                                                    style:
+                                                        TextDesign.medium14CG),
+                                                TextSpan(
+                                                  text: '예약금',
+                                                  style: TextDesign.bold14CG,
+                                                ),
+                                                TextSpan(
+                                                  text: '을 입금해주세요',
+                                                  style: TextDesign.medium14CG,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          number: '02',
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                            ],
-                          ),
+                                  if (widget.shopMessages.hasDeposit)
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextWithNumber(
+                                          text: RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: '예약자명과 ',
+                                                  style: TextDesign.medium14CG,
+                                                ),
+                                                TextSpan(
+                                                  text: '예금주명',
+                                                  style: TextDesign.bold14CG,
+                                                ),
+                                                TextSpan(
+                                                  text: '을 일치시켜주세요',
+                                                  style: TextDesign.medium14CG,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          number: '03',
+                                        ),
+                                      ],
+                                    ),
+                                  if (widget.shopMessages.hasDeposit)
+                                    Column(
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        TextWithNumber(
+                                          text: RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: '입금 후 ',
+                                                  style: TextDesign.medium14CG,
+                                                ),
+                                                TextSpan(
+                                                  text: '예약 확인 요청 링크',
+                                                  style: TextDesign.bold14CG,
+                                                ),
+                                                TextSpan(
+                                                  text: '를 반드시 눌러주세요',
+                                                  style: TextDesign.medium14CG,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          number: '04',
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 20,
+                      ),
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          // child: Icon(
+                          //   Icons.close,
+                          //   color: IconColors.black,
+                          //   size: 25,
+                          // ),
+                          child: CommonIcons.lineClose(),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   ConstWidgets.greyBox(),
                   if (widget.shopMessages.hasDeposit)
@@ -1498,15 +1724,15 @@ class _ReservationBottomSheetState
                             children: [
                               TextSpan(
                                 text: '※ 예약 변경 및 취소는 ',
-                                style: TextDesign.medium14G,
+                                style: TextDesign.medium14BO,
                               ),
                               TextSpan(
                                 text: '카카오톡 채널',
-                                style: TextDesign.bold14G,
+                                style: TextDesign.bold14BO,
                               ),
                               TextSpan(
                                 text: '을 통해 부탁드립니다.',
-                                style: TextDesign.medium14G,
+                                style: TextDesign.medium14BO,
                               ),
                             ],
                           ),
@@ -1538,15 +1764,15 @@ class _ReservationBottomSheetState
                             children: [
                               TextSpan(
                                 text: '※ ',
-                                style: TextDesign.medium14G,
+                                style: TextDesign.medium14BO,
                               ),
                               TextSpan(
                                 text: '예약 확정까지는 일정 시간',
-                                style: TextDesign.bold14G,
+                                style: TextDesign.bold14BO,
                               ),
                               TextSpan(
-                                text: '이 소요되며, 예약은 샵의 사정으로 인해 취소될 수 있습니다.',
-                                style: TextDesign.medium14G,
+                                text: '이 소요됩니다. ',
+                                style: TextDesign.medium14BO,
                               ),
                             ],
                           ),
@@ -1556,90 +1782,198 @@ class _ReservationBottomSheetState
                     key: _otherInfoKey,
                   ),
                   ConstWidgets.greyBox(),
-                  buildCheckboxTile(
-                    title: '누메이즈 서비스 이용 동의',
-                    content:
-                        '(주)도두는 통신판매중개자이며 통신판매의 당사자가 아닙니다. (주)도두는 예약 및 구매관련 통신판매업자가 제공하는 상품, 거래정보 및 거래 등에 대하여 책임을 지지 않습니다.',
-                    value: _serviceAgreementAccepted,
-                    onChanged: (value) {
-                      setState(() {
-                        _serviceAgreementAccepted = value!;
-                      });
-                    },
-                    key: _serviceAgreementKey,
+                  // buildCheckboxTile(
+                  //   title: '누메이즈 서비스 이용 동의',
+                  //   content:
+                  //       '(주)도두는 통신판매중개자이며 통신판매의 당사자가 아닙니다. (주)도두는 예약 및 구매관련 통신판매업자가 제공하는 상품, 거래정보 및 거래 등에 대하여 책임을 지지 않습니다.',
+                  //   value: _serviceAgreementAccepted,
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _serviceAgreementAccepted = value!;
+                  //     });
+                  //   },
+                  //   key: _serviceAgreementKey,
+                  // ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Column(
+                      key: _serviceAgreementKey,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 13.5,
+                          ),
+                          child: Row(
+                            children: [
+                              customCheckbox2(
+                                  value: allChecked,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      allChecked = value;
+                                      privacyAgree = value;
+                                      thirdPartyAgree = value;
+                                      above14 = value;
+                                    });
+                                  }),
+                              const SizedBox(width: 15),
+                              Text(
+                                '모두 동의합니다.',
+                                style: TextDesign.bold16B,
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: 2,
+                          color: IconColors.basic,
+                        ),
+                        const SizedBox(height: 10),
+                        buildCheckBoxRow(
+                          '만 14세 이상입니다. (필수)',
+                          above14,
+                          (value) {
+                            setState(() {
+                              above14 = value;
+                              allChecked =
+                                  privacyAgree && thirdPartyAgree && above14;
+                            });
+                          },
+                          null,
+                        ),
+                        buildCheckBoxRow(
+                          '개인정보 수집 동의 및 이용 (필수)',
+                          privacyAgree,
+                          (value) {
+                            setState(() {
+                              privacyAgree = value;
+                              allChecked =
+                                  privacyAgree && thirdPartyAgree && above14;
+                            });
+                          },
+                          'https://numaze.co.kr/privacy_numaze',
+                        ),
+                        buildCheckBoxRow(
+                          '개인정보 제3자 제공 (필수)',
+                          thirdPartyAgree,
+                          (value) {
+                            setState(() {
+                              thirdPartyAgree = value;
+                              allChecked =
+                                  privacyAgree && thirdPartyAgree && above14;
+                            });
+                          },
+                          'https://numaze.co.kr/privacy_others',
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(
-                    height: 57,
+                    height: 110,
                   ),
                 ],
               ),
             ),
+            // Positioned(
+            //   top: 10,
+            //   left: 10,
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       Navigator.of(context).pop();
+            //     },
+            //     child: Icon(
+            //       Icons.close,
+            //       color: IconColors.black,
+            //       size: 25,
+            //     ),
+            //   ),
+            // ),
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: InkWell(
+              child: ConditionalInkwellButton(
                 onTap: () async {
-                  if (!_depositRuleAccepted ||
-                      !_changeCancelRuleAccepted ||
-                      !_otherInfoAccepted ||
-                      !_serviceAgreementAccepted) {
+                  if (checkConditions()) {
                     return;
                   }
                   final designer = ref.read(selectedDesignerProvider);
                   final selectedDateTime = ref.read(selectedDateTimeProvider);
                   final selectedTreatments =
                       ref.read(selectedTreatmentProvider);
-                  final resp =
-                      await ref.read(repositoryProvider).createAppointment(
-                            shopDomain: widget.shopDomain,
-                            request: CustomerNewAppointmentRequest(
-                              designer_id: designer?.designerId,
-                              appointment_date: selectedDateTime.selectedDate!,
-                              start_time: selectedDateTime.selectedTimeSlot!,
-                              customer_name: widget.name,
-                              customer_phone_number: widget.phoneNumber,
-                              customer_request: widget.customerRequest,
-                              treatment_option_pairs: collectAndConvert(
-                                selectedTreatments,
-                              ),
+
+                  try {
+                    final resp = await ref
+                        .read(repositoryProvider)
+                        .createAppointment(
+                          shopDomain: widget.shopDomain,
+                          request: CustomerNewAppointmentRequest(
+                            designer_id: designer?.designerId,
+                            appointment_date: selectedDateTime.selectedDate!,
+                            start_time: selectedDateTime.selectedTimeSlot!,
+                            customer_name: widget.name,
+                            customer_phone_number: widget.phoneNumber,
+                            customer_request: widget.customerRequest,
+                            treatment_option_pairs: collectAndConvert(
+                              selectedTreatments,
                             ),
-                          );
+                          ),
+                        );
 
-                  List<MultipartFile> multipartFiles =
-                      widget.images.map((image) {
-                    return MultipartFile.fromBytes(
-                      image,
-                      filename: '${DateTime.now().millisecondsSinceEpoch}.jpeg',
-                      // contentType: MediaType('image', 'jpeg'),
-                    );
-                  }).toList();
+                    if (!context.mounted) return;
 
-                  ref.read(repositoryProvider).customerRequestImages(
-                        appointmentId: resp.data,
-                        files: multipartFiles,
+                    // process the images first
+                    // final processedImages = widget.images
+                    //     .map((image) => processImage(image))
+                    //     .toList();
+
+                    List<MultipartFile> multipartFiles =
+                        widget.images.map((image) {
+                      return MultipartFile.fromBytes(
+                        image,
+                        filename:
+                            '${DateTime.now().millisecondsSinceEpoch}.jpeg',
+                        // contentType: MediaType('image', 'jpeg'),
                       );
+                    }).toList();
 
-                  if (!context.mounted) return;
-                  context.go(
-                      '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
+                    ref.read(repositoryProvider).customerRequestImages(
+                          appointmentId: resp.data,
+                          files: multipartFiles,
+                        );
+
+                    context.go(
+                        '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
+                  } on DioException catch (e) {
+                    debugPrint(e.toString());
+                    if (e.response?.statusCode == 400) {
+                      final error = e.response?.data['error_code'];
+                      if (error != null) {
+                        switch (error) {
+                          case 'SHOP_NOT_TAKING_RESERVATION':
+                            context
+                                .go('/close?shopDomain=${widget.shopDomain}');
+                          case 'INVALID_TIME_SLOT':
+                            context.go('/fail?shopDomain=${widget.shopDomain}');
+                        }
+                      }
+                    } else {
+                      customSnackBar(
+                        message: '예약 요청 중 오류가 발생했습니다.',
+                        context: context,
+                        error: true,
+                      );
+                    }
+                  }
 
                   // ref.read(selectedTreatmentProvider.notifier).state = {};
                 },
-                child: Ink(
-                  color: _depositRuleAccepted &&
-                          _changeCancelRuleAccepted &&
-                          _otherInfoAccepted &&
-                          _serviceAgreementAccepted
-                      ? Colors.black
-                      : Colors.grey,
-                  child: Center(
-                    child: Text(
-                      '예약 신청하기',
-                      style: TextDesign.bold16W,
-                    ),
-                  ),
-                ),
+                text: '예약 신청하기',
+                condition: checkConditions(),
               ),
             ),
           ],
@@ -1697,36 +2031,52 @@ class _ReservationBottomSheetState
               color: ContainerColors.mediumGrey,
               child: Column(
                 children: [
+                  if (widget.shopMessages.depositTimeLimit > 0)
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 60,
+                              child: Text(
+                                '입금 기한',
+                                style: TextDesign.regular14G,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                '${DataUtils.formatDurationWithZero(
+                                  widget.shopMessages.depositTimeLimit,
+                                )} 이내',
+                                textAlign: TextAlign.right,
+                                style: TextDesign.medium14B,
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '예약금',
-                        style: TextDesign.regular14G,
+                      SizedBox(
+                        width: 60,
+                        child: Text(
+                          '예약금',
+                          style: TextDesign.regular14G,
+                        ),
                       ),
-                      Text(
-                        widget.shopMessages.depositAmount,
-                        style: TextDesign.medium14B,
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '입금 기한',
-                        style: TextDesign.regular14G,
-                      ),
-                      Text(
-                        widget.shopMessages.depositTimeLimit > 0
-                            ? '${DataUtils.formatDurationWithZero(
-                                widget.shopMessages.depositTimeLimit,
-                              )} 이내'
-                            : '없음',
-                        style: TextDesign.medium14B,
+                      Expanded(
+                        child: Text(
+                          widget.shopMessages.depositAmount,
+                          style: TextDesign.medium14B,
+                          textAlign: TextAlign.right,
+                        ),
                       )
                     ],
                   ),
@@ -1744,6 +2094,7 @@ class _ReservationBottomSheetState
               child: Text(
                 content,
                 style: TextDesign.medium14CG,
+                textAlign: TextAlign.left,
               ),
             ),
           if (guide != null) guide,
@@ -1765,6 +2116,81 @@ class _ReservationBottomSheetState
         height: 24,
         width: 24,
         color: value ? BrandColors.orange : ContainerColors.mediumGrey2,
+        child: const Icon(
+          Icons.check,
+          size: 16,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget buildCheckBoxRow(String title, bool isChecked,
+      ValueChanged<bool> onChanged, String? hasUri) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 11,
+      ),
+      child: Row(
+        children: [
+          customCheck(value: isChecked, onChanged: onChanged),
+          const SizedBox(
+            width: 15,
+          ),
+          Expanded(
+            child: Text(
+              title,
+              style: TextDesign.medium14B,
+            ),
+          ),
+          if (hasUri != null)
+            GestureDetector(
+              onTap: () {
+                html.window.open(
+                  hasUri,
+                  'new tab',
+                );
+              },
+              // child: CommonIcons.arrowRight(),
+              child: const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget customCheck({
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        onChanged(!value);
+      },
+      child: Icon(
+        Icons.check,
+        size: 20,
+        color: value ? IconColors.black : IconColors.basic,
+      ),
+    );
+  }
+
+  Widget customCheckbox2({
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        onChanged(!value);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        height: 24,
+        width: 24,
+        color: value ? IconColors.black : IconColors.basic,
         child: const Icon(
           Icons.check,
           size: 16,

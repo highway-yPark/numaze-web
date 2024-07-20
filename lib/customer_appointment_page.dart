@@ -1,8 +1,12 @@
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/components/custom_snackbar.dart';
 import 'package:numaze_web/common/components/progress_indicator.dart' as pi;
+import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/customer_appointment_provider.dart';
 
 import 'common/components/common_image.dart';
@@ -224,11 +228,30 @@ class _CustomerAppointmentPageState
       }
     }
 
+    Widget getStatusIcon(String status) {
+      switch (status) {
+        case 'visited':
+          return CommonIcons.visited();
+        case 'absent':
+          return CommonIcons.absent();
+        case 'cancelled':
+          return CommonIcons.cancel();
+        default:
+          return CommonIcons.complete();
+      }
+    }
+
     final status = customerAppointment.status == null
         ? customerAppointment.confirmed
             ? '예약 확정'
             : '예약 대기'
         : getStatus(customerAppointment.status!);
+
+    final statusIcon = customerAppointment.status == null
+        ? customerAppointment.confirmed
+            ? CommonIcons.confirmed()
+            : CommonIcons.complete()
+        : getStatusIcon(customerAppointment.status!);
 
     return Scaffold(
       body: Center(
@@ -243,27 +266,48 @@ class _CustomerAppointmentPageState
                   color: ContainerColors.white,
                   child: ListView(
                     children: [
-                      pi.StatusColumn(
-                        icon: Icons.alarm,
-                        title: status,
-                        message: customerAppointment.status == null &&
-                                customerAppointment.confirmed == false
-                            ? '반드시 하단의 안내 사항을 모두 읽어주세요'
-                            : null,
-                        currentStep: customerAppointment.status == null
-                            ? customerAppointment.confirmed
-                                ? 1
-                                : 0
-                            : 2,
-                        noIndicator:
-                            status == '예약 취소' || status == '노쇼' ? true : false,
+                      Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: pi.StatusColumn(
+                              icon: statusIcon,
+                              title: status,
+                              message: customerAppointment.status == null &&
+                                      customerAppointment.confirmed == false
+                                  ? '반드시 하단의 안내 사항을 모두 읽어주세요'
+                                  : null,
+                              currentStep: customerAppointment.status == null
+                                  ? customerAppointment.confirmed
+                                      ? 1
+                                      : 0
+                                  : 2,
+                              noIndicator: status == '예약 취소' || status == '노쇼'
+                                  ? true
+                                  : false,
+                            ),
+                          ),
+                          Positioned(
+                            top: 10,
+                            left: 10,
+                            child: GestureDetector(
+                              onTap: () {
+                                context.go('/s/${widget.shopDomain}');
+                              },
+                              child: CommonIcons.home(),
+                            ),
+                          ),
+                        ],
                       ),
                       ConstWidgets.greyBox(),
                       const SizedBox(
                         height: 10,
                       ),
-                      const CommonTitle(
-                        title: '예약자 정보',
+                      Padding(
+                        padding: CommonWidgets.sixteenTenPadding(),
+                        child: const CommonTitle(
+                          title: '예약자 정보',
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -289,19 +333,19 @@ class _CustomerAppointmentPageState
                                 null)
                               TextWithTitle(
                                 title: '회원권 만료일',
-                                text: DataUtils.formatDate(customerAppointment
-                                    .membershipExpirationDate!),
+                                text: DataUtils.formatDate(
+                                  customerAppointment.membershipExpirationDate!,
+                                ),
                               ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                           ],
                         ),
                       ),
                       ConstWidgets.greyBox(),
-                      // ...customerAppointment.treatmentOptionHistory.map(
-                      //     (treatment) => TreatmentWidget(treatment: treatment)),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(
                             height: 10,
@@ -324,8 +368,11 @@ class _CustomerAppointmentPageState
                       const SizedBox(
                         height: 10,
                       ),
-                      const CommonTitle(
-                        title: '예약 일정',
+                      Padding(
+                        padding: CommonWidgets.sixteenTenPadding(),
+                        child: const CommonTitle(
+                          title: '예약 일정',
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -361,8 +408,11 @@ class _CustomerAppointmentPageState
                       const SizedBox(
                         height: 10,
                       ),
-                      const CommonTitle(
-                        title: '요청 사항',
+                      Padding(
+                        padding: CommonWidgets.sixteenTenPadding(),
+                        child: const CommonTitle(
+                          title: '요청 사항',
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -373,32 +423,36 @@ class _CustomerAppointmentPageState
                           children: [
                             if (customerAppointment.customerImages != null)
                               SizedBox(
-                                height: 100,
+                                height: 82,
                                 child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: customerAppointment
-                                        .customerImages!.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                        child: Image.network(
-                                          customerAppointment
-                                              .customerImages![index],
-                                          width: 100,
-                                          height: 100,
-                                        ),
-                                      );
-                                    }),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: customerAppointment
+                                      .customerImages!.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                        right: 10,
+                                      ),
+                                      child: Image.network(
+                                        customerAppointment
+                                            .customerImages![index],
+                                        width: 82,
+                                        height: 82,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Text(
                               customerAppointment.customerRequest == null ||
                                       customerAppointment
                                           .customerRequest!.isEmpty
                                   ? '없음'
                                   : customerAppointment.customerRequest!,
-                              style: TextDesign.medium14G,
+                              style: TextDesign.medium14B,
                             ),
                             const SizedBox(
                               height: 20,
@@ -410,13 +464,17 @@ class _CustomerAppointmentPageState
                           customerAppointment.status == null &&
                           customerAppointment.confirmed == false)
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ConstWidgets.greyBox(),
                             const SizedBox(
                               height: 10,
                             ),
-                            const CommonTitle(
-                              title: '예약금 규정',
+                            Padding(
+                              padding: CommonWidgets.sixteenTenPadding(),
+                              child: const CommonTitle(
+                                title: '예약금 규정',
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -435,29 +493,140 @@ class _CustomerAppointmentPageState
                                     ),
                                     color: ContainerColors.mediumGrey,
                                     child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        TextWithTitle(
-                                          title: '계좌 번호',
-                                          text: shopMessages.bankAccount,
+                                        if (shopMessages.memberReceiveDeposit ||
+                                            !customerAppointment.membership)
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(
+                                                width: 60,
+                                                child: Text(
+                                                  '계좌 번호',
+                                                  style: TextDesign.regular14G,
+                                                ),
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () {
+                                                      // copy to clipboard
+                                                      Clipboard.setData(
+                                                        ClipboardData(
+                                                          text: shopMessages
+                                                              .bankAccount,
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.copy,
+                                                      color: StrokeColors.grey,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    shopMessages.bankAccount,
+                                                    style: TextDesign.medium14B,
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        if (shopMessages.depositTimeLimit > 0 &&
+                                            (shopMessages
+                                                    .memberReceiveDeposit ||
+                                                !customerAppointment
+                                                    .membership))
+                                          Column(
+                                            children: [
+                                              const SizedBox(
+                                                height: 20,
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  SizedBox(
+                                                    width: 60,
+                                                    child: Text(
+                                                      '입금 기한',
+                                                      style:
+                                                          TextDesign.regular14G,
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      '${DataUtils.formatDurationWithZero(
+                                                        shopMessages
+                                                            .depositTimeLimit,
+                                                      )} 이내',
+                                                      style:
+                                                          TextDesign.medium14B,
+                                                      textAlign: TextAlign.end,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        const SizedBox(
+                                          height: 20,
                                         ),
-                                        TextWithTitle(
-                                          title: '예약금',
-                                          text: shopMessages.depositAmount,
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            SizedBox(
+                                              width: 60,
+                                              child: Text(
+                                                '예약금',
+                                                style: TextDesign.regular14G,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                shopMessages.depositAmount,
+                                                style: TextDesign.medium14B,
+                                                textAlign: TextAlign.end,
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                        TextWithTitle(
-                                          title: '입금 기한',
-                                          text: shopMessages.depositTimeLimit >
-                                                  0
-                                              ? '${DataUtils.formatDurationWithZero(
-                                                  shopMessages.depositTimeLimit,
-                                                )} 이내'
-                                              : '없음',
+                                        const SizedBox(
+                                          height: 20,
                                         ),
+                                        if (shopMessages.memberReceiveDeposit ||
+                                            !customerAppointment.membership)
+                                          GestureDetector(
+                                            onTap: () {
+                                              context.go(
+                                                  '/appointment/${customerAppointment.base64Uuid}/payment');
+                                            },
+                                            child: Text(
+                                              // 'https://numaze.kr/appointment/${customerAppointment.base64Uuid}/payment',
+                                              '예약금 입금 확인 요청하기',
+                                              style: TextDesign.medium14BO
+                                                  .copyWith(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationColor:
+                                                    BrandColors.orange,
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
                                   ),
                                   if (shopMessages.memberReceiveDeposit ||
                                       !customerAppointment.membership)
@@ -465,56 +634,33 @@ class _CustomerAppointmentPageState
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Container(
-                                            height: 60,
-                                            color: BrandColors.lightOrange,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 20),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  '예약 확인 요청 링크',
-                                                  style: TextDesign.regular14BO,
-                                                ),
-                                                const SizedBox(
-                                                  width: 4,
-                                                ),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    context.go(
-                                                        '/appointment/${customerAppointment.base64Uuid}/payment');
-                                                  },
-                                                  child: Text(
-                                                    'https://numaze.kr/appointment/${customerAppointment.base64Uuid}/payment',
-                                                    style: TextDesign.bold14BO,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
                                         const SizedBox(
                                           height: 20,
                                         ),
                                         Text(
                                           '※ 예약자명과 예금주명을 반드시 통일해주세요.',
-                                          style: TextDesign.medium14BO,
+                                          style: TextDesign.regular12BO,
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 10,
                                         ),
                                         Text(
                                           '※ 예약금을 위 계좌로 입금한 뒤, 반드시 예약 확인 요청 링크를 클릭해야 예약이 확정됩니다.',
-                                          style: TextDesign.medium14BO,
+                                          style: TextDesign.regular12BO,
                                         ),
                                       ],
                                     )
                                   else
-                                    Text(
-                                      '※ 회원권 고객님의 경우 예약금 입금 없이 정액권에서 차감됩니다.',
-                                      style: TextDesign.medium14BO,
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          '※ 회원권 고객님의 경우 예약금 입금 없이 정액권에서 차감됩니다.',
+                                          style: TextDesign.medium14BO,
+                                        ),
+                                      ],
                                     ),
                                   const SizedBox(
                                     height: 20,
@@ -528,8 +674,11 @@ class _CustomerAppointmentPageState
                       const SizedBox(
                         height: 10,
                       ),
-                      const CommonTitle(
-                        title: '예약 변경 및 취소 규정',
+                      Padding(
+                        padding: CommonWidgets.sixteenTenPadding(),
+                        child: const CommonTitle(
+                          title: '예약 변경 및 취소 규정',
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -563,9 +712,27 @@ class _CustomerAppointmentPageState
                             const SizedBox(
                               height: 20,
                             ),
-                            Text(
-                              '※ 예약 변경 및 취소 문의 : https://pf.kakao.com/${shopData.kakaotalkLink}',
-                              style: TextDesign.medium14BO,
+                            Row(
+                              children: [
+                                Text(
+                                  '※ 예약 변경 및 취소 문의 : ',
+                                  style: TextDesign.regular12BO,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    html.window.open(
+                                      'https://pf.kakao.com/${shopData.kakaotalkLink}',
+                                      'new tab',
+                                    );
+                                  },
+                                  child: Text(
+                                    'https://pf.kakao.com/${shopData.kakaotalkLink}',
+                                    style: TextDesign.regular12B.copyWith(
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(
                               height: 20,
@@ -575,13 +742,17 @@ class _CustomerAppointmentPageState
                       ),
                       if (customerAppointment.status == null)
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ConstWidgets.greyBox(),
                             const SizedBox(
                               height: 10,
                             ),
-                            const CommonTitle(
-                              title: '기타 안내사항',
+                            Padding(
+                              padding: CommonWidgets.sixteenTenPadding(),
+                              child: const CommonTitle(
+                                title: '기타 안내사항',
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -648,25 +819,31 @@ class _CustomerAppointmentPageState
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    // copy to clipboard
-                                    Clipboard.setData(
-                                      ClipboardData(
-                                        text: customerAppointment.base64Uuid,
-                                      ),
-                                    );
-                                  },
-                                  child: const Icon(
-                                    Icons.copy,
-                                    color: StrokeColors.grey,
-                                  ),
+                                // InkWell(
+                                //   onTap: () {
+                                //     Clipboard.setData(
+                                //       ClipboardData(
+                                //         text: customerAppointment.base64Uuid,
+                                //       ),
+                                //     );
+                                //     copySnackBar(context: context);
+                                //   },
+                                //   child: const Icon(
+                                //     Icons.copy,
+                                //     color: StrokeColors.grey,
+                                //   ),
+                                // ),
+                                ClipBoardCopy(
+                                  text: customerAppointment.base64Uuid,
                                 ),
                               ],
                             ),
                             TextWithTitle(
                               title: '예약 신청 일시',
-                              text: customerAppointment.createdAt,
+                              text: customerAppointment.createdAt.replaceAll(
+                                '-',
+                                '.',
+                              ),
                             ),
                           ],
                         ),
@@ -682,97 +859,31 @@ class _CustomerAppointmentPageState
     );
   }
 }
-//
-// class TreatmentWidget extends StatelessWidget {
-//   final TreatmentHistoryResponse treatment;
-//
-//   const TreatmentWidget({
-//     super.key,
-//     required this.treatment,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-//       decoration: BoxDecoration(
-//         border: Border.all(
-//           color: StrokeColors.grey,
-//           width: 1,
-//         ),
-//       ),
-//       child: Row(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Image.network(
-//             treatment.thumbnail,
-//             width: 115,
-//             height: 115,
-//           ),
-//           const SizedBox(
-//               width: 20), // Add some space between the image and the text
-//           Expanded(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   '${treatment.treatmentCategoryName} > ${treatment.treatmentName}',
-//                   maxLines: 1,
-//                   overflow: TextOverflow.ellipsis,
-//                   style: TextDesign.bold16B,
-//                 ),
-//                 const SizedBox(
-//                   height: 5,
-//                 ),
-//                 if (treatment.options != null)
-//                   ...treatment.options!.map((optionCategory) {
-//                     return Column(
-//                       children: [
-//                         Text(
-//                           '${optionCategory.optionCategoryName}: ${optionCategory.optionName}',
-//                           style: TextDesign.regular12G,
-//                         ),
-//                         const SizedBox(
-//                           height: 5,
-//                         ),
-//                       ],
-//                     );
-//                   }),
-//                 const SizedBox(
-//                   height: 5,
-//                 ),
-//                 Text(
-//                   '소요시간 : ${DataUtils.formatDurationWithZero(
-//                     treatment.treatmentDuration +
-//                         (treatment.options != null
-//                             ? treatment.options!
-//                                 .map((e) => e.optionDuration)
-//                                 .reduce((value, element) => value + element)
-//                             : 0),
-//                   )}',
-//                   style: TextDesign.regular12G,
-//                 ),
-//                 const SizedBox(
-//                   height: 5,
-//                 ),
-//                 Row(
-//                   children: [
-//                     if (treatment.discount > 0)
-//                       Text(
-//                         '${treatment.discount}% ',
-//                         style: TextDesign.bold12BO,
-//                       ),
-//                     Text(
-//                       "${DataUtils.formatKoreanWon(treatment.treatmentMinPrice * (100 - treatment.discount) ~/ 100)}${treatment.treatmentMaxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.treatmentMaxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
-//                       style: TextDesign.bold14B,
-//                     ),
-//                   ],
-//                 )
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+
+class ClipBoardCopy extends StatelessWidget {
+  final String text;
+  const ClipBoardCopy({
+    super.key,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Clipboard.setData(
+          ClipboardData(
+            text: text,
+          ),
+        );
+        copySnackBar(context: context);
+      },
+      child: Builder(
+        builder: (context) => const Icon(
+          Icons.copy,
+          color: StrokeColors.grey,
+        ),
+      ),
+    );
+  }
+}

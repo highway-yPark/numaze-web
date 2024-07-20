@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CommonIcons {
   static rightArrow() {
     return SvgPicture.asset(
-      'images/right_arrow.svg',
+      'assets/images/right_arrow.svg',
       width: 14,
       height: 14,
     );
@@ -11,7 +12,7 @@ class CommonIcons {
 
   static check() {
     return SvgPicture.asset(
-      'images/check.svg',
+      'assets/images/check.svg',
       width: 24,
       height: 24,
     );
@@ -19,7 +20,7 @@ class CommonIcons {
 
   static clock() {
     return SvgPicture.asset(
-      'images/clock.svg',
+      'assets/images/clock.svg',
       width: 15,
       height: 15,
     );
@@ -27,13 +28,13 @@ class CommonIcons {
 
   static adFree() {
     return SvgPicture.asset(
-      'images/ad_free.svg',
+      'assets/images/ad_free.svg',
     );
   }
 
   static calendarLeftArrow() {
     return SvgPicture.asset(
-      'images/calendar_left_arrow.svg',
+      'assets/images/calendar_left_arrow.svg',
       width: 24,
       height: 24,
     );
@@ -41,7 +42,7 @@ class CommonIcons {
 
   static calendarRightArrow() {
     return SvgPicture.asset(
-      'images/calendar_right_arrow.svg',
+      'assets/images/calendar_right_arrow.svg',
       width: 24,
       height: 24,
     );
@@ -49,7 +50,7 @@ class CommonIcons {
 
   static home() {
     return SvgPicture.asset(
-      'images/home.svg',
+      'assets/images/home.svg',
       width: 32,
       height: 32,
     );
@@ -57,7 +58,7 @@ class CommonIcons {
 
   static arrowDown() {
     return SvgPicture.asset(
-      'images/arrow_down.svg',
+      'assets/images/arrow_down.svg',
       width: 25,
       height: 25,
     );
@@ -65,9 +66,71 @@ class CommonIcons {
 
   static close() {
     return SvgPicture.asset(
-      'images/close.svg',
+      'assets/images/close.svg',
       width: 20,
       height: 20,
+    );
+  }
+
+  static alert() {
+    return SvgPicture.asset(
+      'assets/images/alert.svg',
+    );
+  }
+
+  static lineClose() {
+    return Image.asset(
+      'assets/images/line_close.png',
+      width: 32,
+      height: 32,
+    );
+  }
+
+  static complete() {
+    return Image.asset(
+      'assets/images/complete.png',
+      width: 100,
+      height: 100,
+    );
+  }
+
+  static confirmed() {
+    return Image.asset(
+      'assets/images/confirmed.png',
+      width: 100,
+      height: 100,
+    );
+  }
+
+  static visited() {
+    return Image.asset(
+      'assets/images/visited.png',
+      width: 100,
+      height: 100,
+    );
+  }
+
+  static cancel() {
+    return Image.asset(
+      'assets/images/cancel.png',
+      width: 100,
+      height: 100,
+    );
+  }
+
+  static absent() {
+    return Image.asset(
+      'assets/images/absent.png',
+      width: 100,
+      height: 100,
+    );
+  }
+
+  static findReservation() {
+    return Image.asset(
+      'assets/images/find_reservation.png',
+      width: 150,
+      height: 100,
     );
   }
 }

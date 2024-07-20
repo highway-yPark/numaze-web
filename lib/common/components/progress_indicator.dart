@@ -3,7 +3,7 @@ import 'package:numaze_web/common/const/colors.dart';
 import 'package:numaze_web/common/const/text.dart';
 
 class StatusColumn extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String title;
   final String? message;
   final int currentStep;
@@ -25,10 +25,7 @@ class StatusColumn extends StatelessWidget {
         const SizedBox(
           height: 30,
         ),
-        Icon(
-          icon,
-          size: 100,
-        ),
+        icon,
         const SizedBox(
           height: 12,
         ),

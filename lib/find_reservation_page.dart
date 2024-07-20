@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/customer_appointment_provider.dart';
 
+import 'common/components/common_input_field.dart';
 import 'common/components/inkwell_button.dart';
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
+import 'common/const/widgets.dart';
 
 class FindReservationPage extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -22,7 +25,7 @@ class FindReservationPage extends ConsumerStatefulWidget {
 
 class _FindReservationPageState extends ConsumerState<FindReservationPage> {
   final TextEditingController _controller = TextEditingController();
-  bool notFound = false;
+  // bool notFound = false;
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -36,62 +39,64 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
             children: [
               Positioned.fill(
                 child: SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    // padding: EdgeInsets.only(bottom: bottomInset),
-                    child: !notFound
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 171),
-                              const Icon(Icons.search),
-                              const SizedBox(height: 12),
-                              Text(
-                                '예약 내역을 조회해보세요.',
-                                style: TextDesign.bold26B,
-                              ),
-                              const SizedBox(height: 40),
-                              TextFormField(
-                                controller: _controller,
-                                scrollPadding:
-                                    const EdgeInsets.only(bottom: 100),
-                                maxLines: 1,
-                                style: TextDesign.medium14G,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: ContainerColors.mediumGrey,
-                                  hintText: '예약 코드를 입력해주세요',
-                                  hintStyle: TextDesign.medium14G,
-                                  border: InputBorder.none,
-                                  counterText: '',
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                ),
-                                cursorColor: StrokeColors.black,
-                                onTapOutside: (event) {
-                                  FocusScope.of(context).unfocus();
-                                },
-                              ),
-                            ],
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const SizedBox(height: 171),
-                              const Icon(Icons.close),
-                              const SizedBox(height: 12),
-                              Text(
-                                '내역이 발견되지 않았어요!',
-                                style: TextDesign.bold26B,
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                '최근 예약 내역이 없어요.\n누메이즈에서 원하는 시술을 만나보세요.',
-                                style: TextDesign.medium16G,
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          )),
+                  child: Stack(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 171),
+                          CommonIcons.findReservation(),
+                          const SizedBox(height: 12),
+                          Text(
+                            '이미 예약한\n시술이 있나요?',
+                            style: TextDesign.bold26B,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 40),
+                          Padding(
+                            padding: CommonWidgets.sixteenTenPadding(),
+                            child: CommonInputField(
+                              controller: _controller,
+                              hintText: '예약 코드를 입력해주세요',
+                              isCentered: true,
+                              isPhoneNumber: false,
+                              maxLength: 11,
+                              isLogin: true,
+                            ),
+                          ),
+                          // TextFormField(
+                          //   controller: _controller,
+                          //   scrollPadding: const EdgeInsets.only(bottom: 100),
+                          //   maxLines: 1,
+                          //   style: TextDesign.medium14G,
+                          //   decoration: InputDecoration(
+                          //     hintText: '예약 코드를 입력해주세요',
+                          //     hintStyle: TextDesign.medium14G,
+                          //     border: InputBorder.none,
+                          //     counterText: '',
+                          //     contentPadding:
+                          //         const EdgeInsets.symmetric(horizontal: 16),
+                          //   ),
+                          //   cursorColor: StrokeColors.black,
+                          //   onTapOutside: (event) {
+                          //     FocusScope.of(context).unfocus();
+                          //   },
+                          // ),
+                        ],
+                      ),
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: GestureDetector(
+                          onTap: () {
+                            context.go('/s/${widget.shopDomain}');
+                          },
+                          child: CommonIcons.home(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               if (bottomInset == 0)
                 Positioned(
@@ -99,27 +104,21 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                   left: 0,
                   right: 0,
                   child: BlackInkwellButton(
-                      onTap: () async {
-                        if (!notFound) {
-                          final resp = await ref
-                              .read(
-                                  customerAppointmentProvider(_controller.text)
-                                      .notifier)
-                              .getCustomerAppointment();
-                          if (!context.mounted) return;
-                          if (resp == 200) {
-                            context.go(
-                                '/appointment/${_controller.text}?shopDomain=${widget.shopDomain}');
-                          } else {
-                            setState(() {
-                              notFound = true;
-                            });
-                          }
-                        } else {
-                          context.go('/s/${widget.shopDomain}');
-                        }
-                      },
-                      text: !notFound ? '조회하기' : '예약하러 가기'),
+                    onTap: () async {
+                      final resp = await ref
+                          .read(customerAppointmentProvider(_controller.text)
+                              .notifier)
+                          .getCustomerAppointment();
+                      if (!context.mounted) return;
+                      if (resp == 200) {
+                        context.go(
+                            '/appointment/${_controller.text}?shopDomain=${widget.shopDomain}');
+                      } else {
+                        context.go('/notFound?shopDomain=${widget.shopDomain}');
+                      }
+                    },
+                    text: '조회하기',
+                  ),
                 ),
             ],
           ),

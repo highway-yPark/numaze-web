@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/complete_page.dart';
+import 'package:numaze_web/view/complete_page.dart';
 import 'package:numaze_web/customer_appointment_page.dart';
 import 'package:numaze_web/find_reservation_page.dart';
 import 'package:numaze_web/shop_info_page.dart';
+import 'package:numaze_web/view/not_found_page.dart';
+import 'package:numaze_web/view/reservation_failed.dart';
+import 'package:numaze_web/view/shop_close.dart';
 import 'date_page.dart';
 import 'main.dart';
 import 'payment_complete_screen.dart';
@@ -49,6 +52,33 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         final String shopDomain = state.uri.queryParameters['shopDomain']!;
         return FindReservationPage(
+          shopDomain: shopDomain,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/close',
+      builder: (BuildContext context, GoRouterState state) {
+        final String shopDomain = state.uri.queryParameters['shopDomain']!;
+        return ShopClosePage(
+          shopDomain: shopDomain,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/notFound',
+      builder: (BuildContext context, GoRouterState state) {
+        final String shopDomain = state.uri.queryParameters['shopDomain']!;
+        return NotFoundPage(
+          shopDomain: shopDomain,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/fail',
+      builder: (BuildContext context, GoRouterState state) {
+        final String shopDomain = state.uri.queryParameters['shopDomain']!;
+        return ReservationFailed(
           shopDomain: shopDomain,
         );
       },
