@@ -46,7 +46,7 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                         children: [
                           const SizedBox(height: 171),
                           CommonIcons.findReservation(),
-                          const SizedBox(height: 12),
+                          // const SizedBox(height: 12),
                           Text(
                             '이미 예약한\n시술이 있나요?',
                             style: TextDesign.bold26B,

@@ -11,28 +11,30 @@ import 'list_model.dart';
 import 'model.dart';
 
 class Announcements extends ConsumerWidget {
+  final List<ShopAnnouncementsModel> announcements;
   final String shopDomain;
 
   const Announcements({
     super.key,
+    required this.announcements,
     required this.shopDomain,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final shopAnnouncementsState =
-        ref.watch(shopAnnouncementsProvider(shopDomain));
-    if (shopAnnouncementsState is ListLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (shopAnnouncementsState is ListError) {
-      return Center(
-        child: Text(shopAnnouncementsState.data),
-      );
-    }
-    final announcements =
-        shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
+    // final shopAnnouncementsState =
+    //     ref.watch(shopAnnouncementsProvider(shopDomain));
+    // if (shopAnnouncementsState is ListLoading) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
+    //
+    // if (shopAnnouncementsState is ListError) {
+    //   return Center(
+    //     child: Text(shopAnnouncementsState.data),
+    //   );
+    // }
+    // final announcements =
+    //     shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -41,9 +43,9 @@ class Announcements extends ConsumerWidget {
             : MediaQuery.sizeOf(context).width;
         return ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: announcements.data.length,
+          itemCount: announcements.length,
           itemBuilder: (context, index) {
-            final announcement = announcements.data[index];
+            final announcement = announcements[index];
             return GestureDetector(
               onTap: () {
                 showDialog(

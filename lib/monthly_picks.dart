@@ -13,26 +13,28 @@ import 'common/components/custom_snackbar.dart';
 import 'common/const/text.dart';
 
 class MonthlyPicks extends ConsumerWidget {
+  final List<MonthlyPickModel> monthlyPicks;
   final String shopDomain;
 
   const MonthlyPicks({
     super.key,
+    required this.monthlyPicks,
     required this.shopDomain,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final monthlyPicksState = ref.watch(monthlyPickProvider(shopDomain));
-    if (monthlyPicksState is ListLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (monthlyPicksState is ListError) {
-      return Center(
-        child: Text(monthlyPicksState.data),
-      );
-    }
-    final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
+    // final monthlyPicksState = ref.watch(monthlyPickProvider(shopDomain));
+    // if (monthlyPicksState is ListLoading) {
+    //   return const Center(child: CircularProgressIndicator());
+    // }
+    //
+    // if (monthlyPicksState is ListError) {
+    //   return Center(
+    //     child: Text(monthlyPicksState.data),
+    //   );
+    // }
+    // final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
     final treatmentsState = ref.watch(treatmentProvider(shopDomain));
     if (treatmentsState is ListLoading) {
       return const Center(
@@ -51,9 +53,9 @@ class MonthlyPicks extends ConsumerWidget {
         return ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: monthlyPicks.data.length,
+          itemCount: monthlyPicks.length,
           itemBuilder: (context, index) {
-            final monthlyPick = monthlyPicks.data[index];
+            final monthlyPick = monthlyPicks[index];
             final treatment = treatments.data
                 .expand((category) => category.treatments)
                 .firstWhere((element) => element.id == monthlyPick.treatmentId);

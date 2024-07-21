@@ -10,7 +10,7 @@ import 'package:numaze_web/view/shop_close.dart';
 import 'date_page.dart';
 import 'main.dart';
 import 'payment_complete_screen.dart';
-import 'reservation_details_screen.dart';
+import 'view/reservation_details_screen.dart';
 import 'shop.dart';
 import 'styles_screen.dart';
 import 'shop_styles_screen.dart';

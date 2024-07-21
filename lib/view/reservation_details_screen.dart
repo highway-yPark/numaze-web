@@ -11,13 +11,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_cropper_for_web/image_cropper_for_web.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 
-// import 'package:image_picker_web/image_picker_web.dart';
 import 'package:numaze_web/common/components/inkwell_button.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
@@ -25,18 +21,19 @@ import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'auth/auth_repository.dart';
-import 'common/components/common_image.dart';
-import 'common/components/common_input_field.dart';
-import 'common/components/common_title.dart';
-import 'common/components/custom_snackbar.dart';
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'list_model.dart';
-import 'model.dart';
-import 'provider.dart';
-import 'time_slots_provider.dart';
-import 'treatments_provider.dart';
+import '../auth/auth_repository.dart';
+import '../common/components/common_image.dart';
+import '../common/components/common_input_field.dart';
+import '../common/components/common_title.dart';
+import '../common/components/custom_snackbar.dart';
+import '../common/components/text_with_number.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
+import '../list_model.dart';
+import '../model.dart';
+import '../provider.dart';
+import '../time_slots_provider.dart';
+import '../treatments_provider.dart';
 
 class ReservationDetailsScreen extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -54,7 +51,8 @@ class ReservationDetailsScreen extends ConsumerStatefulWidget {
 class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   String name = '';
   String phoneNumber = '';
-  String verificationCode = '';
+  // String verificationCode = '';
+  TextEditingController verificationCodeController = TextEditingController();
   bool codeVerified = false;
   bool codeNotMatch = false;
   // TextEditingController nameController = TextEditingController();
@@ -73,11 +71,11 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           setState(() {
             timer.cancel();
             codeVerified = false;
-            customSnackBar(
-              message: '인증번호 유효시간이 만료되었어요.',
-              context: context,
-              error: true,
-            );
+            // customSnackBar(
+            //   message: '인증번호 유효시간이 만료되었어요.',
+            //   context: context,
+            //   error: true,
+            // );
           });
         } else {
           setState(() {
@@ -97,7 +95,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       if (resp == 200) {
         setState(() {
           codeVerified = false;
-          verificationCode = '';
+          // verificationCode = '';
+          verificationCodeController.clear();
         });
         if (_timer != null && _start < 180) {
           _start = 180;
@@ -122,7 +121,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         codeNotMatch = false;
         _start = 180;
         _timer?.cancel();
-        verificationCode = '';
+        // verificationCode = '';
+        verificationCodeController.clear();
       });
     }
     FocusScope.of(context).unfocus();
@@ -133,7 +133,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       final resp =
           await ref.read(authRepositoryProvider).verifyVerificationCode(
                 phoneNumber: phoneNumber,
-                code: verificationCode,
+                // code: verificationCode,
+                code: verificationCodeController.text,
               );
       if (!context.mounted) return;
       if (resp == 200) {
@@ -205,53 +206,19 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         options: const ImagePickerOptions(
           maxWidth: 720,
           maxHeight: 720,
-          imageQuality: 60,
+          imageQuality: 100,
         ),
       );
-      // final imageCropper = ImageCropperPlugin();
-      final imageCropper = ImageCropper();
 
-      print(pickedFile);
-      // await imagePicker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        // final croppedFile = await imageCropper.cropImage(
-        //   sourcePath: pickedFile.path,
-        //   // uiSettings: const IOSUiSettings(
-        //   //   minimumAspectRatio: 1.0,
-        //   // ),
-        //   aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
-        // );
         final bytesFromPicker = await pickedFile.readAsBytes();
-        // if (croppedFile == null) {
-        //   setState(() {
-        //     switch (index) {
-        //       case 1:
-        //         isLoadingOne = false;
-        //         break;
-        //       case 2:
-        //         isLoadingTwo = false;
-        //         break;
-        //       case 3:
-        //         isLoadingThree = false;
-        //         break;
-        //       case 4:
-        //         isLoadingFour = false;
-        //         break;
-        //     }
-        //   });
-        //   return;
-        // }
-        // final bytesFromPicker = await croppedFile.readAsBytes();
         setState(() {
           switch (index) {
             case 1:
-              // imageOne = processImage(bytesFromPicker);
-              imageOne = bytesFromPicker;
-              // _runComputation(bytesFromPicker);
+              imageOne = processImage(bytesFromPicker);
               break;
             case 2:
-              // imageTwo = processImage(bytesFromPicker);
-              imageTwo = bytesFromPicker;
+              imageTwo = processImage(bytesFromPicker);
               break;
             case 3:
               imageThree = processImage(bytesFromPicker);
@@ -278,67 +245,9 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           }
         });
       }
-      // if (bytesFromPicker != null) {
-      //   setState(() {
-      //     switch (index) {
-      //       case 1:
-      //         imageOne = bytesFromPicker;
-      //         // _runComputation(bytesFromPicker);
-      //         break;
-      //       case 2:
-      //         imageTwo = bytesFromPicker;
-      //         break;
-      //       case 3:
-      //         imageThree = bytesFromPicker;
-      //         break;
-      //       case 4:
-      //         imageFour = bytesFromPicker;
-      //     }
-      //   });
-      // }
-      // if (bytesFromPicker != null) {
-      //   setState(() {
-      //     switch (index) {
-      //       case 1:
-      //         imageOne = processImage(bytesFromPicker);
-      //         // _runComputation(bytesFromPicker);
-      //         break;
-      //       case 2:
-      //         imageTwo = processImage(bytesFromPicker);
-      //         break;
-      //       case 3:
-      //         imageThree = processImage(bytesFromPicker);
-      //         break;
-      //       case 4:
-      //         imageFour = processImage(bytesFromPicker);
-      //     }
-      //   });
-      // } else {
-      //   setState(() {
-      //     switch (index) {
-      //       case 1:
-      //         isLoadingOne = false;
-      //         break;
-      //       case 2:
-      //         isLoadingTwo = false;
-      //         break;
-      //       case 3:
-      //         isLoadingThree = false;
-      //         break;
-      //       case 4:
-      //         isLoadingFour = false;
-      //         break;
-      //     }
-      //   });
-      //   print(isLoadingOne);
-      //   print(isLoadingTwo);
-      //   print(isLoadingThree);
-      //   print(isLoadingFour);
-      // }
     } catch (e) {
-      print('An error occurred while picking images: $e');
+      showError();
     } finally {
-      print('image picked');
       setState(() {
         switch (index) {
           case 1:
@@ -358,68 +267,12 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     }
   }
 
-  // List<Uint8List> images = [];
-
-  // Future<void> pickAndCropImages() async {
-  //   try {
-  //     int remainingSlots = 5 - images.length;
-  //     if (remainingSlots <= 0) {
-  //       // Display a message if the user tries to pick more than the allowed number of images
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('You can only pick up to 5 images.')),
-  //       );
-  //       return;
-  //     }
-  //
-  //     // FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //     //   allowMultiple: true,
-  //     //   type: FileType.image,
-  //     //   withData: true,
-  //     // );
-  //     Uint8List? bytesFromPicker = await ImagePickerWeb.getImageAsBytes();
-  //
-  //     if (bytesFromPicker != null) {
-  //       setState(() {
-  //         images.add(processImage(bytesFromPicker));
-  //       });
-  //     }
-  //
-  //     // if (result != null && result.files.isNotEmpty) {
-  //     //   // List<Uint8List> selectedImages = result.files
-  //     //   //     .take(remainingSlots)
-  //     //   //     .map((file) => processImage(file.bytes!))
-  //     //   //     .toList();
-  //     //
-  //     //   int pickedCount = result.files.length;
-  //     //
-  //     //   if (pickedCount > remainingSlots) {
-  //     //     ScaffoldMessenger.of(context).showSnackBar(
-  //     //       SnackBar(
-  //     //           content: Text(
-  //     //               'You can only pick up to $remainingSlots more images.')),
-  //     //     );
-  //     //     return;
-  //     //   }
-  //     //
-  //     //   // List<Uint8List> selectedImages =
-  //     //   //     result.files.map((file) => processImage(file.bytes!)).toList();
-  //     //
-  //     //   List<Uint8List> selectedImages =
-  //     //       result.files.map((file) => file.bytes!).toList();
-  //     //
-  //     //   setState(() {
-  //     //     images.addAll(selectedImages);
-  //     //   });
-  //     // }
-  //   } catch (e) {
-  //     print('An error occurred while picking images: $e');
-  //   }
-  // }
+  void showError() {
+    errorSnackBar(context: context);
+  }
 
   Uint8List processImage(Uint8List imageBytes) {
     final image = img.decodeImage(imageBytes)!;
-
-    const size = 720;
 
     int x, y, cropSize;
     if (image.width > image.height) {
@@ -440,44 +293,14 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       height: cropSize,
     );
 
-    final resized = img.copyResize(
-      cropped,
-      width: size,
-      height: size,
-      interpolation: img.Interpolation.cubic,
+    return Uint8List.fromList(
+      img.encodeJpg(
+        // resized,
+        cropped,
+        quality: 80,
+      ),
     );
-
-    return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
   }
-
-  // Uint8List processImage(Uint8List imageBytes) {
-  //   final image = img.decodeImage(imageBytes)!;
-  //
-  //   const size = 720;
-  //
-  //   // Determine the crop area
-  //   int x, y, cropSize;
-  //   if (image.width > image.height) {
-  //     cropSize = image.height;
-  //     x = (image.width - cropSize) ~/ 2;
-  //     y = 0;
-  //   } else {
-  //     cropSize = image.width;
-  //     x = 0;
-  //     y = (image.height - cropSize) ~/ 2;
-  //   }
-  //
-  //   // Crop the image
-  //   final cropped =
-  //       img.copyCrop(image, x: x, y: y, height: cropSize, width: cropSize);
-  //
-  //   // Resize the image using the Lanczos3 interpolation method for better performance
-  //   final resized = img.copyResize(cropped,
-  //       width: size, height: size, interpolation: img.Interpolation.nearest);
-  //
-  //   // Encode the resized image to JPEG
-  //   return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
-  // }
 
   int sumOfEachTreatmentOptionDuration(TreatmentHistoryResponse treatment) {
     int sum = 0;
@@ -490,16 +313,11 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     return sum;
   }
 
-  // bool isKeyboardOpen = false;
-
   @override
   void initState() {
     super.initState();
     customerRequestController = TextEditingController();
     duration = ref.read(durationProvider);
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   _checkKeyboardState();
-    // });
   }
 
   @override
@@ -510,17 +328,10 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     super.dispose();
   }
 
-  // void _checkKeyboardState() {
-  //   final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-  //   setState(() {
-  //     isKeyboardOpen = bottomInsets != 0;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-    // bool isKeyboardOpen = bottomInsets != 0;
+    final mediaQuery = MediaQuery.of(context);
+    final bottomInset = mediaQuery.viewInsets.bottom;
 
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
 
@@ -530,16 +341,15 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     if (selectedDateTime.selectedDate == null ||
         selectedDateTime.selectedTimeSlot == null ||
         selectedTreatments.isEmpty) {
-      // clear all the images
       imageOne = null;
       imageTwo = null;
       imageThree = null;
       imageFour = null;
 
       // remove all images from memory
-      SystemChannels.platform.invokeMethod(
-          'SystemChannels.platform.invokeMethod',
-          'SystemChannels.platform.invokeMethod');
+      // SystemChannels.platform.invokeMethod(
+      //     'SystemChannels.platform.invokeMethod',
+      //     'SystemChannels.platform.invokeMethod');
 
       return IconButton(
         onPressed: () {
@@ -572,9 +382,10 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     final options = (optionsState as ListModel<OptionCategory>).data;
     final shopMessages = shopMessagesState as ShopMessageInfo;
 
-    final buttonColor = name.isEmpty ||
-            phoneNumber.isEmpty ||
-            verificationCode.isEmpty ||
+    final buttonColor = name.trim().isEmpty ||
+            phoneNumber.trim().isEmpty ||
+            // verificationCode.isEmpty ||
+            verificationCodeController.text.trim().isEmpty ||
             !codeVerified ||
             selectedTreatments.isEmpty
         ? Colors.grey
@@ -589,41 +400,9 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           child: Stack(
             children: [
               // if (!isKeyboardOpen)
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: ConditionalInkwellButton(
-                  onTap: () {
-                    if (buttonColor == Colors.black) {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) {
-                          final images = [
-                            imageOne,
-                            imageTwo,
-                            imageThree,
-                            imageFour,
-                          ].whereType<Uint8List>().toList();
-                          return ReservationBottomSheet(
-                            shopDomain: widget.shopDomain,
-                            shopMessages: shopMessages,
-                            name: name,
-                            phoneNumber: phoneNumber,
-                            customerRequest: customerRequestController.text,
-                            images: images,
-                          );
-                        },
-                      );
-                    }
-                  },
-                  condition: buttonColor == Colors.grey,
-                  text: '다음',
-                ),
-              ),
+
               Positioned.fill(
-                bottom: 72,
+                // bottom: 72,
                 child: ListView(
                   children: [
                     Column(
@@ -673,12 +452,13 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                                 .name;
 
                             /// 0 is treatment, 1 is style, 2 is monthly pick
-                            int treatmentType =
-                                selectedTreatment.styleId == null
-                                    ? selectedTreatment.monthlyPickId == null
-                                        ? 0
-                                        : 2
-                                    : 1;
+                            int treatmentType = selectedTreatment.styleId ==
+                                        null &&
+                                    selectedTreatment.treatmentStyleId == null
+                                ? selectedTreatment.monthlyPickId == null
+                                    ? 0
+                                    : 2
+                                : 1;
 
                             return Column(
                               children: [
@@ -823,6 +603,10 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                           InkWell(
                             onTap: () async {
                               await sendVerificationCode(context, ref);
+                              // setState(() {
+                              //   verificationCode = '';
+                              // });
+                              verificationCodeController.clear();
                             },
                             child: Container(
                               height: 45,
@@ -859,26 +643,66 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                             width: 16,
                           ),
                           Expanded(
-                            child: Stack(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                CommonInputField(
-                                  maxLength: 6,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      verificationCode = value;
-                                    });
-                                  },
-                                  isPhoneNumber: true,
-                                ),
-                                if (_start < 180)
-                                  Positioned(
-                                    right: 16,
-                                    top: 0,
-                                    bottom: 0,
-                                    child: Center(
-                                      child: CountdownTimerWidget(
-                                          remainingTime: _start),
+                                Stack(
+                                  children: [
+                                    CommonInputField(
+                                      controller: verificationCodeController,
+                                      maxLength: 6,
+                                      isPhoneNumber: true,
                                     ),
+                                    if (_start < 180 &&
+                                        _start > 0 &&
+                                        !codeVerified)
+                                      Positioned(
+                                        right: 16,
+                                        top: 0,
+                                        bottom: 0,
+                                        child: Center(
+                                          child: CountdownTimerWidget(
+                                            remainingTime: _start,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                                if (codeVerified)
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '인증 됐습니다.',
+                                        style: TextDesign.regular12BO,
+                                      ),
+                                    ],
+                                  ),
+                                if (_start == 0 && !codeVerified)
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '인증번호 유효시간이 만료되었어요.',
+                                        style: TextDesign.regular12BO,
+                                      ),
+                                    ],
+                                  ),
+                                if (_start > 0 && codeNotMatch)
+                                  Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        '인증번호를 다시 확인해주세요.',
+                                        style: TextDesign.regular12BO,
+                                      ),
+                                    ],
                                   ),
                               ],
                             ),
@@ -888,15 +712,27 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                           ),
                           InkWell(
                             onTap: () async {
-                              await verifyCode(context, ref);
+                              if (verificationCodeController.text
+                                          .trim()
+                                          .length ==
+                                      6 &&
+                                  _start > 0 &&
+                                  _start < 180 &&
+                                  !codeVerified) {
+                                await verifyCode(context, ref);
+                              }
                             },
                             child: Container(
                               height: 45,
                               width: 85,
                               decoration: BoxDecoration(
-                                color: verificationCode.length == 6 &&
+                                color: verificationCodeController.text
+                                                .trim()
+                                                .length ==
+                                            6 &&
                                         _start > 0 &&
-                                        _start < 180
+                                        _start < 180 &&
+                                        !codeVerified
                                     ? ContainerColors.black
                                     : ContainerColors.darkGrey,
                                 borderRadius: BorderRadius.circular(3),
@@ -941,18 +777,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 16),
-                          // child: GridView.count(
-                          //   shrinkWrap: true,
-                          //   crossAxisCount: 4,
-                          //   crossAxisSpacing: 10,
-                          //   mainAxisSpacing: 10,
-                          //   children: [
-                          //     _buildImageBox(imageOne, isLoadingOne, 1),
-                          //     _buildImageBox(imageTwo, isLoadingTwo, 2),
-                          //     _buildImageBox(imageThree, isLoadingThree, 3),
-                          //     _buildImageBox(imageFour, isLoadingFour, 4),
-                          //   ],
-                          // ),
                           child: SizedBox(
                             height: 82,
                             child: ListView.builder(
@@ -984,13 +808,47 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                           ),
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 110,
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
+              if (bottomInset == 0)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: ConditionalInkwellButton(
+                    onTap: () {
+                      if (buttonColor == Colors.black) {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            final images = [
+                              imageOne,
+                              imageTwo,
+                              imageThree,
+                              imageFour,
+                            ].whereType<Uint8List>().toList();
+                            return ReservationBottomSheet(
+                              shopDomain: widget.shopDomain,
+                              shopMessages: shopMessages,
+                              name: name,
+                              phoneNumber: phoneNumber,
+                              customerRequest: customerRequestController.text,
+                              images: images,
+                            );
+                          },
+                        );
+                      }
+                    },
+                    condition: buttonColor == Colors.grey,
+                    text: '다음',
+                  ),
+                ),
             ],
           ),
         ),
@@ -1222,73 +1080,6 @@ class TreatmentWidget extends StatelessWidget {
     );
   }
 }
-//
-// class CommonInputField extends StatelessWidget {
-//   final String title;
-//   final int maxLength;
-//   final String? initialText;
-//   final String hint;
-//   final Function(String) onChanged;
-//   final bool isNumber;
-//   final int? remainingTime;
-//
-//   const CommonInputField({
-//     super.key,
-//     required this.title,
-//     required this.maxLength,
-//     this.initialText,
-//     required this.hint,
-//     required this.onChanged,
-//     this.isNumber = false,
-//     this.remainingTime,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       crossAxisAlignment: CrossAxisAlignment.center,
-//       mainAxisAlignment: MainAxisAlignment.start,
-//       children: [
-//         SizedBox(
-//           width: 70,
-//           child: Text(
-//             title,
-//             style: TextDesign.medium14G,
-//             textAlign: TextAlign.left,
-//           ),
-//         ),
-//         Expanded(
-//           child: SizedBox(
-//             height: 45, // Ensure fixed height for the input field
-//             child: TextFormField(
-//               scrollPadding: const EdgeInsets.only(bottom: 100),
-//               maxLength: maxLength,
-//               initialValue: initialText,
-//               style: TextDesign.medium14G,
-//               keyboardType:
-//                   isNumber ? TextInputType.number : TextInputType.text,
-//               // prevent input from desktop as well
-//               inputFormatters: [
-//                 if (isNumber) FilteringTextInputFormatter.digitsOnly,
-//               ],
-//               decoration: InputDecoration(
-//                 filled: true,
-//                 fillColor: ContainerColors.mediumGrey,
-//                 hintText: hint,
-//                 hintStyle: TextDesign.medium14G,
-//                 border: InputBorder.none,
-//                 counterText: '',
-//                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-//               ),
-//               cursorColor: StrokeColors.black,
-//               onChanged: onChanged,
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class CountdownTimerWidget extends StatelessWidget {
   final int remainingTime;
@@ -1315,29 +1106,6 @@ class CountdownTimerWidget extends StatelessWidget {
     );
   }
 }
-
-// class CommonTitle extends StatelessWidget {
-//   final String title;
-//
-//   const CommonTitle({
-//     super.key,
-//     required this.title,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 45,
-//       width: MediaQuery.of(context).size.width,
-//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-//       child: Text(
-//         title,
-//         style: TextDesign.bold18B,
-//         textAlign: TextAlign.left,
-//       ),
-//     );
-//   }
-// }
 
 class ReservationBottomSheet extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -1371,6 +1139,8 @@ class _ReservationBottomSheetState
   bool allChecked = false;
   bool privacyAgree = false;
   bool thirdPartyAgree = false;
+
+  bool isLoading = false;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -1407,39 +1177,6 @@ class _ReservationBottomSheetState
     });
   }
 
-  // Uint8List processImage(Uint8List imageBytes) {
-  //   final image = img.decodeImage(imageBytes)!;
-  //
-  //   const size = 720;
-  //
-  //   int x, y, cropSize;
-  //   if (image.width > image.height) {
-  //     cropSize = image.height;
-  //     x = (image.width - cropSize) ~/ 2;
-  //     y = 0;
-  //   } else {
-  //     cropSize = image.width;
-  //     x = 0;
-  //     y = (image.height - cropSize) ~/ 2;
-  //   }
-  //
-  //   final cropped = img.copyCrop(
-  //     image,
-  //     x: x,
-  //     y: y,
-  //     width: cropSize,
-  //     height: cropSize,
-  //   );
-  //
-  //   final resized = img.copyResize(
-  //     cropped,
-  //     width: size,
-  //     height: size,
-  //     interpolation: img.Interpolation.cubic,
-  //   );
-  //
-  //   return Uint8List.fromList(img.encodeJpg(resized, quality: 80));
-  // }
   Future<void> launch(String url, {bool isNewTab = true}) async {
     await launchUrl(
       Uri.parse(url),
@@ -1490,7 +1227,6 @@ class _ReservationBottomSheetState
     return SafeArea(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          // maxHeight: MediaQuery.of(context).size.height * 0.8,
           maxWidth: 500,
         ),
         child: Stack(
@@ -1507,11 +1243,7 @@ class _ReservationBottomSheetState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'assets/images/triangle_alert.png',
-                              width: 100,
-                              height: 100,
-                            ),
+                            CommonIcons.triangleAlert(),
                             const SizedBox(
                               height: 12,
                             ),
@@ -1782,18 +1514,6 @@ class _ReservationBottomSheetState
                     key: _otherInfoKey,
                   ),
                   ConstWidgets.greyBox(),
-                  // buildCheckboxTile(
-                  //   title: '누메이즈 서비스 이용 동의',
-                  //   content:
-                  //       '(주)도두는 통신판매중개자이며 통신판매의 당사자가 아닙니다. (주)도두는 예약 및 구매관련 통신판매업자가 제공하는 상품, 거래정보 및 거래 등에 대하여 책임을 지지 않습니다.',
-                  //   value: _serviceAgreementAccepted,
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       _serviceAgreementAccepted = value!;
-                  //     });
-                  //   },
-                  //   key: _serviceAgreementKey,
-                  // ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -1810,7 +1530,7 @@ class _ReservationBottomSheetState
                           ),
                           child: Row(
                             children: [
-                              customCheckbox2(
+                              customCheckbox(
                                   value: allChecked,
                                   onChanged: (value) {
                                     setState(() {
@@ -1878,27 +1598,21 @@ class _ReservationBottomSheetState
                 ],
               ),
             ),
-            // Positioned(
-            //   top: 10,
-            //   left: 10,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       Navigator.of(context).pop();
-            //     },
-            //     child: Icon(
-            //       Icons.close,
-            //       color: IconColors.black,
-            //       size: 25,
-            //     ),
-            //   ),
-            // ),
+            if (isLoading)
+              const Positioned.fill(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: StrokeColors.black,
+                  ),
+                ),
+              ),
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: ConditionalInkwellButton(
                 onTap: () async {
-                  if (checkConditions()) {
+                  if (checkConditions() || isLoading) {
                     return;
                   }
                   final designer = ref.read(selectedDesignerProvider);
@@ -1907,6 +1621,9 @@ class _ReservationBottomSheetState
                       ref.read(selectedTreatmentProvider);
 
                   try {
+                    setState(() {
+                      isLoading = true;
+                    });
                     final resp = await ref
                         .read(repositoryProvider)
                         .createAppointment(
@@ -1926,18 +1643,12 @@ class _ReservationBottomSheetState
 
                     if (!context.mounted) return;
 
-                    // process the images first
-                    // final processedImages = widget.images
-                    //     .map((image) => processImage(image))
-                    //     .toList();
-
                     List<MultipartFile> multipartFiles =
                         widget.images.map((image) {
                       return MultipartFile.fromBytes(
                         image,
                         filename:
                             '${DateTime.now().millisecondsSinceEpoch}.jpeg',
-                        // contentType: MediaType('image', 'jpeg'),
                       );
                     }).toList();
 
@@ -1946,17 +1657,36 @@ class _ReservationBottomSheetState
                           files: multipartFiles,
                         );
 
+                    ref
+                        .read(selectedDateTimeProvider.notifier)
+                        .clearSelections();
+                    ref
+                        .read(selectedDesignerProvider.notifier)
+                        .clearSelection();
+                    ref.read(selectedTreatmentProvider.notifier).state = {};
+
                     context.go(
                         '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
                   } on DioException catch (e) {
                     debugPrint(e.toString());
+
                     if (e.response?.statusCode == 400) {
+                      debugPrint(e.response?.data);
                       final error = e.response?.data['error_code'];
                       if (error != null) {
+                        ref
+                            .read(selectedDateTimeProvider.notifier)
+                            .clearSelections();
+                        ref
+                            .read(selectedDesignerProvider.notifier)
+                            .clearSelection();
                         switch (error) {
                           case 'SHOP_NOT_TAKING_RESERVATION':
+                            ref.read(selectedTreatmentProvider.notifier).state =
+                                {};
                             context
                                 .go('/close?shopDomain=${widget.shopDomain}');
+
                           case 'INVALID_TIME_SLOT':
                             context.go('/fail?shopDomain=${widget.shopDomain}');
                         }
@@ -1969,11 +1699,9 @@ class _ReservationBottomSheetState
                       );
                     }
                   }
-
-                  // ref.read(selectedTreatmentProvider.notifier).state = {};
                 },
                 text: '예약 신청하기',
-                condition: checkConditions(),
+                condition: checkConditions() || isLoading,
               ),
             ),
           ],
@@ -2012,10 +1740,6 @@ class _ReservationBottomSheetState
                 title,
                 style: TextDesign.bold18B,
               ),
-              Text(
-                ' (필수)',
-                style: TextDesign.bold18BO,
-              )
             ],
           ),
           const SizedBox(
@@ -2105,7 +1829,7 @@ class _ReservationBottomSheetState
 
   Widget customCheckbox({
     required bool value,
-    required ValueChanged<bool?> onChanged,
+    required ValueChanged<bool> onChanged,
   }) {
     return GestureDetector(
       onTap: () {
@@ -2115,7 +1839,7 @@ class _ReservationBottomSheetState
         padding: const EdgeInsets.all(4),
         height: 24,
         width: 24,
-        color: value ? BrandColors.orange : ContainerColors.mediumGrey2,
+        color: value ? IconColors.black : IconColors.basic,
         child: const Icon(
           Icons.check,
           size: 16,
@@ -2125,8 +1849,12 @@ class _ReservationBottomSheetState
     );
   }
 
-  Widget buildCheckBoxRow(String title, bool isChecked,
-      ValueChanged<bool> onChanged, String? hasUri) {
+  Widget buildCheckBoxRow(
+    String title,
+    bool isChecked,
+    ValueChanged<bool> onChanged,
+    String? hasUri,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 11,
@@ -2175,49 +1903,6 @@ class _ReservationBottomSheetState
         size: 20,
         color: value ? IconColors.black : IconColors.basic,
       ),
-    );
-  }
-
-  Widget customCheckbox2({
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return GestureDetector(
-      onTap: () {
-        onChanged(!value);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        height: 24,
-        width: 24,
-        color: value ? IconColors.black : IconColors.basic,
-        child: const Icon(
-          Icons.check,
-          size: 16,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}
-
-class TextWithNumber extends StatelessWidget {
-  final String number;
-  final RichText text;
-  const TextWithNumber({
-    super.key,
-    required this.text,
-    required this.number,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(number, style: TextDesign.bold14BO),
-        const SizedBox(width: 10),
-        text,
-      ],
     );
   }
 }

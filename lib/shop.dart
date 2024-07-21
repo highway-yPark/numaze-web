@@ -7,10 +7,12 @@ import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/list_model.dart';
 import 'package:numaze_web/treatment_box.dart';
 import 'announcements.dart';
+import 'announcements_provider.dart';
 import 'common/components/tag_item.dart';
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
 import 'common/const/widgets.dart';
+import 'monthly_pick_provider.dart';
 import 'monthly_picks.dart';
 import 'model.dart';
 import 'provider.dart';
@@ -35,7 +37,6 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   void initState() {
     super.initState();
 
-    // Initialize GlobalKeys
     for (int i = 0; i < 10; i++) {
       _categoryKeys[i] = GlobalKey();
     }
@@ -103,6 +104,33 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   Widget build(BuildContext context) {
     final shopBasicInfoState =
         ref.watch(shopBasicInfoProvider(widget.shopDomain));
+
+    final monthlyPicksState = ref.watch(monthlyPickProvider(widget.shopDomain));
+    if (monthlyPicksState is ListLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (monthlyPicksState is ListError) {
+      return Center(
+        child: Text(monthlyPicksState.data),
+      );
+    }
+    final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
+
+    final shopAnnouncementsState =
+        ref.watch(shopAnnouncementsProvider(widget.shopDomain));
+    if (shopAnnouncementsState is ListLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (shopAnnouncementsState is ListError) {
+      return Center(
+        child: Text(shopAnnouncementsState.data),
+      );
+    }
+    final announcements =
+        shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
+
     if (shopBasicInfoState is ShopBasicLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -134,6 +162,8 @@ class _ShopPageState extends ConsumerState<ShopPage> {
     final treatments = (treatmentsState as ListModel<TreatmentCategory>).data;
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
 
+    print(announcements.data.length);
+
     return Scaffold(
       body: Center(
         child: Stack(
@@ -164,10 +194,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                                 context.go(
                                     '/findReservation?shopDomain=${widget.shopDomain}');
                               },
-                              child: const Icon(
-                                Icons.search,
-                                size: 32,
-                              ),
+                              child: CommonIcons.customerAppointment(),
                             ),
                           ],
                         ),
@@ -187,112 +214,6 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                  // SliverAppBar(
-                  //   backgroundColor: ContainerColors.white,
-                  //   expandedHeight: 52 +
-                  //       ((shopData.backgroundImage != null)
-                  //           ? (MediaQuery.of(context).size.width > 500
-                  //               ? 500.0 / 3.25
-                  //               : MediaQuery.of(context).size.width / 3.25)
-                  //           : 0),
-                  //   flexibleSpace: LayoutBuilder(
-                  //     builder: (context, constraints) {
-                  //       final width = MediaQuery.of(context).size.width > 500
-                  //           ? 500.0
-                  //           : MediaQuery.of(context).size.width;
-                  //       final height = width / 3.25 + 52;
-                  //       return Column(
-                  //         children: [
-                  //           SizedBox(
-                  //             height: 52,
-                  //             child: Padding(
-                  //               padding: const EdgeInsets.symmetric(
-                  //                 horizontal: 16.0,
-                  //                 // vertical: 10.0,
-                  //               ),
-                  //               child: Row(
-                  //                 mainAxisAlignment:
-                  //                     MainAxisAlignment.spaceBetween,
-                  //                 children: [
-                  //                   Image.asset(
-                  //                     'assets/images/numaze_logo.png',
-                  //                     height: 29,
-                  //                   ),
-                  //                   InkWell(
-                  //                     onTap: () {
-                  //                       context.go(
-                  //                           '/findReservation?shopDomain=${widget.shopDomain}');
-                  //                     },
-                  //                     child: const Icon(
-                  //                       Icons.search,
-                  //                       size: 32,
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           ),
-                  //           if (shopData.backgroundImage != null)
-                  //             Flexible(
-                  //               child: Image.network(
-                  //                 shopData.backgroundImage!,
-                  //                 height: height,
-                  //                 width: width,
-                  //                 fit: BoxFit.cover,
-                  //               ),
-                  //             ),
-                  //         ],
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
-                  // SliverToBoxAdapter(
-                  //   child: Column(
-                  //     children: [
-                  //       SizedBox(
-                  //         height: 52,
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.symmetric(
-                  //             horizontal: 16.0,
-                  //             // vertical: 10.0,
-                  //           ),
-                  //           child: Row(
-                  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //             children: [
-                  //               Image.asset(
-                  //                 'assets/images/numaze_logo.png',
-                  //                 height: 29,
-                  //               ),
-                  //               InkWell(
-                  //                 onTap: () {
-                  //                   context.go(
-                  //                       '/findReservation?shopDomain=${widget.shopDomain}');
-                  //                 },
-                  //                 child: const Icon(
-                  //                   Icons.search,
-                  //                   size: 32,
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       if (shopData.backgroundImage != null)
-                  //         Flexible(
-                  //           child: Image.network(
-                  //             shopData.backgroundImage!,
-                  //             width: MediaQuery.of(context).size.width > 500
-                  //                 ? 500.0
-                  //                 : MediaQuery.of(context).size.width,
-                  //             height: MediaQuery.of(context).size.width > 500
-                  //                 ? 500.0 / 3.25
-                  //                 : MediaQuery.of(context).size.width / 3.25,
-                  //             fit: BoxFit.cover,
-                  //           ),
-                  //         ),
-                  //     ],
-                  //   ),
-                  // ),
                   SliverToBoxAdapter(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,7 +251,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                                       style: TextDesign.medium14G,
                                     ),
                                     Text(
-                                      shopData.description,
+                                      shopData.address,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextDesign.regular14B,
@@ -371,48 +292,52 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                          child: SizedBox(
-                            height: 109,
-                            child: Announcements(
-                              shopDomain: widget.shopDomain,
+                        if (announcements.data.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 10,
+                            ),
+                            child: SizedBox(
+                              height: 109,
+                              child: Announcements(
+                                announcements: announcements.data,
+                                shopDomain: widget.shopDomain,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         ConstWidgets.greyBox(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: CommonWidgets.sixteenTenPadding(),
-                              child: Text(
-                                'Monthly pick art',
-                                style: TextDesign.bold18B,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                              ),
-                              child: SizedBox(
-                                height: 183,
-                                child: MonthlyPicks(
-                                  shopDomain: widget.shopDomain,
+                        if (monthlyPicks.data.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: CommonWidgets.sixteenTenPadding(),
+                                child: Text(
+                                  'Monthly pick art',
+                                  style: TextDesign.bold18B,
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        ConstWidgets.greyBox(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                child: SizedBox(
+                                  height: 183,
+                                  child: MonthlyPicks(
+                                    monthlyPicks: monthlyPicks.data,
+                                    shopDomain: widget.shopDomain,
+                                  ),
+                                ),
+                              ),
+                              ConstWidgets.greyBox(),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -566,7 +491,7 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CommonIcons.adFree(),
-                              SizedBox(
+                              const SizedBox(
                                 width: 30,
                               ),
                               Column(

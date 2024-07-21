@@ -11,8 +11,6 @@ class CommonInputField extends StatefulWidget {
   final bool isLogin;
   final ValueChanged<String>? onChanged;
   final String? initialValue;
-  final bool validateInput; // New parameter to control validation
-  final String? Function(String?)? validator; // Validator function
   final bool isPhoneNumber;
   final int? maxLength;
   final TextEditingController? controller;
@@ -25,8 +23,6 @@ class CommonInputField extends StatefulWidget {
     this.errorText,
     this.isLogin = false,
     this.initialValue,
-    this.validateInput = false,
-    this.validator,
     this.isPhoneNumber = false,
     this.maxLength,
     this.controller,
@@ -39,19 +35,12 @@ class CommonInputField extends StatefulWidget {
 }
 
 class _CommonInputFieldState extends State<CommonInputField> {
-  bool _obscureText = true;
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-  }
-
-  void _toggleVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
   }
 
   @override
@@ -63,17 +52,14 @@ class _CommonInputFieldState extends State<CommonInputField> {
       child: TextFormField(
         focusNode: _focusNode,
         controller: widget.controller,
-        //textInputAction: TextInputAction.done,
         maxLengthEnforcement:
             MaxLengthEnforcement.enforced, // Enforce max length
-
         maxLength: widget.maxLength,
         scrollPadding: const EdgeInsets.all(50),
-        initialValue: widget.initialValue,
+        initialValue: widget.controller == null ? widget.initialValue : null,
         maxLines: widget.isLogin ? 1 : null,
         cursorColor: FontColors.black,
         cursorHeight: 14,
-        obscureText: widget.obscureText ? _obscureText : false,
         onChanged: widget.onChanged,
         onTapOutside: (_) {
           _focusNode.unfocus();

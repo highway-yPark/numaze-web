@@ -6,12 +6,14 @@ import 'package:numaze_web/common/components/inkwell_button.dart';
 import 'package:numaze_web/common/components/progress_indicator.dart' as pi;
 import 'package:numaze_web/common/const/icons.dart';
 
+import '../common/components/text_with_number.dart';
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import '../common/const/widgets.dart';
+import '../customer_appointment_page.dart';
 import '../model.dart';
 import '../provider.dart';
-import '../reservation_details_screen.dart';
+import 'reservation_details_screen.dart';
 import '../utils.dart';
 
 class CompletePage extends ConsumerStatefulWidget {
@@ -246,19 +248,8 @@ class _CompletePageState extends ConsumerState<CompletePage> {
                                         CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
-                                      InkWell(
-                                        onTap: () {
-                                          // copy to clipboard
-                                          Clipboard.setData(
-                                            ClipboardData(
-                                              text: shopMessages.bankAccount,
-                                            ),
-                                          );
-                                        },
-                                        child: const Icon(
-                                          Icons.copy,
-                                          color: StrokeColors.grey,
-                                        ),
+                                      ClipBoardCopy(
+                                        text: shopMessages.bankAccount,
                                       ),
                                       Text(
                                         shopMessages.bankAccount,

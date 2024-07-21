@@ -37,11 +37,12 @@ class _ShopClosePageState extends ConsumerState<ShopClosePage> {
                         height: 202,
                       ),
                       // CommonIcons.alert(),
-                      Image.asset(
-                        'assets/images/alert.png',
-                        height: 88,
-                        width: 88,
-                      ),
+                      // Image.asset(
+                      //   'assets/images/alert.png',
+                      //   height: 88,
+                      //   width: 88,
+                      // ),
+                      CommonIcons.alert(),
                       const SizedBox(
                         height: 31,
                       ),

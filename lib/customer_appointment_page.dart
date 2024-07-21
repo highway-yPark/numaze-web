@@ -16,7 +16,7 @@ import 'common/const/text.dart';
 import 'common/const/widgets.dart';
 import 'model.dart';
 import 'provider.dart';
-import 'reservation_details_screen.dart';
+import 'view/reservation_details_screen.dart';
 import 'utils.dart';
 
 class CustomerAppointmentPage extends ConsumerStatefulWidget {
@@ -515,20 +515,9 @@ class _CustomerAppointmentPageState
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
                                                 children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      // copy to clipboard
-                                                      Clipboard.setData(
-                                                        ClipboardData(
-                                                          text: shopMessages
-                                                              .bankAccount,
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.copy,
-                                                      color: StrokeColors.grey,
-                                                    ),
+                                                  ClipBoardCopy(
+                                                    text: shopMessages
+                                                        .bankAccount,
                                                   ),
                                                   Text(
                                                     shopMessages.bankAccount,
@@ -815,24 +804,9 @@ class _CustomerAppointmentPageState
                                     text: customerAppointment.base64Uuid,
                                   ),
                                 ),
-                                // i want clipboard copy icon
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                // InkWell(
-                                //   onTap: () {
-                                //     Clipboard.setData(
-                                //       ClipboardData(
-                                //         text: customerAppointment.base64Uuid,
-                                //       ),
-                                //     );
-                                //     copySnackBar(context: context);
-                                //   },
-                                //   child: const Icon(
-                                //     Icons.copy,
-                                //     color: StrokeColors.grey,
-                                //   ),
-                                // ),
                                 ClipBoardCopy(
                                   text: customerAppointment.base64Uuid,
                                 ),

@@ -79,57 +79,73 @@ class CommonIcons {
   }
 
   static lineClose() {
-    return Image.asset(
-      'assets/images/line_close.png',
+    return SvgPicture.asset(
+      'assets/images/line_close.svg',
       width: 32,
       height: 32,
     );
   }
 
   static complete() {
-    return Image.asset(
-      'assets/images/complete.png',
+    return SvgPicture.asset(
+      'assets/images/complete.svg',
       width: 100,
       height: 100,
     );
   }
 
   static confirmed() {
-    return Image.asset(
-      'assets/images/confirmed.png',
+    return SvgPicture.asset(
+      'assets/images/confirmed.svg',
       width: 100,
       height: 100,
     );
   }
 
   static visited() {
-    return Image.asset(
-      'assets/images/visited.png',
+    return SvgPicture.asset(
+      'assets/images/visited.svg',
       width: 100,
       height: 100,
     );
   }
 
   static cancel() {
-    return Image.asset(
-      'assets/images/cancel.png',
+    return SvgPicture.asset(
+      'assets/images/cancel.svg',
       width: 100,
       height: 100,
     );
   }
 
   static absent() {
-    return Image.asset(
-      'assets/images/absent.png',
+    return SvgPicture.asset(
+      'assets/images/absent.svg',
       width: 100,
       height: 100,
     );
   }
 
   static findReservation() {
-    return Image.asset(
-      'assets/images/find_reservation.png',
+    return SvgPicture.asset(
+      'assets/images/find_reservation.svg',
       width: 150,
+      height: 150,
+    );
+  }
+
+  static customerAppointment() {
+    return SvgPicture.asset(
+      'assets/images/customer_appointment.svg',
+      width: 32,
+      height: 32,
+    );
+  }
+
+  static triangleAlert() {
+    return SvgPicture.asset(
+      'assets/images/triangle_alert.svg',
+      width: 100,
       height: 100,
     );
   }
