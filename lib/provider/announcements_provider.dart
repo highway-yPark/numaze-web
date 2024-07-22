@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:numaze_web/treatments_provider.dart';
+import 'package:numaze_web/provider/treatments_provider.dart';
 
-import 'list_model.dart';
-import 'repository.dart';
+import '../model/list_model.dart';
+import '../repository.dart';
 
 final shopAnnouncementsProvider = StateNotifierProvider.family<
     ShopAnnouncementsStateNotifier, ListBase, String>(

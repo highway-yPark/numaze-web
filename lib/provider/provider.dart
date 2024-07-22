@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'model.dart';
-import 'repository.dart';
+import '../model/model.dart';
+import '../repository.dart';
 
 // final appointmentDetailProvider =
 //     Provider.family<CalendarAppointmentModel?, int>((ref, id) {
@@ -44,7 +44,6 @@ class ShopMessageStateNotifier extends StateNotifier<ShopMessageBase> {
       final response = await repository.getShopMessageInfo(
         shopDomain: shopDomain,
       );
-      print(response);
       state = response;
       // return response;
       // if (response.data.isEmpty) {
@@ -119,6 +118,9 @@ class ShopBasicInfoStateNotifier extends StateNotifier<ShopBasicBase> {
       // Log the error and stack trace for better debugging
       print('Error fetching appointments: $e');
       print(stackTrace);
+      state = ShopBasicError(
+        data: 'Shop Not found',
+      );
     }
   }
   //

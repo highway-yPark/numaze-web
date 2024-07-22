@@ -126,6 +126,9 @@ class TextDesign {
   static TextStyle regular12B =
       baseRegular.copyWith(fontSize: 12, height: 1.25, color: FontColors.black);
 
+  static TextStyle regular12MDG = baseRegular.copyWith(
+      fontSize: 12, height: 1.25, color: FontColors.mediumDarkGrey);
+
   static TextStyle regular12BO = baseRegular.copyWith(
       fontSize: 12, height: 1.25, color: BrandColors.orange);
 

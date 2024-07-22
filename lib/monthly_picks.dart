@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/common_image.dart';
-import 'package:numaze_web/list_model.dart';
-import 'package:numaze_web/model.dart';
-import 'package:numaze_web/monthly_pick_provider.dart';
-import 'package:numaze_web/provider.dart';
-import 'package:numaze_web/treatments_provider.dart';
+import 'package:numaze_web/model/list_model.dart';
+import 'package:numaze_web/model/model.dart';
+import 'package:numaze_web/provider/provider.dart';
+import 'package:numaze_web/provider/treatments_provider.dart';
 import 'package:numaze_web/utils.dart';
 
-import 'common/components/custom_snackbar.dart';
 import 'common/const/text.dart';
+import 'components/common_image.dart';
+import 'components/custom_snackbar.dart';
 
 class MonthlyPicks extends ConsumerWidget {
   final List<MonthlyPickModel> monthlyPicks;

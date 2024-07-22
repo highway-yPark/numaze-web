@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/inkwell_button.dart';
-import 'package:numaze_web/common/components/progress_indicator.dart' as pi;
 import 'package:numaze_web/common/const/icons.dart';
 
-import '../common/components/text_with_number.dart';
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import '../common/const/widgets.dart';
-import '../customer_appointment_page.dart';
-import '../model.dart';
-import '../provider.dart';
-import 'reservation_details_screen.dart';
+import '../components/inkwell_button.dart';
+import '../components/progress_indicator.dart';
+import '../components/text_with_number.dart';
+import '../model/model.dart';
+import '../provider/provider.dart';
 import '../utils.dart';
+import 'customer_appointment_page.dart';
 
 class CompletePage extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -67,7 +65,7 @@ class _CompletePageState extends ConsumerState<CompletePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                pi.StatusColumn(
+                                StatusColumn(
                                   icon: CommonIcons.complete(),
                                   title: '예약 신청 완료',
                                   currentStep: 0,

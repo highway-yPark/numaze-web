@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'list_model.dart';
-import 'repository.dart';
+import '../model/list_model.dart';
+import '../repository.dart';
 
 final treatmentProvider =
     StateNotifierProvider.family<TreatmentsStateNotifier, ListBase, String>(

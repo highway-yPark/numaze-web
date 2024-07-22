@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
-import 'package:numaze_web/customer_appointment_provider.dart';
+import 'package:numaze_web/provider/customer_appointment_provider.dart';
 
-import 'common/components/common_input_field.dart';
-import 'common/components/inkwell_button.dart';
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'common/const/widgets.dart';
+import '../common/const/text.dart';
+import '../common/const/widgets.dart';
+import '../components/common_input_field.dart';
+import '../components/inkwell_button.dart';
 
 class FindReservationPage extends ConsumerStatefulWidget {
   final String shopDomain;

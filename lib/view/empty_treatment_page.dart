@@ -6,19 +6,19 @@ import 'package:numaze_web/common/const/icons.dart';
 import '../common/const/text.dart';
 import '../components/inkwell_button.dart';
 
-class ReservationFailed extends ConsumerStatefulWidget {
+class EmptyTreatmentPage extends ConsumerStatefulWidget {
   final String shopDomain;
 
-  const ReservationFailed({
+  const EmptyTreatmentPage({
     super.key,
     required this.shopDomain,
   });
 
   @override
-  ConsumerState<ReservationFailed> createState() => _ReservationFailedState();
+  ConsumerState<EmptyTreatmentPage> createState() => _EmptyTreatmentPageState();
 }
 
-class _ReservationFailedState extends ConsumerState<ReservationFailed> {
+class _EmptyTreatmentPageState extends ConsumerState<EmptyTreatmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,18 +35,12 @@ class _ReservationFailedState extends ConsumerState<ReservationFailed> {
                       const SizedBox(
                         height: 202,
                       ),
-                      // Image.asset(
-                      //   'assets/images/alert.png',
-                      //   height: 88,
-                      //   width: 88,
-                      // ),
-                      CommonIcons.alert(),
-
+                      CommonIcons.emptyTreatment(),
                       const SizedBox(
                         height: 31,
                       ),
                       Text(
-                        '예약을 진행하는 도중\n선택한 시간이 마감되었어요.',
+                        '선택한 시술 정보를\n찾을 수 없어요',
                         style: TextDesign.bold26B,
                         textAlign: TextAlign.center,
                       ),
@@ -54,7 +48,7 @@ class _ReservationFailedState extends ConsumerState<ReservationFailed> {
                         height: 12,
                       ),
                       Text(
-                        '홈으로 돌아가 다시 예약을 진행해주세요.',
+                        '페이지를 새로고침 하거나 접속시간이 만료되면,\n시술을 다시 선택해야 돼요.',
                         style: TextDesign.medium16MG,
                         textAlign: TextAlign.center,
                       ),

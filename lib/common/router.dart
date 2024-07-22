@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/view/404_page.dart';
 import 'package:numaze_web/view/complete_page.dart';
-import 'package:numaze_web/customer_appointment_page.dart';
-import 'package:numaze_web/find_reservation_page.dart';
-import 'package:numaze_web/shop_info_page.dart';
+import 'package:numaze_web/view/customer_appointment_page.dart';
+import 'package:numaze_web/view/find_reservation_page.dart';
 import 'package:numaze_web/view/not_found_page.dart';
 import 'package:numaze_web/view/reservation_failed.dart';
 import 'package:numaze_web/view/shop_close.dart';
-import 'date_page.dart';
-import 'main.dart';
-import 'payment_complete_screen.dart';
-import 'view/reservation_details_screen.dart';
-import 'shop.dart';
-import 'styles_screen.dart';
-import 'shop_styles_screen.dart';
-import 'treatment_detail_page.dart';
+import 'package:numaze_web/view/shop_info_page.dart';
+
+import '../main.dart';
+import '../view/date_page.dart';
+import '../view/payment_complete_screen.dart';
+import '../view/reservation_details_screen.dart';
+import '../view/shop_main_page.dart';
+import '../view/shop_styles_screen.dart';
+import '../view/styles_screen.dart';
+import '../view/treatment_detail_page.dart';
 
 final GoRouter _router = GoRouter(
   routes: <GoRoute>[
@@ -34,18 +36,29 @@ final GoRouter _router = GoRouter(
           appointmentId: appointmentId,
         );
       },
-      routes: <GoRoute>[
-        GoRoute(
-          path: 'payment',
-          builder: (BuildContext context, GoRouterState state) {
-            final String appointmentId = state.pathParameters['appointmentId']!;
-            print('appointmentId: $appointmentId');
-            return PaymentCompleteScreen(
-              appointmentId: appointmentId,
-            );
-          },
-        ),
-      ],
+      // routes: <GoRoute>[
+      //   GoRoute(
+      //     path: 'payment',
+      //     builder: (BuildContext context, GoRouterState state) {
+      //       final String appointmentId = state.pathParameters['appointmentId']!;
+      //       // print('appointmentId: $appointmentId');
+      //       return PaymentComplete(
+      //         appointmentId: appointmentId,
+      //       );
+      //     },
+      //   ),
+      // ],
+    ),
+    GoRoute(
+      path: '/payment',
+      builder: (BuildContext context, GoRouterState state) {
+        final String appointmentId =
+            state.uri.queryParameters['appointmentId']!;
+        // print('appointmentId: $appointmentId');
+        return PaymentComplete(
+          appointmentId: appointmentId,
+        );
+      },
     ),
     GoRoute(
       path: '/findReservation',
@@ -87,7 +100,7 @@ final GoRouter _router = GoRouter(
       path: '/s/:shopDomain',
       builder: (BuildContext context, GoRouterState state) {
         final String shopDomain = state.pathParameters['shopDomain']!;
-        return ShopPage(shopDomain: shopDomain);
+        return ShopMainPage(shopDomain: shopDomain);
       },
       routes: <GoRoute>[
         // GoRoute(
@@ -199,6 +212,9 @@ final GoRouter _router = GoRouter(
   ],
   routerNeglect: false,
   debugLogDiagnostics: true,
+  errorBuilder: (BuildContext context, GoRouterState state) {
+    return const PageNotFound();
+  },
 );
 
 GoRouter get router => _router;

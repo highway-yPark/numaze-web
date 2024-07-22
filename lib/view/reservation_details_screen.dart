@@ -1,39 +1,35 @@
 import 'dart:async';
 import 'dart:html' as html;
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:image/image.dart' as img;
 import 'package:dio/dio.dart';
-
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker_for_web/image_picker_for_web.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
-
-import 'package:numaze_web/common/components/inkwell_button.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
+import 'package:numaze_web/view/empty_treatment_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../auth/auth_repository.dart';
-import '../common/components/common_image.dart';
-import '../common/components/common_input_field.dart';
-import '../common/components/common_title.dart';
-import '../common/components/custom_snackbar.dart';
-import '../common/components/text_with_number.dart';
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
-import '../list_model.dart';
-import '../model.dart';
-import '../provider.dart';
-import '../time_slots_provider.dart';
-import '../treatments_provider.dart';
+import '../components/common_image.dart';
+import '../components/common_input_field.dart';
+import '../components/common_title.dart';
+import '../components/custom_snackbar.dart';
+import '../components/inkwell_button.dart';
+import '../components/text_with_number.dart';
+import '../model/list_model.dart';
+import '../model/model.dart';
+import '../provider/provider.dart';
+import '../provider/time_slots_provider.dart';
+import '../provider/treatments_provider.dart';
 
 class ReservationDetailsScreen extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -351,11 +347,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       //     'SystemChannels.platform.invokeMethod',
       //     'SystemChannels.platform.invokeMethod');
 
-      return IconButton(
-        onPressed: () {
-          context.go('/s/${widget.shopDomain}');
-        },
-        icon: CommonIcons.home(),
+      return EmptyTreatmentPage(
+        shopDomain: widget.shopDomain,
       );
     }
 
@@ -1643,19 +1636,20 @@ class _ReservationBottomSheetState
 
                     if (!context.mounted) return;
 
-                    List<MultipartFile> multipartFiles =
-                        widget.images.map((image) {
-                      return MultipartFile.fromBytes(
-                        image,
-                        filename:
-                            '${DateTime.now().millisecondsSinceEpoch}.jpeg',
-                      );
-                    }).toList();
-
-                    ref.read(repositoryProvider).customerRequestImages(
-                          appointmentId: resp.data,
-                          files: multipartFiles,
+                    if (widget.images.isNotEmpty) {
+                      List<MultipartFile> multipartFiles =
+                          widget.images.map((image) {
+                        return MultipartFile.fromBytes(
+                          image,
+                          filename:
+                              '${DateTime.now().millisecondsSinceEpoch}.jpeg',
                         );
+                      }).toList();
+                      ref.read(repositoryProvider).customerRequestImages(
+                            appointmentId: resp.data,
+                            files: multipartFiles,
+                          );
+                    }
 
                     ref
                         .read(selectedDateTimeProvider.notifier)
@@ -1668,10 +1662,7 @@ class _ReservationBottomSheetState
                     context.go(
                         '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
                   } on DioException catch (e) {
-                    debugPrint(e.toString());
-
                     if (e.response?.statusCode == 400) {
-                      debugPrint(e.response?.data);
                       final error = e.response?.data['error_code'];
                       if (error != null) {
                         ref

@@ -2,11 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:numaze_web/common/const/colors.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'router.dart';
 
-import 'package:intl/date_symbol_data_local.dart';
+import 'common/router.dart';
 
 void main() async {
   setPathUrlStrategy();

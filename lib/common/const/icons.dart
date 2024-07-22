@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CommonIcons {
@@ -78,6 +77,12 @@ class CommonIcons {
     );
   }
 
+  static emptyTreatment() {
+    return SvgPicture.asset(
+      'assets/images/empty_treatment.svg',
+    );
+  }
+
   static lineClose() {
     return SvgPicture.asset(
       'assets/images/line_close.svg',
@@ -129,6 +134,14 @@ class CommonIcons {
   static findReservation() {
     return SvgPicture.asset(
       'assets/images/find_reservation.svg',
+      width: 150,
+      height: 150,
+    );
+  }
+
+  static paymentComplete() {
+    return SvgPicture.asset(
+      'assets/images/payment_complete.svg',
       width: 150,
       height: 150,
     );

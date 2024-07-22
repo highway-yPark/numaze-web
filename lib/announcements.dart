@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'announcements_provider.dart';
-import 'common/components/custom_dialog.dart';
 import 'common/const/colors.dart';
 import 'common/const/icons.dart';
 import 'common/const/text.dart';
 import 'common/const/widgets.dart';
-import 'list_model.dart';
-import 'model.dart';
+import 'components/custom_dialog.dart';
+import 'model/model.dart';
 
 class Announcements extends ConsumerWidget {
   final List<ShopAnnouncementsModel> announcements;

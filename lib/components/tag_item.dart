@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../const/colors.dart';
-import '../const/text.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
 
 class TagItem extends StatelessWidget {
   final String tag;

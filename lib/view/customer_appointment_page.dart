@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/custom_snackbar.dart';
-import 'package:numaze_web/common/components/progress_indicator.dart' as pi;
 import 'package:numaze_web/common/const/icons.dart';
-import 'package:numaze_web/customer_appointment_provider.dart';
+import 'package:numaze_web/provider/customer_appointment_provider.dart';
 
-import 'common/components/common_image.dart';
-import 'common/components/common_title.dart';
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'common/const/widgets.dart';
-import 'model.dart';
-import 'provider.dart';
-import 'view/reservation_details_screen.dart';
-import 'utils.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
+import '../common/const/widgets.dart';
+import '../components/common_image.dart';
+import '../components/common_title.dart';
+import '../components/custom_snackbar.dart';
+import '../components/progress_indicator.dart';
+import '../model/model.dart';
+import '../provider/provider.dart';
+import '../utils.dart';
+import 'reservation_details_screen.dart';
 
 class CustomerAppointmentPage extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -122,7 +122,7 @@ class _CustomerAppointmentPageState
                                       '${option.optionCategoryName} : ${option.optionName}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextDesign.regular12DG,
+                                      style: TextDesign.regular12MDG,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -131,7 +131,7 @@ class _CustomerAppointmentPageState
                                 ),
                             Text(
                               '소요시간 : ${DataUtils.formatDuration(sumOfEachTreatmentOptionDuration(treatment))}',
-                              style: TextDesign.regular12DG,
+                              style: TextDesign.regular12MDG,
                             ),
                             const SizedBox(
                               height: 5,
@@ -270,7 +270,7 @@ class _CustomerAppointmentPageState
                         children: [
                           Align(
                             alignment: Alignment.topCenter,
-                            child: pi.StatusColumn(
+                            child: StatusColumn(
                               icon: statusIcon,
                               title: status,
                               message: customerAppointment.status == null &&
@@ -443,7 +443,7 @@ class _CustomerAppointmentPageState
                                   },
                                 ),
                               ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Text(
@@ -599,8 +599,10 @@ class _CustomerAppointmentPageState
                                             !customerAppointment.membership)
                                           GestureDetector(
                                             onTap: () {
+                                              // context.go(
+                                              //     '/appointment/${customerAppointment.base64Uuid}/payment');
                                               context.go(
-                                                  '/appointment/${customerAppointment.base64Uuid}/payment');
+                                                  '/payment?appointmentId=${customerAppointment.base64Uuid}');
                                             },
                                             child: Text(
                                               // 'https://numaze.kr/appointment/${customerAppointment.base64Uuid}/payment',
@@ -642,7 +644,7 @@ class _CustomerAppointmentPageState
                                   else
                                     Column(
                                       children: [
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         Text(

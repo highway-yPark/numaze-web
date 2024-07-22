@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 
-import '../common/components/inkwell_button.dart';
 import '../common/const/text.dart';
+import '../components/inkwell_button.dart';
 
 class ShopClosePage extends ConsumerStatefulWidget {
   final String shopDomain;

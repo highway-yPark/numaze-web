@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:numaze_web/repository.dart';
 
-import 'cursor_pagination_model.dart';
-import 'model.dart';
+import '../cursor_pagination_model.dart';
+import '../model/model.dart';
 
 final stylesProvider = StateNotifierProvider.family<StylesStateNotifier,
     CursorPaginationBase, int>(

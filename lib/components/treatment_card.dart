@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/common_image.dart';
-import 'package:numaze_web/common/components/custom_snackbar.dart';
-import 'package:numaze_web/common/const/colors.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 
-import 'common/const/text.dart';
-import 'model.dart';
-import 'provider.dart';
-import 'utils.dart';
+import '../common/const/text.dart';
+import 'common_image.dart';
+import 'custom_snackbar.dart';
+import '../model/model.dart';
+import '../provider/provider.dart';
+import '../utils.dart';
 
 class TreatmentBox extends ConsumerWidget {
   final int categoryId;
@@ -84,7 +83,7 @@ class TreatmentBox extends ConsumerWidget {
                   Text(
                     treatment.name,
                     style: TextDesign.bold16B,
-                    textAlign: TextAlign.start,
+                    // textAlign: TextAlign.start,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -94,7 +93,7 @@ class TreatmentBox extends ConsumerWidget {
                   Text(
                     treatment.description,
                     style: TextDesign.regular14G,
-                    textAlign: TextAlign.start,
+                    // textAlign: TextAlign.start,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -114,17 +113,19 @@ class TreatmentBox extends ConsumerWidget {
                             const SizedBox(
                               width: 3,
                             ),
-                            Text(
-                              "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
-                              style: TextDesign.regular12G.copyWith(
-                                decoration: TextDecoration.lineThrough,
+                            Expanded(
+                              child: Text(
+                                "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
+                                style: TextDesign.regular12G.copyWith(
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 3,
                         ),
                         Text(

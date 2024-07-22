@@ -2,33 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/common_image.dart';
 import 'package:numaze_web/common/const/icons.dart';
-import 'package:numaze_web/list_model.dart';
-import 'package:numaze_web/treatment_box.dart';
-import 'announcements.dart';
-import 'announcements_provider.dart';
-import 'common/components/tag_item.dart';
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'common/const/widgets.dart';
-import 'monthly_pick_provider.dart';
-import 'monthly_picks.dart';
-import 'model.dart';
-import 'provider.dart';
-import 'treatment_reservation_button.dart';
-import 'treatments_provider.dart';
+import 'package:numaze_web/model/list_model.dart';
+import 'package:numaze_web/view/404_page.dart';
 
-class ShopPage extends ConsumerStatefulWidget {
+import '../announcements.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
+import '../common/const/widgets.dart';
+import '../components/common_image.dart';
+import '../components/tag_item.dart';
+import '../model/model.dart';
+import '../monthly_picks.dart';
+import '../provider/announcements_provider.dart';
+import '../provider/monthly_pick_provider.dart';
+import '../provider/provider.dart';
+import '../provider/treatments_provider.dart';
+import '../components/treatment_card.dart';
+import '../treatment_reservation_button.dart';
+
+class ShopMainPage extends ConsumerStatefulWidget {
   final String shopDomain;
 
-  const ShopPage({required this.shopDomain, super.key});
+  const ShopMainPage({required this.shopDomain, super.key});
 
   @override
-  ConsumerState<ShopPage> createState() => _ShopPageState();
+  ConsumerState<ShopMainPage> createState() => _ShopMainPageState();
 }
 
-class _ShopPageState extends ConsumerState<ShopPage> {
+class _ShopMainPageState extends ConsumerState<ShopMainPage> {
   final ScrollController _scrollController = ScrollController();
   int _selectedCategoryIndex = 0;
   final Map<int, GlobalKey> _categoryKeys = {};
@@ -41,7 +43,6 @@ class _ShopPageState extends ConsumerState<ShopPage> {
       _categoryKeys[i] = GlobalKey();
     }
 
-    // Add scroll listener
     _scrollController.addListener(_onScroll);
   }
 
@@ -104,65 +105,34 @@ class _ShopPageState extends ConsumerState<ShopPage> {
   Widget build(BuildContext context) {
     final shopBasicInfoState =
         ref.watch(shopBasicInfoProvider(widget.shopDomain));
-
     final monthlyPicksState = ref.watch(monthlyPickProvider(widget.shopDomain));
-    if (monthlyPicksState is ListLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (monthlyPicksState is ListError) {
-      return Center(
-        child: Text(monthlyPicksState.data),
-      );
-    }
-    final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
-
     final shopAnnouncementsState =
         ref.watch(shopAnnouncementsProvider(widget.shopDomain));
-    if (shopAnnouncementsState is ListLoading) {
+    final treatmentsState = ref.watch(treatmentProvider(widget.shopDomain));
+
+    if (shopBasicInfoState is ShopBasicError ||
+        monthlyPicksState is ListError ||
+        shopAnnouncementsState is ListError ||
+        treatmentsState is ListError) {
+      return const PageNotFound();
+    }
+
+    if (shopBasicInfoState is ShopBasicLoading ||
+        monthlyPicksState is ListLoading ||
+        shopAnnouncementsState is ListLoading ||
+        treatmentsState is ListLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (shopAnnouncementsState is ListError) {
-      return Center(
-        child: Text(shopAnnouncementsState.data),
-      );
-    }
+    final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
+
     final announcements =
         shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
 
-    if (shopBasicInfoState is ShopBasicLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (shopBasicInfoState is ShopBasicError) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Error'),
-        ),
-        body: Center(
-          child: Text(shopBasicInfoState.data),
-        ),
-      );
-    }
     final shopData = shopBasicInfoState as ShopBasicInfo;
 
-    final treatmentsState = ref.watch(treatmentProvider(widget.shopDomain));
-    // final optionsState = ref.watch(optionsProvider(widget.shopDomain));
-
-    if (treatmentsState is ListLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-    if (treatmentsState is ListError) {
-      return const Center(
-        child: Text('에러가 발생했습니다.'),
-      );
-    }
     final treatments = (treatmentsState as ListModel<TreatmentCategory>).data;
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
-
-    print(announcements.data.length);
 
     return Scaffold(
       body: Center(
@@ -474,10 +444,14 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                   // i want empty sized box with height 300
                   SliverToBoxAdapter(
                     child: Container(
-                      height: selectedTreatments.isEmpty ? 30 : 110,
+                      height: (selectedTreatments.isEmpty &&
+                              !(shopData.takeReservation ^ shopData.approval))
+                          ? 15
+                          : 110,
                     ),
                   ),
-                  if (selectedTreatments.isEmpty)
+                  if (selectedTreatments.isEmpty &&
+                      !(shopData.takeReservation ^ shopData.approval))
                     SliverToBoxAdapter(
                       child: Container(
                         height: 95,
@@ -536,10 +510,27 @@ class _ShopPageState extends ConsumerState<ShopPage> {
                 ],
               ),
             ),
-            if (selectedTreatments.isNotEmpty)
+            if (selectedTreatments.isNotEmpty &&
+                !(shopData.takeReservation ^ shopData.approval))
               TreatmentReservationButton(
                 shopDomain: widget.shopDomain,
                 futureReservationDays: shopData.futureReservationDays,
+              ),
+            if ((shopData.takeReservation ^ shopData.approval))
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 72,
+                  color: ContainerColors.ctaGrey,
+                  child: Center(
+                    child: Text(
+                      '지금은 예약을 접수 받을 수 없어요',
+                      style: TextDesign.bold20W,
+                    ),
+                  ),
+                ),
               ),
           ],
         ),

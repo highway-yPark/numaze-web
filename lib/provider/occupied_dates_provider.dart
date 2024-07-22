@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'list_model.dart';
-import 'model.dart';
-import 'repository.dart';
+import '../model/list_model.dart';
+import '../model/model.dart';
+import '../repository.dart';
 import 'treatments_provider.dart';
 
 final occupiedDatesProvider =

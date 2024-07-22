@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:numaze_web/base_response_model.dart';
 import 'package:numaze_web/cursor_pagination_model.dart';
+import 'package:numaze_web/model/base_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 import 'common/const/data.dart';
-import 'dio.dart';
-import 'list_model.dart';
-import 'model.dart';
+import 'common/dio.dart';
+import 'model/list_model.dart';
+import 'model/model.dart';
 
 part 'repository.g.dart';
 

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'common/const/widgets.dart';
-import 'model.dart';
-import 'provider.dart';
-import 'shop.dart';
-import 'treatment_reservation_button.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
+import '../common/const/widgets.dart';
+import '../model/model.dart';
+import '../provider/provider.dart';
+import '../treatment_reservation_button.dart';
+import 'shop_main_page.dart';
 
 class ShopInfoPage extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -333,10 +333,27 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                   ],
                 ),
               ),
-              if (selectedTreatments.isNotEmpty)
+              if (selectedTreatments.isNotEmpty &&
+                  !(shopData.takeReservation ^ shopData.approval))
                 TreatmentReservationButton(
                   shopDomain: widget.shopDomain,
                   futureReservationDays: shopData.futureReservationDays,
+                ),
+              if ((shopData.takeReservation ^ shopData.approval))
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    height: 72,
+                    color: ContainerColors.ctaGrey,
+                    child: Center(
+                      child: Text(
+                        '지금은 예약을 접수 받을 수 없어요',
+                        style: TextDesign.bold20W,
+                      ),
+                    ),
+                  ),
                 ),
             ],
           ),

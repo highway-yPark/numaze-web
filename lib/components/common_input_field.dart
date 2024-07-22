@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../const/colors.dart';
-import '../const/text.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
 
 class CommonInputField extends StatefulWidget {
   final String? hintText;

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 
-import '../common/components/inkwell_button.dart';
 import '../common/const/text.dart';
+import '../components/inkwell_button.dart';
 
 class NotFoundPage extends ConsumerStatefulWidget {
   final String shopDomain;

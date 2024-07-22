@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../base_response_model.dart';
 import '../common/const/data.dart';
-import '../dio.dart';
+import '../common/dio.dart';
+import '../model/base_response_model.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>(
   (ref) {

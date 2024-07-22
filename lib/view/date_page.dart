@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:numaze_web/common/components/inkwell_button.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:numaze_web/time_slot_grid.dart';
+import 'package:numaze_web/view/empty_treatment_page.dart';
+import 'package:table_calendar/table_calendar.dart';
 
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'list_model.dart';
-import 'model.dart';
-import 'occupied_dates_provider.dart';
-import 'provider.dart';
-import 'time_slots_provider.dart';
-import 'utils.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
+import '../components/inkwell_button.dart';
+import '../model/list_model.dart';
+import '../model/model.dart';
+import '../provider/occupied_dates_provider.dart';
+import '../provider/provider.dart';
+import '../provider/time_slots_provider.dart';
+import '../utils.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   final String shopDomain;
@@ -95,13 +96,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         ref.watch(occupiedDatesProvider(widget.shopDomain));
 
     if (occupiedDatesState is ListEmpty) {
-      return Center(
-        child: TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Go Home'),
-        ),
+      return EmptyTreatmentPage(
+        shopDomain: widget.shopDomain,
       );
     }
     if (occupiedDatesState is ListLoading) {

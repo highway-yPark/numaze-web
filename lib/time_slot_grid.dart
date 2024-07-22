@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:numaze_web/common/components/common_title.dart';
 import 'package:numaze_web/common/const/widgets.dart';
-import 'package:numaze_web/model.dart';
-import 'package:numaze_web/time_slots_provider.dart';
+import 'package:numaze_web/model/model.dart';
+import 'package:numaze_web/provider/time_slots_provider.dart';
 
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
-import 'list_model.dart';
+import 'components/common_title.dart';
+import 'model/list_model.dart';
 
 class TimeSlotGrid extends ConsumerStatefulWidget {
   final String shopDomain;

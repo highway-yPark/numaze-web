@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../const/text.dart';
+import '../common/const/text.dart';
 
 class CommonTitle extends StatelessWidget {
   final String title;

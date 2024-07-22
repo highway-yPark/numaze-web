@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:numaze_web/common/components/common_image.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/common_app_bar.dart';
-import 'package:numaze_web/provider.dart';
-import 'package:numaze_web/styles_provider.dart';
+import 'package:numaze_web/provider/provider.dart';
+import 'package:numaze_web/provider/styles_provider.dart';
+import 'package:numaze_web/view/404_page.dart';
 
-import 'common/components/custom_snackbar.dart';
-import 'common/components/inkwell_button.dart';
-import 'common/const/colors.dart';
-import 'common/const/text.dart';
-import 'cursor_pagination_model.dart';
-import 'list_model.dart';
-import 'model.dart';
-import 'monthly_pick_provider.dart';
-import 'shop_styles_provider.dart';
-import 'treatments_provider.dart';
-import 'utils.dart';
+import '../common/const/colors.dart';
+import '../common/const/text.dart';
+import '../components/common_image.dart';
+import '../components/custom_snackbar.dart';
+import '../components/inkwell_button.dart';
+import '../cursor_pagination_model.dart';
+import '../model/list_model.dart';
+import '../model/model.dart';
+import '../provider/monthly_pick_provider.dart';
+import '../provider/shop_styles_provider.dart';
+import '../provider/treatments_provider.dart';
+import '../utils.dart';
 
 class TreatmentDetailPage extends ConsumerWidget {
   final String shopDomain;
@@ -39,16 +40,29 @@ class TreatmentDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final treatmentsState = ref.watch(treatmentProvider(shopDomain));
-    if (treatmentsState is ListLoading) {
+    final optionsState = ref.watch(optionsProvider(shopDomain));
+    final monthlyPicksState = ref.watch(monthlyPickProvider(shopDomain));
+    final stylesState = ref.watch(shopStylesProvider(shopDomain));
+    final treatmentStylesState = ref.watch(stylesProvider(treatmentId));
+
+    if (treatmentsState is ListError ||
+        optionsState is ListError ||
+        monthlyPicksState is ListError ||
+        stylesState is CursorPaginationError ||
+        treatmentStylesState is CursorPaginationError) {
+      return const PageNotFound();
+    }
+
+    if (treatmentsState is ListLoading ||
+        optionsState is ListLoading ||
+        monthlyPicksState is ListLoading ||
+        stylesState is CursorPaginationLoading ||
+        treatmentStylesState is CursorPaginationLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
-    if (treatmentsState is ListError) {
-      return const Center(
-        child: Text('에러가 발생했습니다.'),
-      );
-    }
+
     final treatments = (treatmentsState as ListModel<TreatmentCategory>);
     final treatment = treatments.data
         .expand((category) => category.treatments)
@@ -56,18 +70,6 @@ class TreatmentDetailPage extends ConsumerWidget {
 
     final category = treatments.data
         .firstWhere((element) => element.treatments.contains(treatment));
-
-    final optionsState = ref.watch(optionsProvider(shopDomain));
-    if (optionsState is ListLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-    if (optionsState is ListError) {
-      return const Center(
-        child: Text('에러가 발생했습니다.'),
-      );
-    }
 
     final options = (optionsState as ListModel<OptionCategory>).data;
 
@@ -80,16 +82,6 @@ class TreatmentDetailPage extends ConsumerWidget {
         .where((category) => category.options.isNotEmpty)
         .toList();
 
-    final monthlyPicksState = ref.watch(monthlyPickProvider(shopDomain));
-    if (monthlyPicksState is ListLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (monthlyPicksState is ListError) {
-      return Center(
-        child: Text(monthlyPicksState.data),
-      );
-    }
     final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
     MonthlyPickModel? monthlyPick = monthlyPickId == null
         ? null
@@ -99,40 +91,12 @@ class TreatmentDetailPage extends ConsumerWidget {
                 element.styleId == monthlyPickId,
           );
 
-    final stylesState = ref.watch(shopStylesProvider(shopDomain));
-
-    if (stylesState is CursorPaginationLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (stylesState is CursorPaginationError) {
-      return const Center(
-        child: Text('Error occurred.'),
-      );
-    }
-
     final styles = styleId != null
         ? (stylesState as CursorPagination<StyleModel>).data
         : [];
     StyleModel? style = styleId == null
         ? null
         : styles.firstWhere((element) => element.styleId == styleId);
-
-    final treatmentStylesState = ref.watch(stylesProvider(treatmentId));
-
-    if (treatmentStylesState is CursorPaginationLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    if (treatmentStylesState is CursorPaginationError) {
-      return const Center(
-        child: Text('Error occurred.'),
-      );
-    }
 
     final treatmentStyles =
         (treatmentStylesState as CursorPagination<StyleModel>).data;
@@ -184,6 +148,32 @@ class TreatmentDetailPage extends ConsumerWidget {
                                 )
                               ],
                             ),
+                            if (treatment.styleCount > 0)
+                              Positioned(
+                                bottom: 4,
+                                right: 13,
+                                child: Container(
+                                  width: 37,
+                                  height: 37,
+                                  decoration: BoxDecoration(
+                                    color: ContainerColors.sbGrey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            if (treatment.styleCount > 0)
+                              Positioned(
+                                bottom: 2,
+                                right: 20,
+                                child: Container(
+                                  width: 42,
+                                  height: 42,
+                                  decoration: BoxDecoration(
+                                    color: ContainerColors.ctaGrey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
                             if (treatment.styleCount > 0)
                               Positioned(
                                 bottom: 0,
@@ -443,29 +433,29 @@ class OverlayImageWithText extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: 47,
+            height: 47,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: NetworkImage(
-                    thumbnail), // Replace with your overlay image URL
+                  thumbnail,
+                ),
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(3),
             ),
           ),
           Container(
-            width: 60,
-            height: 60,
+            width: 47,
+            height: 47,
             alignment: Alignment.center,
-            color: Colors.black.withOpacity(0.2),
+            decoration: BoxDecoration(
+              color: ContainerColors.black.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(3),
+            ),
             child: Text(
-              '+$styleCount',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              styleCount < 1000 ? '+$styleCount' : '+999',
+              style: TextDesign.bold14W,
             ),
           ),
         ],
@@ -612,11 +602,6 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                                           : category.name,
                                       style: TextDesign.medium14B,
                                     ),
-                                    // Icon(
-                                    //   isExpanded[category.name] ?? false
-                                    //       ? Icons.keyboard_arrow_up
-                                    //       : Icons.keyboard_arrow_down,
-                                    // ),
                                     CommonIcons.arrowDown(),
                                   ],
                                 ),

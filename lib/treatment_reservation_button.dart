@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
-import 'model.dart';
-import 'occupied_dates_provider.dart';
-import 'provider.dart';
+import 'model/model.dart';
+import 'provider/occupied_dates_provider.dart';
+import 'provider/provider.dart';
 import 'utils.dart';
 
 class TreatmentReservationButton extends ConsumerWidget {

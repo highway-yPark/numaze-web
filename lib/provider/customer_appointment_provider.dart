@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'model.dart';
-import 'repository.dart';
+import '../model/model.dart';
+import '../repository.dart';
 
 final customerAppointmentProvider = StateNotifierProvider.family<
     CustomerAppointmentStateNotifier, CustomerAppointmentBase, String>(
@@ -49,8 +48,6 @@ class CustomerAppointmentStateNotifier
       if (e.response != null) {
         // Access the status code from the response
         final statusCode = e.response!.statusCode;
-        debugPrint('Error: Status code $statusCode');
-        debugPrint('Error response data: ${e.response!.data}');
 
         switch (statusCode) {
           case 400:
@@ -68,12 +65,9 @@ class CustomerAppointmentStateNotifier
         return -1;
       } else {
         // Handle other errors (e.g., network issues)
-        debugPrint('Error: ${e.message}');
         return -1;
       }
     } catch (e, stackTrace) {
-      debugPrint('Exception: $e');
-      debugPrint('Stack trace: $stackTrace');
       return -1;
     }
   }

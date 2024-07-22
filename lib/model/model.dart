@@ -25,6 +25,7 @@ class ShopBasicInfo extends ShopBasicBase {
   final String addressDetail;
   final String kakaotalkLink;
   final bool takeReservation;
+  final bool approval;
   final String profileImage;
   final String? backgroundImage;
   final String shopType;
@@ -45,6 +46,7 @@ class ShopBasicInfo extends ShopBasicBase {
     required this.addressDetail,
     required this.kakaotalkLink,
     required this.takeReservation,
+    required this.approval,
     required this.profileImage,
     this.backgroundImage,
     required this.shopType,
