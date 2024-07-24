@@ -144,11 +144,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           codeNotMatch = true;
           codeVerified = false;
         });
-        customSnackBar(
-          message: '인증번호를 다시 확인해주세요.',
-          context: context,
-          error: true,
-        );
       } else {
         setState(() {
           codeVerified = false;
@@ -360,7 +355,9 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         optionsState is ListLoading ||
         shopMessagesState is ShopMessageLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
       );
     }
     if (treatmentsState is ListError ||
@@ -497,8 +494,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10,
+                            padding: EdgeInsets.only(
+                              bottom: 10,
                             ),
                             child: CommonTitle(
                               title: '예약 정보',
@@ -602,7 +599,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                               verificationCodeController.clear();
                             },
                             child: Container(
-                              height: 45,
+                              height: 44,
                               width: 85,
                               decoration: BoxDecoration(
                                 color: phoneNumber.length == 11
@@ -623,23 +620,23 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                     ),
                     Padding(
                       padding: CommonWidgets.sixteenTenPadding(),
-                      child: Row(
+                      child: Column(
                         children: [
-                          SizedBox(
-                            width: 81,
-                            child: Text(
-                              '인증번호',
-                              style: TextDesign.medium14G,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Stack(
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 81,
+                                child: Text(
+                                  '인증번호',
+                                  style: TextDesign.medium14G,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Expanded(
+                                child: Stack(
                                   children: [
                                     CommonInputField(
                                       controller: verificationCodeController,
@@ -650,7 +647,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                                         _start > 0 &&
                                         !codeVerified)
                                       Positioned(
-                                        right: 16,
+                                        right: 17,
                                         top: 0,
                                         bottom: 0,
                                         child: Center(
@@ -661,82 +658,89 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                                       ),
                                   ],
                                 ),
-                                if (codeVerified)
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '인증 됐습니다.',
-                                        style: TextDesign.regular12BO,
-                                      ),
-                                    ],
-                                  ),
-                                if (_start == 0 && !codeVerified)
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '인증번호 유효시간이 만료되었어요.',
-                                        style: TextDesign.regular12BO,
-                                      ),
-                                    ],
-                                  ),
-                                if (_start > 0 && codeNotMatch)
-                                  Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        '인증번호를 다시 확인해주세요.',
-                                        style: TextDesign.regular12BO,
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          InkWell(
-                            onTap: () async {
-                              if (verificationCodeController.text
-                                          .trim()
-                                          .length ==
-                                      6 &&
-                                  _start > 0 &&
-                                  _start < 180 &&
-                                  !codeVerified) {
-                                await verifyCode(context, ref);
-                              }
-                            },
-                            child: Container(
-                              height: 45,
-                              width: 85,
-                              decoration: BoxDecoration(
-                                color: verificationCodeController.text
-                                                .trim()
-                                                .length ==
-                                            6 &&
-                                        _start > 0 &&
-                                        _start < 180 &&
-                                        !codeVerified
-                                    ? ContainerColors.black
-                                    : ContainerColors.darkGrey,
-                                borderRadius: BorderRadius.circular(3),
                               ),
-                              child: Center(
-                                child: Text(
-                                  '확인',
-                                  style: TextDesign.medium14W,
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  if (verificationCodeController.text
+                                              .trim()
+                                              .length ==
+                                          6 &&
+                                      _start > 0 &&
+                                      _start < 180 &&
+                                      !codeVerified) {
+                                    await verifyCode(context, ref);
+                                  }
+                                },
+                                child: Container(
+                                  height: 44,
+                                  width: 85,
+                                  decoration: BoxDecoration(
+                                    color: verificationCodeController.text
+                                                    .trim()
+                                                    .length ==
+                                                6 &&
+                                            _start > 0 &&
+                                            _start < 180 &&
+                                            !codeVerified
+                                        ? ContainerColors.black
+                                        : ContainerColors.darkGrey,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      '확인',
+                                      style: TextDesign.medium14W,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 97,
+                              ),
+                              if (codeVerified)
+                                Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      '인증 되었어요.',
+                                      style: TextDesign.regular12BO,
+                                    ),
+                                  ],
+                                ),
+                              if (_start == 0 && !codeVerified)
+                                Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      '인증번호 유효시간이 만료되었어요.',
+                                      style: TextDesign.regular12BO,
+                                    ),
+                                  ],
+                                ),
+                              if (_start > 0 && codeNotMatch)
+                                Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      '인증번호를 다시 확인해주세요.',
+                                      style: TextDesign.regular12BO,
+                                    ),
+                                  ],
+                                ),
+                            ],
                           ),
                         ],
                       ),
@@ -857,7 +861,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         width: 82,
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.grey,
+            color: StrokeColors.grey,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(3),
@@ -907,10 +911,11 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                       ),
                     ],
                   )
-                : const Center(
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.grey,
+                : Center(
+                    child: SizedBox(
+                      height: 28,
+                      width: 28,
+                      child: CommonIcons.add(),
                     ),
                   ),
       ),
@@ -1026,7 +1031,7 @@ class TreatmentWidget extends StatelessWidget {
                             children: [
                               Text(
                                 '${optionCategory!.name}: ${optionCategory.options.first.name}',
-                                style: TextDesign.medium14G,
+                                style: TextDesign.regular12DG,
                               ),
                               const SizedBox(
                                 height: 7,
@@ -1088,13 +1093,10 @@ class CountdownTimerWidget extends StatelessWidget {
     final seconds = (remainingTime % 60).toString().padLeft(2, '0');
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Text(
         '$minutes:$seconds',
-        style: const TextStyle(
-          color: Colors.red, // Set the timer color to red as in the image
-          fontSize: 16, // Adjust the font size as needed
-        ),
+        style: TextDesign.regular14BO,
       ),
     );
   }
@@ -1259,7 +1261,10 @@ class _ReservationBottomSheetState
                                 horizontal: 16,
                                 vertical: 20,
                               ),
-                              color: ContainerColors.mediumGrey,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: ContainerColors.mediumGrey,
+                              ),
                               child: Column(
                                 children: [
                                   TextWithNumber(
@@ -1386,11 +1391,6 @@ class _ReservationBottomSheetState
                           onTap: () {
                             Navigator.of(context).pop();
                           },
-                          // child: Icon(
-                          //   Icons.close,
-                          //   color: IconColors.black,
-                          //   size: 25,
-                          // ),
                           child: CommonIcons.lineClose(),
                         ),
                       ),
@@ -1428,7 +1428,7 @@ class _ReservationBottomSheetState
                       ],
                     ),
                   buildCheckboxTile(
-                    title: '예약 변경 및 취소 규정',
+                    title: '예약 변경 및 취소 규정 (필수)',
                     content: widget.shopMessages.reservationMessage,
                     value: _changeCancelRuleAccepted,
                     onChanged: (value) {
@@ -1468,7 +1468,7 @@ class _ReservationBottomSheetState
                   ),
                   ConstWidgets.greyBox(),
                   buildCheckboxTile(
-                    title: '기타 안내사항',
+                    title: '기타 안내사항 (필수)',
                     content: widget.shopMessages.additionalMessage,
                     value: _otherInfoAccepted,
                     onChanged: (value) {
@@ -1542,7 +1542,7 @@ class _ReservationBottomSheetState
                           ),
                         ),
                         Container(
-                          height: 2,
+                          height: 1,
                           color: IconColors.basic,
                         ),
                         const SizedBox(height: 10),
@@ -1659,6 +1659,10 @@ class _ReservationBottomSheetState
                         .clearSelection();
                     ref.read(selectedTreatmentProvider.notifier).state = {};
 
+                    print(ref.read(selectedTreatmentProvider).toString());
+                    print(ref.read(selectedDesignerProvider).toString());
+                    print(ref.read(selectedDateTimeProvider).toString());
+
                     context.go(
                         '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
                   } on DioException catch (e) {
@@ -1712,29 +1716,32 @@ class _ReservationBottomSheetState
     return Container(
       key: key,
       padding: const EdgeInsets.symmetric(
-        vertical: 20,
+        vertical: 10,
         horizontal: 16,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              customCheckbox(
-                value: value,
-                onChanged: onChanged,
-              ),
-              const SizedBox(
-                width: 11,
-              ),
-              Text(
-                title,
-                style: TextDesign.bold18B,
-              ),
-            ],
+          SizedBox(
+            height: 52,
+            child: Row(
+              children: [
+                customCheckbox(
+                  value: value,
+                  onChanged: onChanged,
+                ),
+                const SizedBox(
+                  width: 11,
+                ),
+                Text(
+                  title,
+                  style: TextDesign.bold18B,
+                ),
+              ],
+            ),
           ),
           const SizedBox(
-            height: 20,
+            height: 10,
           ),
           if (content == null)
             Container(
@@ -1743,7 +1750,10 @@ class _ReservationBottomSheetState
                 horizontal: 16,
                 vertical: 20,
               ),
-              color: ContainerColors.mediumGrey,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(3),
+                color: ContainerColors.mediumGrey,
+              ),
               child: Column(
                 children: [
                   if (widget.shopMessages.depositTimeLimit > 0)
@@ -1813,6 +1823,9 @@ class _ReservationBottomSheetState
               ),
             ),
           if (guide != null) guide,
+          const SizedBox(
+            height: 10,
+          ),
         ],
       ),
     );
@@ -1826,17 +1839,18 @@ class _ReservationBottomSheetState
       onTap: () {
         onChanged(!value);
       },
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        height: 24,
-        width: 24,
-        color: value ? IconColors.black : IconColors.basic,
-        child: const Icon(
-          Icons.check,
-          size: 16,
-          color: Colors.white,
-        ),
-      ),
+      // child: Container(
+      //   padding: const EdgeInsets.all(4),
+      //   height: 24,
+      //   width: 24,
+      //   color: value ? IconColors.black : IconColors.basic,
+      //   child: const Icon(
+      //     Icons.check,
+      //     size: 16,
+      //     color: Colors.white,
+      //   ),
+      // ),
+      child: value ? CommonIcons.checkIconBlack() : CommonIcons.checkIcon(),
     );
   }
 
@@ -1854,7 +1868,7 @@ class _ReservationBottomSheetState
         children: [
           customCheck(value: isChecked, onChanged: onChanged),
           const SizedBox(
-            width: 15,
+            width: 11,
           ),
           Expanded(
             child: Text(
@@ -1871,10 +1885,7 @@ class _ReservationBottomSheetState
                 );
               },
               // child: CommonIcons.arrowRight(),
-              child: const Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-              ),
+              child: CommonIcons.lineArrowRight(),
             ),
         ],
       ),
@@ -1889,11 +1900,12 @@ class _ReservationBottomSheetState
       onTap: () {
         onChanged(!value);
       },
-      child: Icon(
-        Icons.check,
-        size: 20,
-        color: value ? IconColors.black : IconColors.basic,
-      ),
+      // child: Icon(
+      //   Icons.check,
+      //   size: 20,
+      //   color: value ? IconColors.black : IconColors.basic,
+      // ),
+      child: value ? CommonIcons.lineCheckBlack() : CommonIcons.lineCheck(),
     );
   }
 }

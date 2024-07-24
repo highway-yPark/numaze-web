@@ -26,10 +26,10 @@ class TimeSlotGrid extends ConsumerStatefulWidget {
 class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
   int? selectedDesignerId;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -316,6 +316,7 @@ class SlotBox extends StatelessWidget {
       child: Center(
         child: Text(
           text,
+          overflow: TextOverflow.ellipsis,
           style: isSelected ? TextDesign.medium14W : TextDesign.medium14B,
         ),
       ),

@@ -59,7 +59,9 @@ class TreatmentDetailPage extends ConsumerWidget {
         stylesState is CursorPaginationLoading ||
         treatmentStylesState is CursorPaginationLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
       );
     }
 
@@ -657,6 +659,7 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   widget.onOptionSelected(selectedOptions);
                   Navigator.of(context).pop();
                   context.go('/s/${widget.shopDomain}');
+                  // Navigator.popUntil(context, (route) => route.isFirst);
                 },
                 text: '담기',
               ),

@@ -24,7 +24,11 @@ class FindReservationPage extends ConsumerStatefulWidget {
 
 class _FindReservationPageState extends ConsumerState<FindReservationPage> {
   final TextEditingController _controller = TextEditingController();
-  // bool notFound = false;
+
+  bool checkController() {
+    return _controller.text.trim().isEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -61,26 +65,11 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                               isPhoneNumber: false,
                               maxLength: 11,
                               isLogin: true,
+                              onChanged: (_) {
+                                setState(() {});
+                              },
                             ),
                           ),
-                          // TextFormField(
-                          //   controller: _controller,
-                          //   scrollPadding: const EdgeInsets.only(bottom: 100),
-                          //   maxLines: 1,
-                          //   style: TextDesign.medium14G,
-                          //   decoration: InputDecoration(
-                          //     hintText: '예약 코드를 입력해주세요',
-                          //     hintStyle: TextDesign.medium14G,
-                          //     border: InputBorder.none,
-                          //     counterText: '',
-                          //     contentPadding:
-                          //         const EdgeInsets.symmetric(horizontal: 16),
-                          //   ),
-                          //   cursorColor: StrokeColors.black,
-                          //   onTapOutside: (event) {
-                          //     FocusScope.of(context).unfocus();
-                          //   },
-                          // ),
                         ],
                       ),
                       Positioned(
@@ -102,8 +91,9 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: BlackInkwellButton(
+                  child: ConditionalInkwellButton(
                     onTap: () async {
+                      if (checkController()) return;
                       final resp = await ref
                           .read(customerAppointmentProvider(_controller.text)
                               .notifier)
@@ -117,6 +107,7 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                       }
                     },
                     text: '조회하기',
+                    condition: checkController(),
                   ),
                 ),
             ],

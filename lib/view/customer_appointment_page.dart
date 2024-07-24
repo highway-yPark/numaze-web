@@ -167,7 +167,11 @@ class _CustomerAppointmentPageState
     final shopBasicInfoState =
         ref.watch(shopBasicInfoProvider(widget.shopDomain));
     if (shopBasicInfoState is ShopBasicLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
+      );
     }
     if (shopBasicInfoState is ShopBasicError) {
       return Scaffold(
@@ -186,13 +190,16 @@ class _CustomerAppointmentPageState
     if (shopMessagesState is ShopMessageLoading) {
       return const Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: StrokeColors.black,
+          ),
         ),
       );
     }
 
     if (shopMessagesState is ShopMessageError) {
       context.go('/s/${widget.shopDomain}');
+      // Navigator.popUntil(context, (route) => route.isFirst);
     }
 
     final shopMessages = shopMessagesState as ShopMessageInfo;
@@ -203,7 +210,9 @@ class _CustomerAppointmentPageState
     if (customerAppointmentState is CustomerAppointmentLoading) {
       return const Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: StrokeColors.black,
+          ),
         ),
       );
     }
@@ -491,7 +500,10 @@ class _CustomerAppointmentPageState
                                       horizontal: 16,
                                       vertical: 10,
                                     ),
-                                    color: ContainerColors.mediumGrey,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      color: ContainerColors.mediumGrey,
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -518,6 +530,9 @@ class _CustomerAppointmentPageState
                                                   ClipBoardCopy(
                                                     text: shopMessages
                                                         .bankAccount,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 5,
                                                   ),
                                                   Text(
                                                     shopMessages.bankAccount,
@@ -694,7 +709,10 @@ class _CustomerAppointmentPageState
                                 horizontal: 16,
                                 vertical: 20,
                               ),
-                              color: ContainerColors.mediumGrey,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(3),
+                                color: ContainerColors.mediumGrey,
+                              ),
                               child: Text(
                                 shopMessages.reservationMessage,
                                 style: TextDesign.medium14CG,
@@ -768,22 +786,25 @@ class _CustomerAppointmentPageState
                                       horizontal: 16,
                                       vertical: 20,
                                     ),
-                                    color: ContainerColors.mediumGrey,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      color: ContainerColors.mediumGrey,
+                                    ),
                                     child: Text(
                                       shopMessages.additionalMessage,
                                       style: TextDesign.medium14CG,
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 20,
+                                    height: 18,
                                   ),
-                                  Text(
-                                    '※ 확정까지는 일정 시간이 소요되며, 샵의 사정으로 예약이 취소될 수 있습니다.',
-                                    style: TextDesign.medium14BO,
-                                  ),
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
+                                  // Text(
+                                  //   '※ 확정까지는 일정 시간이 소요되며, 샵의 사정으로 예약이 취소될 수 있습니다.',
+                                  //   style: TextDesign.medium14BO,
+                                  // ),
+                                  // const SizedBox(
+                                  //   height: 20,
+                                  // ),
                                 ],
                               ),
                             ),
@@ -793,26 +814,30 @@ class _CustomerAppointmentPageState
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
-                          vertical: 20,
+                          vertical: 10,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextWithTitle(
-                                    title: '예약 번호',
-                                    text: customerAppointment.base64Uuid,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                ClipBoardCopy(
-                                  text: customerAppointment.base64Uuid,
-                                ),
-                              ],
+                            // Row(
+                            //   children: [
+                            //     Expanded(
+                            //       child: TextWithTitle(
+                            //         title: '예약 번호',
+                            //         text: customerAppointment.base64Uuid,
+                            //       ),
+                            //     ),
+                            //     // const SizedBox(
+                            //     //   width: 5,
+                            //     // ),
+                            //     // ClipBoardCopy(
+                            //     //   text: customerAppointment.base64Uuid,
+                            //     // ),
+                            //   ],
+                            // ),
+                            TextWithTitle(
+                              title: '예약번호',
+                              text: customerAppointment.base64Uuid,
                             ),
                             TextWithTitle(
                               title: '예약 신청 일시',
@@ -855,10 +880,7 @@ class ClipBoardCopy extends StatelessWidget {
         copySnackBar(context: context);
       },
       child: Builder(
-        builder: (context) => const Icon(
-          Icons.copy,
-          color: StrokeColors.grey,
-        ),
+        builder: (context) => CommonIcons.clipboard(),
       ),
     );
   }

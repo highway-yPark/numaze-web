@@ -30,6 +30,7 @@ class CommonAppBar extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 context.go('/s/$shopDomain');
+                // Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: CommonIcons.home(),
             ),

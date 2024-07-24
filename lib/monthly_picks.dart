@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/const/colors.dart';
 import 'package:numaze_web/model/list_model.dart';
 import 'package:numaze_web/model/model.dart';
 import 'package:numaze_web/provider/provider.dart';
@@ -37,7 +38,9 @@ class MonthlyPicks extends ConsumerWidget {
     final treatmentsState = ref.watch(treatmentProvider(shopDomain));
     if (treatmentsState is ListLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
       );
     }
     if (treatmentsState is ListError) {
@@ -72,8 +75,8 @@ class MonthlyPicks extends ConsumerWidget {
               },
               child: Container(
                 width: 135,
-                margin: const EdgeInsets.only(
-                  left: 16,
+                margin: EdgeInsets.only(
+                  left: index == 0 ? 16 : 19,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

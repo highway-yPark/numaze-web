@@ -35,13 +35,16 @@ class _CompletePageState extends ConsumerState<CompletePage> {
     if (shopMessagesState is ShopMessageLoading) {
       return const Scaffold(
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: StrokeColors.black,
+          ),
         ),
       );
     }
 
     if (shopMessagesState is ShopMessageError) {
       context.go('/s/${widget.shopDomain}');
+      // Navigator.popUntil(context, (route) => route.isFirst);
     }
 
     final shopMessages = shopMessagesState as ShopMessageInfo;
@@ -75,7 +78,10 @@ class _CompletePageState extends ConsumerState<CompletePage> {
                                     horizontal: 16,
                                     vertical: 20,
                                   ),
-                                  color: ContainerColors.mediumGrey,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(3),
+                                    color: ContainerColors.mediumGrey,
+                                  ),
                                   child: Column(
                                     children: [
                                       TextWithNumber(
@@ -215,6 +221,8 @@ class _CompletePageState extends ConsumerState<CompletePage> {
                             child: GestureDetector(
                               onTap: () {
                                 context.go('/s/${widget.shopDomain}');
+                                // Navigator.popUntil(
+                                //     context, (route) => route.isFirst);
                               },
                               child: CommonIcons.home(),
                             ),
@@ -248,6 +256,9 @@ class _CompletePageState extends ConsumerState<CompletePage> {
                                     children: [
                                       ClipBoardCopy(
                                         text: shopMessages.bankAccount,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
                                       ),
                                       Text(
                                         shopMessages.bankAccount,

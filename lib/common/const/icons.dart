@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:numaze_web/common/const/colors.dart';
 
 class CommonIcons {
   static rightArrow() {
@@ -160,6 +162,86 @@ class CommonIcons {
       'assets/images/triangle_alert.svg',
       width: 100,
       height: 100,
+    );
+  }
+
+  static add() {
+    return SvgPicture.asset(
+      'assets/images/add.svg',
+      width: 28,
+      height: 28,
+    );
+  }
+
+  static checkIcon() {
+    return SvgPicture.asset(
+      'assets/images/check_icon.svg',
+      width: 24,
+      height: 24,
+    );
+  }
+
+  static checkIconBlack() {
+    return SvgPicture.asset(
+      'assets/images/check_icon.svg',
+      width: 24,
+      height: 24,
+      colorFilter: const ColorFilter.mode(
+        IconColors.black,
+        BlendMode.srcIn,
+      ),
+    );
+  }
+
+  static lineArrowRight() {
+    return SvgPicture.asset(
+      'assets/images/line_arrow_right.svg',
+      width: 25,
+      height: 25,
+    );
+  }
+
+  static clipboard() {
+    return SvgPicture.asset(
+      'assets/images/clipboard.svg',
+      width: 20,
+      height: 20,
+    );
+  }
+
+  static lineArrowDown() {
+    return SvgPicture.asset(
+      'assets/images/line_arrow_down.svg',
+      width: 14,
+      height: 14,
+    );
+  }
+
+  static lineArrowUp() {
+    return SvgPicture.asset(
+      'assets/images/line_arrow_up.svg',
+      width: 14,
+      height: 14,
+    );
+  }
+
+  static lineCheck() {
+    return SvgPicture.asset(
+      'assets/images/line_check.svg',
+      width: 32,
+      height: 32,
+    );
+  }
+
+  static lineCheckBlack() {
+    return SvgPicture.asset(
+      'assets/images/line_check.svg',
+      width: 32,
+      height: 32,
+      colorFilter: const ColorFilter.mode(
+        IconColors.black,
+        BlendMode.srcIn,
+      ),
     );
   }
 }

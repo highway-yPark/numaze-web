@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/common/const/icons.dart';
 
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
@@ -52,7 +53,11 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
     final shopBasicInfoState =
         ref.watch(shopBasicInfoProvider(widget.shopDomain));
     if (shopBasicInfoState is ShopBasicLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
+      );
     }
     if (shopBasicInfoState is ShopBasicError) {
       return Scaffold(
@@ -201,11 +206,18 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                                             shopData.parkingType,
                                             style: TextDesign.medium14B,
                                           ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            shopData.parkingMessage,
-                                            style: TextDesign.medium14G,
-                                          ),
+                                          if (shopData.parkingMessage
+                                              .trim()
+                                              .isNotEmpty)
+                                            Column(
+                                              children: [
+                                                const SizedBox(height: 10),
+                                                Text(
+                                                  shopData.parkingMessage,
+                                                  style: TextDesign.medium14G,
+                                                ),
+                                              ],
+                                            ),
                                         ],
                                       ),
                                     ),
@@ -256,13 +268,16 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                                               !shopDescriptionExpanded;
                                         });
                                       },
-                                      child: Icon(
-                                        shopDescriptionExpanded
-                                            ? CupertinoIcons.chevron_up
-                                            : CupertinoIcons.chevron_down,
-                                        size: 20,
-                                        color: IconColors.grey,
-                                      ),
+                                      // child: Icon(
+                                      //   shopDescriptionExpanded
+                                      //       ? CommonIcons.lineArrowUp()
+                                      //       : CommonIcons.lineArrowDown(),
+                                      //   size: 20,
+                                      //   color: IconColors.grey,
+                                      // ),
+                                      child: shopDescriptionExpanded
+                                          ? CommonIcons.lineArrowUp()
+                                          : CommonIcons.lineArrowDown(),
                                     ),
                                   ),
                                 ],
@@ -311,22 +326,88 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                                               !additionalInfoExpanded;
                                         });
                                       },
-                                      child: Icon(
-                                        additionalInfoExpanded
-                                            ? CupertinoIcons.chevron_up
-                                            : CupertinoIcons.chevron_down,
-                                        size: 20,
-                                        color: IconColors.grey,
-                                      ),
+                                      // child: Icon(
+                                      //   additionalInfoExpanded
+                                      //       ? CommonIcons.lineArrowUp()
+                                      //       : CommonIcons.lineArrowDown(),
+                                      //   size: 20,
+                                      //   color: IconColors.grey,
+                                      // ),
+                                      child: additionalInfoExpanded
+                                          ? CommonIcons.lineArrowUp()
+                                          : CommonIcons.lineArrowDown(),
                                     ),
                                   ),
                                 ],
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height: 110,
+                          Container(
+                            height: (selectedTreatments.isEmpty &&
+                                    !(shopData.takeReservation ^
+                                        shopData.approval))
+                                ? 15
+                                : 110,
                           ),
+                          // Container(
+                          //   height: 110,
+                          // ),
+                          if (selectedTreatments.isEmpty &&
+                              !(shopData.takeReservation ^ shopData.approval))
+                            Container(
+                              height: 95,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 29.5,
+                                vertical: 20,
+                              ),
+                              color: ContainerColors.black,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CommonIcons.adFree(),
+                                    const SizedBox(
+                                      width: 30,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '누메이즈의 ',
+                                              style: TextDesign.bold18W,
+                                            ),
+                                            Text(
+                                              '예약 • 관리 서비스,',
+                                              style: TextDesign.bold18BO,
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '원장님! 지금 ',
+                                              style: TextDesign.bold18W,
+                                            ),
+                                            Text(
+                                              '무료',
+                                              style: TextDesign.bold18BO,
+                                            ),
+                                            Text(
+                                              '로 경험해보세요.',
+                                              style: TextDesign.bold18W,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),

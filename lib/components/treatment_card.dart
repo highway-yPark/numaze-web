@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
+import 'package:numaze_web/view/treatment_detail_page.dart';
 
 import '../common/const/text.dart';
 import 'common_image.dart';
@@ -52,6 +53,20 @@ class TreatmentBox extends ConsumerWidget {
               return;
             } else {
               context.go('/s/$shopDomain/sisul?treatmentId=${treatment.id}');
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) {
+              //       return TreatmentDetailPage(
+              //         shopDomain: shopDomain,
+              //         treatmentId: treatment.id,
+              //         // treatment: treatment,
+              //         // categoryId: categoryId,
+              //         // categoryName: categoryName,
+              //       );
+              //     },
+              //   ),
+              // );
             }
           }
         },

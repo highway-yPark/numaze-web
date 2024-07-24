@@ -70,6 +70,7 @@ class _ReservationFailedState extends ConsumerState<ReservationFailed> {
                 child: BlackInkwellButton(
                   onTap: () async {
                     context.go('/s/${widget.shopDomain}');
+                    // Navigator.popUntil(context, (route) => route.isFirst);
                   },
                   text: '홈으로 돌아가기',
                 ),

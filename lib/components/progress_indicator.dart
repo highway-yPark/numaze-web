@@ -108,17 +108,20 @@ class ProgressIndicator extends StatelessWidget {
               Text(
                 '대기',
                 style:
-                    currentStep >= 0 ? TextDesign.bold12BO : TextDesign.bold12B,
+                    currentStep > 0 ? TextDesign.bold12BO : TextDesign.bold12B,
               ),
               Text(
                 '확정',
-                style:
-                    currentStep >= 1 ? TextDesign.bold12BO : TextDesign.bold12B,
+                style: currentStep > 1
+                    ? TextDesign.bold12BO
+                    : currentStep == 1
+                        ? TextDesign.bold12B
+                        : TextDesign.bold12MG,
               ),
               Text(
                 '방문',
                 style:
-                    currentStep >= 2 ? TextDesign.bold12BO : TextDesign.bold12B,
+                    currentStep == 2 ? TextDesign.bold12B : TextDesign.bold12MG,
               ),
             ],
           ),
@@ -175,7 +178,7 @@ class StepConnector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 121,
-      height: 1.5,
+      height: 2,
       color: isActive ? BrandColors.orange : StrokeColors.grey,
     );
   }

@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/model/list_model.dart';
 import 'package:numaze_web/view/404_page.dart';
+import 'package:numaze_web/view/shop_info_page.dart';
+import 'package:numaze_web/view/shop_styles_screen.dart';
 
 import '../announcements.dart';
 import '../common/const/colors.dart';
@@ -121,7 +123,11 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
         monthlyPicksState is ListLoading ||
         shopAnnouncementsState is ListLoading ||
         treatmentsState is ListLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
+      );
     }
 
     final monthlyPicks = monthlyPicksState as ListModel<MonthlyPickModel>;
@@ -196,12 +202,23 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              ClipOval(
-                                child: CommonImage(
-                                  imageUrl: shopData.profileImage,
-                                  width: 65,
-                                  height: 65,
-                                  fit: BoxFit.cover,
+                              Container(
+                                width: 65,
+                                height: 65,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: StrokeColors.lightGrey,
+                                    width: 1,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: ClipOval(
+                                  child: CommonImage(
+                                    imageUrl: shopData.profileImage,
+                                    width: 65,
+                                    height: 65,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 25.0),
@@ -331,6 +348,14 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                   onTap: () {
                                     context.go(
                                         '/s/${widget.shopDomain}/thirdStyles');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => ShopStylesScreen(
+                                    //       shopDomain: widget.shopDomain,
+                                    //     ),
+                                    //   ),
+                                    // );
                                   },
                                   title: '스타일',
                                   isSelected: false,
@@ -338,6 +363,14 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                 MenuButton(
                                   onTap: () {
                                     context.go('/s/${widget.shopDomain}/info');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => ShopInfoPage(
+                                    //       shopDomain: widget.shopDomain,
+                                    //     ),
+                                    //   ),
+                                    // );
                                   },
                                   title: '정보',
                                   isSelected: false,

@@ -40,6 +40,10 @@ class TimeSlotsStateNotifier extends BaseStateNotifier {
       return 200;
     });
   }
+
+  void clearTimeSlots() {
+    state = ListEmpty();
+  }
 }
 
 // final selectedDesignerProvider = StateProvider<int?>((ref) {
@@ -88,7 +92,10 @@ class SelectedDateTimeNotifier extends StateNotifier<SelectedDateTime> {
   }
 
   void clearSelections() {
-    state = SelectedDateTime();
+    state = SelectedDateTime(
+      selectedDate: null,
+      selectedTimeSlot: null,
+    );
   }
 
   SelectedDateTime getSelectedDateTime() {

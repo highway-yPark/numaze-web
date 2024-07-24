@@ -10,6 +10,7 @@ import '../cursor_pagination_model.dart';
 import '../model/list_model.dart';
 import '../model/model.dart';
 import '../provider/provider.dart';
+import '../provider/scroll_position_provider.dart';
 import '../provider/shop_styles_provider.dart';
 import '../provider/treatments_provider.dart';
 import '../treatment_reservation_button.dart';
@@ -28,12 +29,20 @@ class ShopStylesScreen extends ConsumerStatefulWidget {
 }
 
 class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
-  final ScrollController _scrollController = ScrollController();
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController(
+      initialScrollOffset: ref.read(shopStylesScrollPositionProvider),
+    );
     _scrollController.addListener(scrollListener);
+    _scrollController.addListener(() {
+      ref
+          .read(shopStylesScrollPositionProvider.notifier)
+          .setScrollPosition(_scrollController.position.pixels);
+    });
   }
 
   @override
@@ -69,7 +78,9 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
         shopBasicInfoState is ShopBasicLoading ||
         treatmentsState is ListLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
       );
     }
 

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../common/const/colors.dart';
 import '../common_app_bar.dart';
 import '../components/grid_style_item.dart';
 import '../cursor_pagination_model.dart';
 import '../model/model.dart';
+import '../provider/scroll_position_provider.dart';
 import '../provider/styles_provider.dart';
 import '404_page.dart';
 import 'style_not_found.dart';
@@ -22,12 +24,23 @@ class TreatmentStylesScreen extends ConsumerStatefulWidget {
 }
 
 class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
-  final ScrollController _scrollController = ScrollController();
+  // final ScrollController _scrollController = ScrollController();
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController(
+      initialScrollOffset:
+          ref.read(treatmentStylesScrollPositionProvider(widget.treatmentId)),
+    );
     _scrollController.addListener(scrollListener);
+    _scrollController.addListener(() {
+      ref
+          .read(treatmentStylesScrollPositionProvider(widget.treatmentId)
+              .notifier)
+          .setScrollPosition(_scrollController.position.pixels);
+    });
   }
 
   @override
@@ -49,14 +62,16 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
   Widget build(BuildContext context) {
     final stylesState = ref.watch(stylesProvider(widget.treatmentId));
 
-    if (stylesState is CursorPaginationError) {
-      return const PageNotFound();
-    }
-
     if (stylesState is CursorPaginationLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          color: StrokeColors.black,
+        ),
       );
+    }
+
+    if (stylesState is CursorPaginationError) {
+      return const PageNotFound();
     }
 
     final styles = (stylesState as CursorPagination<StyleModel>).data;
