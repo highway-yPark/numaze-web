@@ -54,10 +54,11 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "2398008571";
+    const serviceWorkerVersion = "502619921";
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+<!--  <script defer src="swipe_back.js"></script>-->
 </head>
 <body>
   <script>
@@ -76,5 +77,15 @@
       });
     });
   </script>
+<!--  <script>-->
+<!--    document.addEventListener(-->
+<!--      'touchstart',-->
+<!--      (startEvent) => {-->
+<!--        if (startEvent.touches.length > 1) return;-->
+<!--        startEvent.preventDefault();-->
+<!--      },-->
+<!--      { passive: false }-->
+<!--    );-->
+<!--  </script>-->
 </body>
 </html>
