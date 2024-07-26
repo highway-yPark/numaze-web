@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
+import 'package:numaze_web/provider/provider.dart';
 
 import '../common/const/text.dart';
 import '../components/inkwell_button.dart';
@@ -35,12 +36,6 @@ class _ShopClosePageState extends ConsumerState<ShopClosePage> {
                       const SizedBox(
                         height: 202,
                       ),
-                      // CommonIcons.alert(),
-                      // Image.asset(
-                      //   'assets/images/alert.png',
-                      //   height: 88,
-                      //   width: 88,
-                      // ),
                       CommonIcons.alert(),
                       const SizedBox(
                         height: 31,
@@ -61,6 +56,10 @@ class _ShopClosePageState extends ConsumerState<ShopClosePage> {
                 right: 0,
                 child: BlackInkwellButton(
                   onTap: () async {
+                    await ref
+                        .read(shopBasicInfoProvider(widget.shopDomain).notifier)
+                        .getShopInfo();
+                    if (!context.mounted) return;
                     context.go('/s/${widget.shopDomain}');
                   },
                   text: '홈으로 돌아가기',

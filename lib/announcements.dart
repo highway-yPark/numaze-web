@@ -55,10 +55,7 @@ class Announcements extends ConsumerWidget {
                           ? 'NOTICE'
                           : 'EVENT',
                       title: announcement.title,
-                      child: Text(
-                        announcement.content,
-                        style: TextDesign.regular14G,
-                      ),
+                      content: announcement.content,
                     );
                   },
                 );
@@ -102,18 +99,18 @@ class Announcements extends ConsumerWidget {
                                   announcement.title,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextDesign.bold16B,
+                                  style: TextDesign.bold14B,
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(
-                            height: 12,
+                            height: 7,
                           ),
                           Expanded(
                             child: Text(
                               announcement.content,
-                              style: TextDesign.regular14G,
+                              style: TextDesign.regular12G,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),

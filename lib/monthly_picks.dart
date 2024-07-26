@@ -67,7 +67,10 @@ class MonthlyPicks extends ConsumerWidget {
                     .watch(selectedTreatmentProvider)
                     .containsKey(monthlyPick.categoryId);
                 if (isSelected) {
-                  onlyOneSnackBar(context: context);
+                  onlyOneSnackBar(
+                    context: context,
+                    message: monthlyPick.categoryName,
+                  );
                 } else {
                   context.go(
                       '/s/$shopDomain/sisul?treatmentId=${treatment.id}&monthlyPickId=${monthlyPick.styleId}');

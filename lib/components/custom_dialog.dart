@@ -9,14 +9,14 @@ class CustomDialog extends StatelessWidget {
   final String subject;
   final double width;
   final String title;
-  final Widget? child;
+  final String content;
 
   const CustomDialog({
     super.key,
     required this.subject,
     required this.width,
     required this.title,
-    this.child,
+    required this.content,
   });
 
   @override
@@ -43,31 +43,52 @@ class CustomDialog extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextDesign.bold18B,
                 textAlign: TextAlign.center,
               ),
             ),
-            if (child != null) ...[
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: child!,
+            const SizedBox(height: 15),
+            Flexible(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      content,
+                      style: TextDesign.regular14G,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ),
-            ],
-            const SizedBox(height: 16),
-            BlackInkwellButton(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              text: '확인',
+            ),
+            const SizedBox(height: 30),
+            SizedBox(
+              height: 57,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Ink(
+                    color: ContainerColors.black,
+                    child: Center(
+                      child: Text(
+                        '확인',
+                        style: TextDesign.bold16W,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

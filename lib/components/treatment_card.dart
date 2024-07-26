@@ -5,6 +5,7 @@ import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/view/treatment_detail_page.dart';
 
+import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import 'common_image.dart';
 import 'custom_snackbar.dart';
@@ -49,7 +50,10 @@ class TreatmentBox extends ConsumerWidget {
                 ref.read(selectedTreatmentProvider.notifier).state;
             if (selectedCategory.containsKey(categoryId) &&
                 selectedCategory[categoryId]!.selectedTreatments.isNotEmpty) {
-              onlyOneSnackBar(context: context);
+              onlyOneSnackBar(
+                context: context,
+                message: categoryName,
+              );
               return;
             } else {
               context.go('/s/$shopDomain/sisul?treatmentId=${treatment.id}');
@@ -80,6 +84,12 @@ class TreatmentBox extends ConsumerWidget {
                   width: 115,
                   height: 115,
                 ),
+                if (isSelected)
+                  Positioned.fill(
+                    child: Container(
+                      color: ContainerColors.white.withOpacity(0.3),
+                    ),
+                  ),
                 if (isSelected)
                   Positioned(
                     right: 8,

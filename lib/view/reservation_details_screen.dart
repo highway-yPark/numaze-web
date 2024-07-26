@@ -1064,6 +1064,8 @@ class TreatmentWidget extends StatelessWidget {
                           Text(
                             "${DataUtils.formatKoreanWon(treatment.minPrice * (100 - treatment.discount) ~/ 100)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
                             style: TextDesign.bold14B,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       )
@@ -1659,10 +1661,6 @@ class _ReservationBottomSheetState
                         .clearSelection();
                     ref.read(selectedTreatmentProvider.notifier).state = {};
 
-                    print(ref.read(selectedTreatmentProvider).toString());
-                    print(ref.read(selectedDesignerProvider).toString());
-                    print(ref.read(selectedDateTimeProvider).toString());
-
                     context.go(
                         '/s/${widget.shopDomain}/complete?appointmentId=${resp.data}');
                   } on DioException catch (e) {
@@ -1815,7 +1813,10 @@ class _ReservationBottomSheetState
                 horizontal: 16,
                 vertical: 20,
               ),
-              color: ContainerColors.mediumGrey,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(3),
+                color: ContainerColors.mediumGrey,
+              ),
               child: Text(
                 content,
                 style: TextDesign.medium14CG,
@@ -1839,17 +1840,6 @@ class _ReservationBottomSheetState
       onTap: () {
         onChanged(!value);
       },
-      // child: Container(
-      //   padding: const EdgeInsets.all(4),
-      //   height: 24,
-      //   width: 24,
-      //   color: value ? IconColors.black : IconColors.basic,
-      //   child: const Icon(
-      //     Icons.check,
-      //     size: 16,
-      //     color: Colors.white,
-      //   ),
-      // ),
       child: value ? CommonIcons.checkIconBlack() : CommonIcons.checkIcon(),
     );
   }
@@ -1862,7 +1852,7 @@ class _ReservationBottomSheetState
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        vertical: 11,
+        vertical: 4,
       ),
       child: Row(
         children: [
@@ -1900,11 +1890,6 @@ class _ReservationBottomSheetState
       onTap: () {
         onChanged(!value);
       },
-      // child: Icon(
-      //   Icons.check,
-      //   size: 20,
-      //   color: value ? IconColors.black : IconColors.basic,
-      // ),
       child: value ? CommonIcons.lineCheckBlack() : CommonIcons.lineCheck(),
     );
   }

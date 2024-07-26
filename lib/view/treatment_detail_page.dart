@@ -122,10 +122,6 @@ class TreatmentDetailPage extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CommonAppBar(
-                      title: '',
-                      shopDomain: shopDomain,
-                    ),
                     LayoutBuilder(
                       builder: (context, constraints) {
                         return Stack(
@@ -279,7 +275,10 @@ class TreatmentDetailPage extends ConsumerWidget {
                           .watch(selectedTreatmentProvider)
                           .containsKey(category.id);
                       if (isSelected) {
-                        onlyOneSnackBar(context: context);
+                        onlyOneSnackBar(
+                          context: context,
+                          message: category.name,
+                        );
                         return;
                       }
                       if (relatedOptions.isEmpty) {
@@ -402,6 +401,16 @@ class TreatmentDetailPage extends ConsumerWidget {
                     },
                     text: relatedOptions.isEmpty ? '담기' : '옵션 선택하기',
                   ),
+                ),
+              ),
+              Positioned(
+                left: 16,
+                top: 14,
+                child: GestureDetector(
+                  onTap: () {
+                    context.go('/s/$shopDomain');
+                  },
+                  child: CommonIcons.treatmentHome(),
                 ),
               ),
             ],

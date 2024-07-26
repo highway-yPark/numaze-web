@@ -5,8 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/model/list_model.dart';
 import 'package:numaze_web/view/404_page.dart';
-import 'package:numaze_web/view/shop_info_page.dart';
-import 'package:numaze_web/view/shop_styles_screen.dart';
 
 import '../announcements.dart';
 import '../common/const/colors.dart';
@@ -285,7 +283,7 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                               vertical: 10,
                             ),
                             child: SizedBox(
-                              height: 109,
+                              height: 90,
                               child: Announcements(
                                 announcements: announcements.data,
                                 shopDomain: widget.shopDomain,
@@ -303,16 +301,13 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                               Padding(
                                 padding: CommonWidgets.sixteenTenPadding(),
                                 child: Text(
-                                  'Monthly pick art',
+                                  'Best Design',
                                   style: TextDesign.bold18B,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
+                                padding: const EdgeInsets.only(
+                                  bottom: 20,
                                 ),
                                 child: SizedBox(
                                   height: 183,
@@ -348,14 +343,6 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                   onTap: () {
                                     context.go(
                                         '/s/${widget.shopDomain}/thirdStyles');
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => ShopStylesScreen(
-                                    //       shopDomain: widget.shopDomain,
-                                    //     ),
-                                    //   ),
-                                    // );
                                   },
                                   title: '스타일',
                                   isSelected: false,
@@ -363,14 +350,6 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                 MenuButton(
                                   onTap: () {
                                     context.go('/s/${widget.shopDomain}/info');
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => ShopInfoPage(
-                                    //       shopDomain: widget.shopDomain,
-                                    //     ),
-                                    //   ),
-                                    // );
                                   },
                                   title: '정보',
                                   isSelected: false,
@@ -393,15 +372,17 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                       minHeight: 65,
                       child: Container(
                         color: ContainerColors.white,
-                        padding: const EdgeInsets.symmetric(
-                          // horizontal: 16,
-                          vertical: 15,
+                        padding: const EdgeInsets.only(
+                          top: 15,
+                          bottom: 15,
                         ),
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: treatments.length,
                           itemBuilder: (context, index) {
                             final category = treatments[index];
+                            final hasSelectedTreatments =
+                                selectedTreatments.containsKey(category.id);
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -410,9 +391,15 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                 _scrollToCategory(index);
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                  vertical: 5,
+                                // padding: const EdgeInsets.symmetric(
+                                //   horizontal: 15,
+                                //   vertical: 5,
+                                // ),
+                                padding: EdgeInsets.only(
+                                  left: 15,
+                                  right: hasSelectedTreatments ? 10 : 15,
+                                  top: 5,
+                                  bottom: 5,
                                 ),
                                 margin: EdgeInsets.only(
                                   left: index == 0 ? 16 : 8,
@@ -429,12 +416,32 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                   ),
                                   borderRadius: BorderRadius.circular(100),
                                 ),
-                                child: Text(
-                                  category.name,
-                                  style: _selectedCategoryIndex == index
-                                      ? TextDesign.regular16W
-                                      : TextDesign.regular16G,
-                                ),
+                                child: hasSelectedTreatments
+                                    ? Row(
+                                        children: [
+                                          Text(
+                                            category.name,
+                                            style:
+                                                _selectedCategoryIndex == index
+                                                    ? TextDesign.regular16W
+                                                    : TextDesign.regular16G,
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          if (_selectedCategoryIndex == index)
+                                            CommonIcons.hasTreatmentCheck()
+                                          else
+                                            CommonIcons
+                                                .hasTreatmentCheckBlack(),
+                                        ],
+                                      )
+                                    : Text(
+                                        category.name,
+                                        style: _selectedCategoryIndex == index
+                                            ? TextDesign.regular16W
+                                            : TextDesign.regular16G,
+                                      ),
                               ),
                             );
                           },
@@ -451,8 +458,17 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                             key: _categoryKeys[i],
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
                               Padding(
-                                padding: CommonWidgets.sixteenTenPadding(),
+                                // padding: CommonWidgets.sixteenTenPadding(),
+                                padding: const EdgeInsets.only(
+                                  left: 16,
+                                  right: 16,
+                                  top: 10,
+                                  bottom: 0,
+                                ),
                                 child: Text(
                                   treatments[i].name,
                                   style: TextDesign.bold16B,
@@ -508,11 +524,11 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                     children: [
                                       Text(
                                         '누메이즈의 ',
-                                        style: TextDesign.bold18W,
+                                        style: TextDesign.bold16W,
                                       ),
                                       Text(
                                         '예약 • 관리 서비스,',
-                                        style: TextDesign.bold18BO,
+                                        style: TextDesign.bold16BO,
                                       ),
                                     ],
                                   ),
@@ -521,15 +537,15 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                     children: [
                                       Text(
                                         '원장님! 지금 ',
-                                        style: TextDesign.bold18W,
+                                        style: TextDesign.bold16W,
                                       ),
                                       Text(
                                         '무료',
-                                        style: TextDesign.bold18BO,
+                                        style: TextDesign.bold16BO,
                                       ),
                                       Text(
                                         '로 경험해보세요.',
-                                        style: TextDesign.bold18W,
+                                        style: TextDesign.bold16W,
                                       ),
                                     ],
                                   ),

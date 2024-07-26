@@ -146,6 +146,8 @@ class _CustomerAppointmentPageState
                                 Text(
                                   "${DataUtils.formatKoreanWon(treatment.treatmentMinPrice * (100 - treatment.discount) ~/ 100)}${treatment.treatmentMaxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.treatmentMaxPrice! * (100 - treatment.discount) ~/ 100)}' : ''}",
                                   style: TextDesign.bold14B,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             )
@@ -408,7 +410,7 @@ class _CustomerAppointmentPageState
                                 text: customerAppointment.designerName ?? '미정',
                               ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                           ],
                         ),
@@ -835,9 +837,36 @@ class _CustomerAppointmentPageState
                             //     // ),
                             //   ],
                             // ),
-                            TextWithTitle(
-                              title: '예약번호',
-                              text: customerAppointment.base64Uuid,
+                            SizedBox(
+                              height: 40,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      '예약번호',
+                                      style: TextDesign.regular14G,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      ClipBoardCopy(
+                                        text: customerAppointment.base64Uuid,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        customerAppointment.base64Uuid,
+                                        style: TextDesign.medium14B,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                             TextWithTitle(
                               title: '예약 신청 일시',

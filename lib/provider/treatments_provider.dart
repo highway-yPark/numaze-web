@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/list_model.dart';
+import '../model/model.dart';
 import '../repository.dart';
 
 final treatmentProvider =

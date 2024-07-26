@@ -57,6 +57,27 @@ class CommonIcons {
     );
   }
 
+  static redError() {
+    return SvgPicture.asset(
+      'assets/images/red_error.svg',
+      height: 32,
+      width: 32,
+    );
+  }
+
+  static treatmentHome() {
+    // return SvgPicture.asset(
+    //   'assets/images/treatment_home.svg',
+    //   // width: 32,
+    //   // height: 32,
+    // );
+    return Image.asset(
+      'assets/images/treatment_home.png',
+      width: 32,
+      height: 32,
+    );
+  }
+
   static arrowDown() {
     return SvgPicture.asset(
       'assets/images/arrow_down.svg',
@@ -183,13 +204,9 @@ class CommonIcons {
 
   static checkIconBlack() {
     return SvgPicture.asset(
-      'assets/images/check_icon.svg',
+      'assets/images/check_icon_black.svg',
       width: 24,
       height: 24,
-      colorFilter: const ColorFilter.mode(
-        IconColors.black,
-        BlendMode.srcIn,
-      ),
     );
   }
 
@@ -235,13 +252,33 @@ class CommonIcons {
 
   static lineCheckBlack() {
     return SvgPicture.asset(
-      'assets/images/line_check.svg',
+      'assets/images/line_check_black.svg',
       width: 32,
       height: 32,
-      colorFilter: const ColorFilter.mode(
-        IconColors.black,
-        BlendMode.srcIn,
-      ),
+    );
+  }
+
+  static hasTreatmentCheck() {
+    return SvgPicture.asset(
+      'assets/images/has_treatment_check.svg',
+      width: 23,
+      height: 23,
+    );
+  }
+
+  static hasTreatmentCheckBlack() {
+    return SvgPicture.asset(
+      'assets/images/has_treatment_check_black.svg',
+      width: 23,
+      height: 23,
+    );
+  }
+
+  static whiteCheck() {
+    return SvgPicture.asset(
+      'assets/images/white_check.svg',
+      height: 17,
+      width: 17,
     );
   }
 }

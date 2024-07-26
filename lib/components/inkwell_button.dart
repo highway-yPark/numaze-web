@@ -46,7 +46,7 @@ class BlackInkwellButton extends InkwellButton {
     required super.text,
   }) : super(
           color: ContainerColors.black,
-          style: TextDesign.bold20W,
+          style: TextDesign.bold18W,
         );
 }
 
@@ -60,6 +60,6 @@ class ConditionalInkwellButton extends InkwellButton {
     required this.condition,
   }) : super(
           color: condition ? ContainerColors.ctaGrey : ContainerColors.black,
-          style: TextDesign.bold20W,
+          style: TextDesign.bold18W,
         );
 }

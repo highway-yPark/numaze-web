@@ -1,10 +1,7 @@
-// custom snackbar
-// ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-// content:
-// Text('You can only select one treatment per category.')));
-
 import 'package:flutter/material.dart';
 import 'package:numaze_web/common/const/text.dart';
+
+import '../common/const/icons.dart';
 
 void customSnackBar({
   required String message,
@@ -15,9 +12,9 @@ void customSnackBar({
     SnackBar(
       margin: EdgeInsets.only(
         bottom: MediaQuery.of(context).size.height *
-            0.1, // Adjust the value as needed
-        left: MediaQuery.of(context).size.width * 0.1,
-        right: MediaQuery.of(context).size.width * 0.1,
+            0.15, // Adjust the value as needed
+        left: MediaQuery.of(context).size.width * 0.05,
+        right: MediaQuery.of(context).size.width * 0.05,
       ),
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.black,
@@ -26,13 +23,13 @@ void customSnackBar({
       ),
       content: Row(
         children: [
-          const Icon(
-            Icons.alarm,
-            color: Colors.red,
-          ),
+          if (error) CommonIcons.redError() else CommonIcons.whiteCheck(),
+          const SizedBox(
+            width: 8,
+          ), // Add some space between the icon and the text.
           Text(
             message,
-            style: TextDesign.regular16W,
+            style: TextDesign.medium14W,
           ),
         ],
       ),
@@ -42,11 +39,12 @@ void customSnackBar({
 
 void onlyOneSnackBar({
   required BuildContext context,
-  String message = '같은 카테고리의 시술을 2개 이상 담을 수 없어요.',
+  // String message = '같은 카테고리의 시술을 2개 이상 담을 수 없어요.',
+  required String message,
   bool error = true,
 }) {
   customSnackBar(
-    message: message,
+    message: '$message에는 하나의 시술만 선택할 수 있어요.',
     context: context,
     error: error,
   );

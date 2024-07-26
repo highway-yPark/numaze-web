@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:numaze_web/model/list_model.dart';
+import 'package:numaze_web/provider/treatments_provider.dart';
 
 import '../common/const/colors.dart';
 import '../common_app_bar.dart';
@@ -24,7 +26,6 @@ class TreatmentStylesScreen extends ConsumerStatefulWidget {
 }
 
 class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
-  // final ScrollController _scrollController = ScrollController();
   late ScrollController _scrollController;
 
   @override
@@ -60,9 +61,11 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final treatmentState = ref.watch(treatmentProvider(widget.shopDomain));
     final stylesState = ref.watch(stylesProvider(widget.treatmentId));
 
-    if (stylesState is CursorPaginationLoading) {
+    if (stylesState is CursorPaginationLoading ||
+        treatmentState is ListLoading) {
       return const Center(
         child: CircularProgressIndicator(
           color: StrokeColors.black,
@@ -70,11 +73,16 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
       );
     }
 
-    if (stylesState is CursorPaginationError) {
+    if (stylesState is CursorPaginationError || treatmentState is ListError) {
       return const PageNotFound();
     }
 
     final styles = (stylesState as CursorPagination<StyleModel>).data;
+
+    final TreatmentModel treatment = (treatmentState as ListModel)
+        .data
+        .expand((categories) => categories.treatments)
+        .firstWhere((treatment) => treatment.id == widget.treatmentId);
 
     return Scaffold(
       body: SafeArea(
@@ -84,7 +92,8 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
             child: Column(
               children: [
                 CommonAppBar(
-                  title: '스타일',
+                  // title: '스타일',
+                  title: treatment.name,
                   shopDomain: widget.shopDomain,
                 ),
                 if (styles.isEmpty)

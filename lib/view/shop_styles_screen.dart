@@ -185,6 +185,12 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
                           },
                         ),
                       ),
+                    if ((selectedTreatments.isNotEmpty &&
+                            !(shopData.takeReservation ^ shopData.approval)) ||
+                        ((shopData.takeReservation ^ shopData.approval)))
+                      const SizedBox(
+                        height: 72,
+                      ),
                   ],
                 ),
               ),
