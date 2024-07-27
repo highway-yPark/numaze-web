@@ -10,11 +10,13 @@ import 'components/common_title.dart';
 import 'model/list_model.dart';
 
 class TimeSlotGrid extends ConsumerStatefulWidget {
+  // final ScrollController scrollController;
   final String shopDomain;
   final bool selectDesigner;
 
   const TimeSlotGrid({
     super.key,
+    // required this.scrollController,
     required this.shopDomain,
     required this.selectDesigner,
   });
@@ -30,6 +32,13 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
   // void initState() {
   //   super.initState();
   // }
+  // void scrollToBottomOfWidget() {
+  //   widget.scrollController.animateTo(
+  //     widget.scrollController.position.maxScrollExtent,
+  //     duration: const Duration(milliseconds: 500),
+  //     curve: Curves.easeOut,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +46,19 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
     final selectedDateTime = ref.watch(selectedDateTimeProvider);
 
     if (timeSlotsState is ListEmpty) {
-      return Container();
+      return Container(
+        height: 311,
+      );
     }
     if (timeSlotsState is ListLoading) {
       return Container(
-        height: 400,
+        height: 311,
       );
     }
 
     if (timeSlotsState is ListError) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Error'),
-        ),
-        body: Center(
-          child: Text(timeSlotsState.data),
-        ),
+      return Center(
+        child: Text('데이터를 불러오는데 실패했어요.'),
       );
     }
 

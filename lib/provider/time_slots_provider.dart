@@ -5,8 +5,8 @@ import '../model/list_model.dart';
 import '../model/model.dart';
 import '../repository.dart';
 
-final timeSlotsProvider =
-    StateNotifierProvider.family<TimeSlotsStateNotifier, ListBase, String>(
+final timeSlotsProvider = StateNotifierProvider.family
+    .autoDispose<TimeSlotsStateNotifier, ListBase, String>(
   (ref, domain) {
     final repository = ref.watch(repositoryProvider);
     return TimeSlotsStateNotifier(
