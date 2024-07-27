@@ -22,7 +22,7 @@ class ShopBasicInfo extends ShopBasicBase {
   final String description;
   final String address;
   final String simpleAddress;
-  final String addressDetail;
+  final String? addressDetail;
   final String kakaotalkLink;
   final bool takeReservation;
   final bool approval;
@@ -43,7 +43,7 @@ class ShopBasicInfo extends ShopBasicBase {
     required this.description,
     required this.address,
     required this.simpleAddress,
-    required this.addressDetail,
+    this.addressDetail,
     required this.kakaotalkLink,
     required this.takeReservation,
     required this.approval,

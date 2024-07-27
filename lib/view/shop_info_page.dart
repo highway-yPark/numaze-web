@@ -134,7 +134,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                                             ),
                                             const SizedBox(height: 10),
                                             Text(
-                                              shopData.addressDetail,
+                                              shopData.addressDetail ?? '',
                                               style: TextDesign.medium14G,
                                             ),
                                           ],
