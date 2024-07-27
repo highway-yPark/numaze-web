@@ -14,7 +14,7 @@ ShopBasicInfo _$ShopBasicInfoFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String,
       address: json['address'] as String,
       simpleAddress: json['simpleAddress'] as String,
-      addressDetail: json['addressDetail'] as String,
+      addressDetail: json['addressDetail'] as String?,
       kakaotalkLink: json['kakaotalkLink'] as String,
       takeReservation: json['takeReservation'] as bool,
       approval: json['approval'] as bool,

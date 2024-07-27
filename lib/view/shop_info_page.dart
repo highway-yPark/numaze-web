@@ -11,6 +11,7 @@ import '../common/const/widgets.dart';
 import '../model/model.dart';
 import '../provider/provider.dart';
 import '../treatment_reservation_button.dart';
+import '404_page.dart';
 import 'shop_main_page.dart';
 
 class ShopInfoPage extends ConsumerStatefulWidget {
@@ -37,9 +38,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
       );
     }
     if (shopBasicInfoState is ShopBasicError) {
-      return NotFoundPage(
-        shopDomain: widget.shopDomain,
-      );
+      return const PageNotFound();
     }
     final shopData = shopBasicInfoState as ShopBasicInfo;
 
