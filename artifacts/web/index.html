@@ -49,15 +49,22 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>numaze_web</title>
+  <title>누메이즈</title>
   <link rel="manifest" href="manifest.json">
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "3682710347";
+    const serviceWorkerVersion = "1544220480";
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+
+  <script>
+    // Function to dynamically change the title
+    function changeTitle(newTitle) {
+      document.title = newTitle;
+    }
+  </script>
 <!--  <script defer src="swipe_back.js"></script>-->
 </head>
 <body>
