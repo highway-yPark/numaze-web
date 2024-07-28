@@ -539,7 +539,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                         ),
                         TimeSlotGrid(
-                          // scrollController: _scrollController,
                           shopDomain: widget.shopDomain,
                           selectDesigner: shopData.selectDesigner,
                         ),

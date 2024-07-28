@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +30,7 @@ class ShopStylesScreen extends ConsumerStatefulWidget {
 }
 
 class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   late ScrollController _scrollController;
 
   @override
@@ -197,6 +199,7 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
               if (selectedTreatments.isNotEmpty &&
                   !(shopData.takeReservation ^ shopData.approval))
                 TreatmentReservationButton(
+                  // analytics: analytics,
                   shopDomain: widget.shopDomain,
                   futureReservationDays: shopData.futureReservationDays,
                 ),
@@ -211,7 +214,7 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
                     child: Center(
                       child: Text(
                         '지금은 예약을 접수 받을 수 없어요',
-                        style: TextDesign.bold20W,
+                        style: TextDesign.bold18W,
                       ),
                     ),
                   ),

@@ -10,6 +10,7 @@ import 'package:numaze_web/provider/customer_appointment_provider.dart';
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import '../common/const/widgets.dart';
+import '../common/js_function.dart';
 import '../components/common_image.dart';
 import '../components/common_title.dart';
 import '../components/custom_snackbar.dart';
@@ -263,6 +264,8 @@ class _CustomerAppointmentPageState
             ? CommonIcons.confirmed()
             : CommonIcons.complete()
         : getStatusIcon(customerAppointment.status!);
+
+    changeTitle(shopData.name);
 
     return Scaffold(
       body: Center(

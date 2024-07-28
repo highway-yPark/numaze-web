@@ -1,20 +1,24 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'common/const/colors.dart';
 import 'common/const/text.dart';
+import 'main.dart';
 import 'model/model.dart';
 import 'provider/occupied_dates_provider.dart';
 import 'provider/provider.dart';
 import 'utils.dart';
 
 class TreatmentReservationButton extends ConsumerWidget {
+  // final FirebaseAnalytics analytics;
   final String shopDomain;
   final int futureReservationDays;
 
   const TreatmentReservationButton({
     super.key,
+    // required this.analytics,
     required this.futureReservationDays,
     required this.shopDomain,
   });
@@ -61,16 +65,7 @@ class TreatmentReservationButton extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            // for (final entry in selectedTreatments.entries) {
-            //   print('Category ID: ${entry.key}');
-            //   for (final treatment in entry.value.selectedTreatments) {
-            //     print('Treatment ID: ${treatment.treatmentId}');
-            //     print('options: ${treatment.selectedOptions}');
-            //     print('styleId: ${treatment.styleId}');
-            //     print('monthlyPick: ${treatment.monthlyPickId}');
-            //     print('treatmentStyleId: ${treatment.treatmentStyleId}');
-            //   }
-            // }
+            analytics.logEvent(name: 'main_page_reservation_button');
 
             final startDate = DateTime.now();
             final endDate =

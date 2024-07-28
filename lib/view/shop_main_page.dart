@@ -1,3 +1,6 @@
+import 'dart:html' as html;
+
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,8 +13,10 @@ import '../announcements.dart';
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import '../common/const/widgets.dart';
+import '../common/js_function.dart';
 import '../components/common_image.dart';
 import '../components/tag_item.dart';
+import '../main.dart';
 import '../model/model.dart';
 import '../monthly_picks.dart';
 import '../provider/announcements_provider.dart';
@@ -31,6 +36,7 @@ class ShopMainPage extends ConsumerStatefulWidget {
 }
 
 class _ShopMainPageState extends ConsumerState<ShopMainPage> {
+  // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   final ScrollController _scrollController = ScrollController();
   int _selectedCategoryIndex = 0;
   final Map<int, GlobalKey> _categoryKeys = {};
@@ -137,6 +143,8 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
 
     final treatments = (treatmentsState as ListModel<TreatmentCategory>).data;
     final selectedTreatments = ref.watch(selectedTreatmentProvider);
+
+    changeTitle(shopData.name);
 
     return Scaffold(
       body: Center(
@@ -502,56 +510,64 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                   if (selectedTreatments.isEmpty &&
                       !(shopData.takeReservation ^ shopData.approval))
                     SliverToBoxAdapter(
-                      child: Container(
-                        height: 95,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 29.5,
-                          vertical: 20,
-                        ),
-                        color: ContainerColors.black,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CommonIcons.adFree(),
-                              const SizedBox(
-                                width: 30,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '누메이즈의 ',
-                                        style: TextDesign.bold16W,
-                                      ),
-                                      Text(
-                                        '예약 • 관리 서비스,',
-                                        style: TextDesign.bold16BO,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '원장님! 지금 ',
-                                        style: TextDesign.bold16W,
-                                      ),
-                                      Text(
-                                        '무료',
-                                        style: TextDesign.bold16BO,
-                                      ),
-                                      Text(
-                                        '로 경험해보세요.',
-                                        style: TextDesign.bold16W,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
+                      child: GestureDetector(
+                        onTap: () {
+                          html.window.open(
+                            'https://numaze.co.kr',
+                            'new tab',
+                          );
+                        },
+                        child: Container(
+                          height: 95,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 29.5,
+                            vertical: 20,
+                          ),
+                          color: ContainerColors.black,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CommonIcons.adFree(),
+                                const SizedBox(
+                                  width: 30,
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '누메이즈의 ',
+                                          style: TextDesign.bold16W,
+                                        ),
+                                        Text(
+                                          '예약 • 관리 서비스,',
+                                          style: TextDesign.bold16BO,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '원장님! 지금 ',
+                                          style: TextDesign.bold16W,
+                                        ),
+                                        Text(
+                                          '무료',
+                                          style: TextDesign.bold16BO,
+                                        ),
+                                        Text(
+                                          '로 경험해보세요.',
+                                          style: TextDesign.bold16W,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -562,6 +578,7 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
             if (selectedTreatments.isNotEmpty &&
                 !(shopData.takeReservation ^ shopData.approval))
               TreatmentReservationButton(
+                // analytics: analytics,
                 shopDomain: widget.shopDomain,
                 futureReservationDays: shopData.futureReservationDays,
               ),
@@ -576,7 +593,7 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                   child: Center(
                     child: Text(
                       '지금은 예약을 접수 받을 수 없어요',
-                      style: TextDesign.bold20W,
+                      style: TextDesign.bold18W,
                     ),
                   ),
                 ),

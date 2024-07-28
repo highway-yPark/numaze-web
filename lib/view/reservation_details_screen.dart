@@ -14,7 +14,7 @@ import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
 import 'package:numaze_web/view/empty_treatment_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 import '../auth/auth_repository.dart';
 import '../common/const/colors.dart';
@@ -1173,13 +1173,13 @@ class _ReservationBottomSheetState
       }
     });
   }
-
-  Future<void> launch(String url, {bool isNewTab = true}) async {
-    await launchUrl(
-      Uri.parse(url),
-      webOnlyWindowName: isNewTab ? '_blank' : '_self',
-    );
-  }
+  //
+  // Future<void> launch(String url, {bool isNewTab = true}) async {
+  //   await launchUrl(
+  //     Uri.parse(url),
+  //     webOnlyWindowName: isNewTab ? '_blank' : '_self',
+  //   );
+  // }
 
   TreatmentOptionPair convertToTreatmentOptionPair(
       SelectedTreatment selectedTreatment) {

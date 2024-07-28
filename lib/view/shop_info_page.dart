@@ -1,4 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:html' as html;
+
+// import 'package:flutter/cupertino.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -26,6 +29,8 @@ class ShopInfoPage extends ConsumerStatefulWidget {
 }
 
 class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
   @override
   Widget build(BuildContext context) {
     final shopBasicInfoState =
@@ -250,56 +255,64 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: Container(
-                    height: 95,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 29.5,
-                      vertical: 20,
-                    ),
-                    color: ContainerColors.black,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CommonIcons.adFree(),
-                          const SizedBox(
-                            width: 30,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    '누메이즈의 ',
-                                    style: TextDesign.bold18W,
-                                  ),
-                                  Text(
-                                    '예약 • 관리 서비스,',
-                                    style: TextDesign.bold18BO,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Text(
-                                    '원장님! 지금 ',
-                                    style: TextDesign.bold18W,
-                                  ),
-                                  Text(
-                                    '무료',
-                                    style: TextDesign.bold18BO,
-                                  ),
-                                  Text(
-                                    '로 경험해보세요.',
-                                    style: TextDesign.bold18W,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
+                  child: GestureDetector(
+                    onTap: () {
+                      html.window.open(
+                        'https://numaze.co.kr',
+                        'new tab',
+                      );
+                    },
+                    child: Container(
+                      height: 95,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 29.5,
+                        vertical: 20,
+                      ),
+                      color: ContainerColors.black,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CommonIcons.adFree(),
+                            const SizedBox(
+                              width: 30,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '누메이즈의 ',
+                                      style: TextDesign.bold18W,
+                                    ),
+                                    Text(
+                                      '예약 • 관리 서비스,',
+                                      style: TextDesign.bold18BO,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '원장님! 지금 ',
+                                      style: TextDesign.bold18W,
+                                    ),
+                                    Text(
+                                      '무료',
+                                      style: TextDesign.bold18BO,
+                                    ),
+                                    Text(
+                                      '로 경험해보세요.',
+                                      style: TextDesign.bold18W,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -307,6 +320,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
               if (selectedTreatments.isNotEmpty &&
                   !(shopData.takeReservation ^ shopData.approval))
                 TreatmentReservationButton(
+                  // analytics: analytics,
                   shopDomain: widget.shopDomain,
                   futureReservationDays: shopData.futureReservationDays,
                 ),
@@ -321,7 +335,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                     child: Center(
                       child: Text(
                         '지금은 예약을 접수 받을 수 없어요',
-                        style: TextDesign.bold20W,
+                        style: TextDesign.bold18W,
                       ),
                     ),
                   ),

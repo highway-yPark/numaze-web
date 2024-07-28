@@ -29,7 +29,7 @@ class CommonIcons {
 
   static adFree() {
     return SvgPicture.asset(
-      'assets/images/ad_free.svg',
+      'assets/images/ads.svg',
     );
   }
 

@@ -10,13 +10,11 @@ import 'components/common_title.dart';
 import 'model/list_model.dart';
 
 class TimeSlotGrid extends ConsumerStatefulWidget {
-  // final ScrollController scrollController;
   final String shopDomain;
   final bool selectDesigner;
 
   const TimeSlotGrid({
     super.key,
-    // required this.scrollController,
     required this.shopDomain,
     required this.selectDesigner,
   });
@@ -28,18 +26,6 @@ class TimeSlotGrid extends ConsumerStatefulWidget {
 class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
   int? selectedDesignerId;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-  // void scrollToBottomOfWidget() {
-  //   widget.scrollController.animateTo(
-  //     widget.scrollController.position.maxScrollExtent,
-  //     duration: const Duration(milliseconds: 500),
-  //     curve: Curves.easeOut,
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final timeSlotsState = ref.watch(timeSlotsProvider(widget.shopDomain));
@@ -47,17 +33,17 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
 
     if (timeSlotsState is ListEmpty) {
       return Container(
-        height: 311,
+        height: widget.selectDesigner ? 311 : 221,
       );
     }
     if (timeSlotsState is ListLoading) {
       return Container(
-        height: 311,
+        height: widget.selectDesigner ? 311 : 221,
       );
     }
 
     if (timeSlotsState is ListError) {
-      return Center(
+      return const Center(
         child: Text('데이터를 불러오는데 실패했어요.'),
       );
     }
@@ -71,8 +57,43 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
         .toList();
 
     if (filteredDesigners.isEmpty) {
-      return const Center(
-        child: Text('해당 날짜의 예약이 마감되었어요.'),
+      // return const Center(
+      //   child: Text('해당 날짜의 예약이 마감되었어요.'),
+      // );
+      return Container(
+        height: widget.selectDesigner ? 311 : 221,
+        width: double.infinity,
+        color: ContainerColors.mediumGrey,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                height: 45,
+                width: MediaQuery.of(context).size.width - 32,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: StrokeColors.grey,
+                  ),
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Center(
+                  child: Text(
+                    '예약이 모두 마감 되었어요.',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextDesign.medium14G,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
@@ -232,59 +253,85 @@ class SlotRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 5,
+    return LayoutBuilder(builder: (context, constraints) {
+      final width = constraints.maxWidth;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 5,
+            ),
+            child: Text(
+              label,
+              style: TextDesign.medium14G,
+            ),
           ),
-          child: Text(label, style: TextDesign.medium14G),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: slots.isNotEmpty
-                ? slots.map((timeSlot) {
-                    return Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            ref
-                                .read(selectedDateTimeProvider.notifier)
-                                .setTimeSlot(timeSlot);
-                            if (selectedDesignerId != null) {
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: slots.isNotEmpty
+                  ? slots.map((timeSlot) {
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
                               ref
-                                  .read(selectedDesignerProvider.notifier)
-                                  .setSelectedDesigner(
-                                      selectedDesignerId!, nickname!);
-                            }
-                          },
-                          child: SlotBox(
-                            text: formatTime(timeSlot),
-                            isSelected:
-                                selectedDateTime.selectedTimeSlot == timeSlot,
+                                  .read(selectedDateTimeProvider.notifier)
+                                  .setTimeSlot(timeSlot);
+                              if (selectedDesignerId != null) {
+                                ref
+                                    .read(selectedDesignerProvider.notifier)
+                                    .setSelectedDesigner(
+                                        selectedDesignerId!, nickname!);
+                              }
+                            },
+                            child: SlotBox(
+                              label: label,
+                              text: formatTime(timeSlot),
+                              isSelected:
+                                  selectedDateTime.selectedTimeSlot == timeSlot,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                        ],
+                      );
+                    }).toList()
+                  : [
+                      // SizedBox(
+                      //   height: 45,
+                      //   child: Center(
+                      //     child: Text(
+                      //       // '예약이 마감되었어요',
+                      //       '$label 예약이 모두 마감 되었어요.',
+                      //       style: TextDesign.medium14G,
+                      //     ),
+                      //   ),
+                      // ),
+                      Container(
+                        height: 45,
+                        width: width - 16,
+                        decoration: BoxDecoration(
+                          color: ContainerColors.mediumGrey,
+                          border: Border.all(
+                            color: StrokeColors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$label 예약이 모두 마감 되었어요.',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextDesign.medium14G,
                           ),
                         ),
-                        const SizedBox(width: 10),
-                      ],
-                    );
-                  }).toList()
-                : [
-                    SizedBox(
-                      height: 45,
-                      child: Center(
-                        child: Text(
-                          '예약이 마감되었어요',
-                          style: TextDesign.medium14G,
-                        ),
                       ),
-                    ),
-                  ],
+                    ],
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   static String formatTime(int time) {
@@ -295,10 +342,13 @@ class SlotRow extends ConsumerWidget {
 }
 
 class SlotBox extends StatelessWidget {
+  final String? label;
   final String text;
   final bool isSelected;
+
   const SlotBox({
     super.key,
+    this.label,
     required this.text,
     required this.isSelected,
   });
@@ -309,8 +359,8 @@ class SlotBox extends StatelessWidget {
       height: 45,
       width: 92,
       padding: const EdgeInsets.symmetric(
-        vertical: 11.5,
-        horizontal: 14.0,
+        // vertical: 4.5,
+        horizontal: 5.0,
       ),
       decoration: BoxDecoration(
         color: isSelected ? ContainerColors.black : ContainerColors.white,
@@ -321,7 +371,7 @@ class SlotBox extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          text,
+          label != null ? '$label $text' : text,
           overflow: TextOverflow.ellipsis,
           style: isSelected ? TextDesign.medium14W : TextDesign.medium14B,
         ),

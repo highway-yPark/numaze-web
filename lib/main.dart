@@ -1,3 +1,6 @@
+import 'dart:html' as html;
+
+import 'package:firebase_analytics_web/firebase_analytics_web.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,12 +10,23 @@ import 'package:numaze_web/common/const/colors.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'common/router.dart';
-import 'dart:html' as html;
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+late FirebaseAnalyticsWeb analytics;
 
 void main() async {
   setPathUrlStrategy();
   // Ensure all widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  analytics = FirebaseAnalyticsWeb();
+  analytics.setAnalyticsCollectionEnabled(true);
+  analytics.logEvent(name: "testevent");
 
   // Initialize the locale data
   await initializeDateFormatting('ko_KR', null);
@@ -49,9 +63,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   html.window.location.href = 'https://numaze.co.kr';
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      html.window.location.href = 'https://numaze.co.kr';
+    });
 
     return const Scaffold(
       // appBar: AppBar(
@@ -65,29 +79,6 @@ class HomePage extends StatelessWidget {
           //   child: const Text('Go to Details Page'),
           // ),
           ),
-    );
-  }
-}
-
-class DetailsPage extends StatelessWidget {
-  final String id;
-
-  const DetailsPage({required this.id, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Details Page: $id'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            context.go('/');
-          },
-          child: const Text('Back to Home'),
-        ),
-      ),
     );
   }
 }
