@@ -14,7 +14,6 @@ import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
 import 'package:numaze_web/view/empty_treatment_page.dart';
-// import 'package:url_launcher/url_launcher.dart';
 
 import '../auth/auth_repository.dart';
 import '../common/const/colors.dart';
@@ -25,6 +24,7 @@ import '../components/common_title.dart';
 import '../components/custom_snackbar.dart';
 import '../components/inkwell_button.dart';
 import '../components/text_with_number.dart';
+import '../main.dart';
 import '../model/list_model.dart';
 import '../model/model.dart';
 import '../provider/provider.dart';
@@ -47,12 +47,9 @@ class ReservationDetailsScreen extends ConsumerStatefulWidget {
 class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   String name = '';
   String phoneNumber = '';
-  // String verificationCode = '';
   TextEditingController verificationCodeController = TextEditingController();
   bool codeVerified = false;
   bool codeNotMatch = false;
-  // TextEditingController nameController = TextEditingController();
-  // FocusNode _focusNode = FocusNode();
 
   Timer? _timer;
   int _start = 180;
@@ -337,11 +334,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       imageThree = null;
       imageFour = null;
 
-      // remove all images from memory
-      // SystemChannels.platform.invokeMethod(
-      //     'SystemChannels.platform.invokeMethod',
-      //     'SystemChannels.platform.invokeMethod');
-
       return EmptyTreatmentPage(
         shopDomain: widget.shopDomain,
       );
@@ -581,6 +573,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                               onChanged: (value) {
                                 setState(() {
                                   phoneNumber = value;
+                                  codeVerified = false;
                                 });
                               },
                               isPhoneNumber: true,
@@ -593,9 +586,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                           InkWell(
                             onTap: () async {
                               await sendVerificationCode(context, ref);
-                              // setState(() {
-                              //   verificationCode = '';
-                              // });
                               verificationCodeController.clear();
                             },
                             child: Container(
@@ -820,6 +810,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                   child: ConditionalInkwellButton(
                     onTap: () {
                       if (buttonColor == Colors.black) {
+                        analytics.logEvent(name: 'pop_up_reservation_button');
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,
@@ -868,7 +859,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         ),
         child: isLoading
             ? Container(
-                color: ContainerColors.sbGrey,
+                color: ContainerColors.sBGrey,
                 child: Center(
                   child: Text(
                     '준비중..',
@@ -1173,13 +1164,6 @@ class _ReservationBottomSheetState
       }
     });
   }
-  //
-  // Future<void> launch(String url, {bool isNewTab = true}) async {
-  //   await launchUrl(
-  //     Uri.parse(url),
-  //     webOnlyWindowName: isNewTab ? '_blank' : '_self',
-  //   );
-  // }
 
   TreatmentOptionPair convertToTreatmentOptionPair(
       SelectedTreatment selectedTreatment) {
@@ -1615,6 +1599,7 @@ class _ReservationBottomSheetState
                   final selectedTreatments =
                       ref.read(selectedTreatmentProvider);
 
+                  analytics.logEvent(name: 'final_reservation_button');
                   try {
                     setState(() {
                       isLoading = true;
@@ -1871,7 +1856,7 @@ class _ReservationBottomSheetState
               onTap: () {
                 html.window.open(
                   hasUri,
-                  'new tab',
+                  '_blank',
                 );
               },
               // child: CommonIcons.arrowRight(),

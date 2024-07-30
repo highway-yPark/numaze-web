@@ -117,7 +117,7 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
                         return GestureDetector(
                           onTap: () {
                             context.go(
-                                '/s/${widget.shopDomain}/sisul?treatmentId=${widget.treatmentId}&treatmentStyleId=${style.styleId}');
+                                '/s/${widget.shopDomain}/treatment?treatmentId=${widget.treatmentId}&treatmentStyleId=${style.styleId}');
                           },
                           child: GridItem(
                             style: style,

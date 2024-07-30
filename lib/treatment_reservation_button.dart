@@ -12,13 +12,11 @@ import 'provider/provider.dart';
 import 'utils.dart';
 
 class TreatmentReservationButton extends ConsumerWidget {
-  // final FirebaseAnalytics analytics;
   final String shopDomain;
   final int futureReservationDays;
 
   const TreatmentReservationButton({
     super.key,
-    // required this.analytics,
     required this.futureReservationDays,
     required this.shopDomain,
   });
@@ -65,7 +63,7 @@ class TreatmentReservationButton extends ConsumerWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            analytics.logEvent(name: 'main_page_reservation_button');
+            analytics.logEvent(name: 'shop_page_reservation_button');
 
             final startDate = DateTime.now();
             final endDate =
@@ -99,7 +97,7 @@ class TreatmentReservationButton extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(5),
                   decoration: const BoxDecoration(
-                    color: BrandColors.orange,
+                    color: BrandColors.pink,
                     shape: BoxShape.circle,
                   ),
                   child: Text(

@@ -23,7 +23,7 @@ void customSnackBar({
       ),
       content: Row(
         children: [
-          if (error) CommonIcons.redError() else CommonIcons.whiteCheck(),
+          if (error) CommonIcons.error() else CommonIcons.whiteCheck(),
           const SizedBox(
             width: 8,
           ), // Add some space between the icon and the text.

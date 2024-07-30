@@ -153,7 +153,7 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: 'thirdStyles',
+          path: 'shopStyles',
           builder: (BuildContext context, GoRouterState state) {
             final String shopDomain = state.pathParameters['shopDomain']!;
             return ShopStylesScreen(
@@ -175,7 +175,7 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: 'sisul',
+          path: 'treatment',
           builder: (BuildContext context, GoRouterState state) {
             // final int categoryId =
             //     int.parse(state.uri.queryParameters['categoryId']!);

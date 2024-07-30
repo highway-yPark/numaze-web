@@ -632,7 +632,7 @@ class _CustomerAppointmentPageState
                                                 decoration:
                                                     TextDecoration.underline,
                                                 decorationColor:
-                                                    BrandColors.orange,
+                                                    BrandColors.pink,
                                               ),
                                             ),
                                           ),
@@ -736,7 +736,7 @@ class _CustomerAppointmentPageState
                                   onTap: () {
                                     html.window.open(
                                       'https://pf.kakao.com/${shopData.kakaotalkLink}',
-                                      'new tab',
+                                      '_blank',
                                     );
                                   },
                                   child: Text(

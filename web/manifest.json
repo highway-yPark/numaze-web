@@ -1,11 +1,11 @@
 {
-    "name": "numaze_web",
-    "short_name": "numaze_web",
+    "name": "누메이즈",
+    "short_name": "누메이즈",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "theme_color": "#FFFFFF",
+    "description": "네일샵 예약은 누메이즈에서 쉽고 간편하게!",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

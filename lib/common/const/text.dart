@@ -94,7 +94,7 @@ class TextDesign {
       baseBold.copyWith(fontSize: 20, height: 1.25, color: FontColors.black);
 
   static TextStyle bold20BO =
-      baseBold.copyWith(fontSize: 20, height: 1.25, color: BrandColors.orange);
+      baseBold.copyWith(fontSize: 20, height: 1.25, color: BrandColors.pink);
 
   static TextStyle medium16MG = baseMedium.copyWith(
       fontSize: 16, height: 1.5625, color: FontColors.mediumGrey);
@@ -129,8 +129,8 @@ class TextDesign {
   static TextStyle regular12MDG = baseRegular.copyWith(
       fontSize: 12, height: 1.25, color: FontColors.mediumDarkGrey);
 
-  static TextStyle regular12BO = baseRegular.copyWith(
-      fontSize: 12, height: 1.25, color: BrandColors.orange);
+  static TextStyle regular12BO =
+      baseRegular.copyWith(fontSize: 12, height: 1.25, color: BrandColors.pink);
 
   static TextStyle regular16B = baseRegular.copyWith(
       fontSize: 16, height: 1.5625, color: FontColors.black);
@@ -150,8 +150,8 @@ class TextDesign {
   static TextStyle regular14MG = baseRegular.copyWith(
       fontSize: 14, height: 1.43, color: FontColors.mediumGrey);
 
-  static TextStyle regular14BO = baseRegular.copyWith(
-      fontSize: 14, height: 1.43, color: BrandColors.orange);
+  static TextStyle regular14BO =
+      baseRegular.copyWith(fontSize: 14, height: 1.43, color: BrandColors.pink);
 
   static TextStyle regular14G =
       baseRegular.copyWith(fontSize: 14, height: 1.43, color: FontColors.grey);
@@ -160,7 +160,7 @@ class TextDesign {
       baseRegular.copyWith(fontSize: 14, height: 1.43, color: FontColors.black);
 
   static TextStyle regular16BO = baseRegular.copyWith(
-      fontSize: 16, height: 1.5625, color: BrandColors.orange);
+      fontSize: 16, height: 1.5625, color: BrandColors.pink);
 
   static TextStyle medium14G =
       baseMedium.copyWith(fontSize: 14, height: 1.43, color: FontColors.grey);
@@ -168,8 +168,8 @@ class TextDesign {
   static TextStyle medium14CG = baseMedium.copyWith(
       fontSize: 14, height: 1.43, color: FontColors.calendarGrey);
 
-  static TextStyle medium14BO = baseMedium.copyWith(
-      fontSize: 14, height: 1.43, color: BrandColors.orange);
+  static TextStyle medium14BO =
+      baseMedium.copyWith(fontSize: 14, height: 1.43, color: BrandColors.pink);
 
   static TextStyle medium14B =
       baseMedium.copyWith(fontSize: 14, height: 1.43, color: FontColors.black);
@@ -196,16 +196,16 @@ class TextDesign {
       baseBold.copyWith(fontSize: 12, height: 1.25, color: FontColors.white);
 
   static TextStyle bold12BO =
-      baseBold.copyWith(fontSize: 12, height: 1.25, color: BrandColors.orange);
+      baseBold.copyWith(fontSize: 12, height: 1.25, color: BrandColors.pink);
 
   static TextStyle semiBold14B =
       baseSemiBold.copyWith(fontSize: 14, color: FontColors.black);
 
   static TextStyle medium16BO = baseMedium.copyWith(
-      fontSize: 16, height: 1.5625, color: BrandColors.orange);
+      fontSize: 16, height: 1.5625, color: BrandColors.pink);
 
-  static TextStyle bold16BO = baseBold.copyWith(
-      fontSize: 16, height: 1.5626, color: BrandColors.orange);
+  static TextStyle bold16BO =
+      baseBold.copyWith(fontSize: 16, height: 1.5626, color: BrandColors.pink);
 
   static TextStyle extraBold12DG =
       baseExtraBold.copyWith(fontSize: 12, color: FontColors.darkGrey);
@@ -223,7 +223,7 @@ class TextDesign {
       baseBold.copyWith(fontSize: 18, height: 1.389, color: FontColors.black);
 
   static TextStyle bold18BO =
-      baseBold.copyWith(fontSize: 18, height: 1.389, color: BrandColors.orange);
+      baseBold.copyWith(fontSize: 18, height: 1.389, color: BrandColors.pink);
 
   static TextStyle bold18W =
       baseBold.copyWith(fontSize: 18, height: 1.389, color: FontColors.white);
@@ -247,7 +247,7 @@ class TextDesign {
       fontSize: 14, height: 1.43, color: FontColors.calendarGrey);
 
   static TextStyle bold14BO =
-      baseBold.copyWith(fontSize: 14, height: 1.43, color: BrandColors.orange);
+      baseBold.copyWith(fontSize: 14, height: 1.43, color: BrandColors.pink);
 
   static TextStyle bold14MDG = baseBold.copyWith(
       fontSize: 14, height: 1.43, color: FontColors.mediumDarkGrey);

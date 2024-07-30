@@ -30,12 +30,12 @@ class ConstWidgets {
     );
   }
 
-  static homeScreenDivider() {
-    return Container(
-      color: AppColors.black,
-      height: 4,
-    );
-  }
+  // static homeScreenDivider() {
+  //   return Container(
+  //     color: AppColors.black,
+  //     height: 4,
+  //   );
+  // }
 }
 
 class CommonWidgets {

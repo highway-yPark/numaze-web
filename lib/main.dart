@@ -4,7 +4,6 @@ import 'package:firebase_analytics_web/firebase_analytics_web.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:numaze_web/common/const/colors.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -26,7 +25,6 @@ void main() async {
 
   analytics = FirebaseAnalyticsWeb();
   analytics.setAnalyticsCollectionEnabled(true);
-  analytics.logEvent(name: "testevent");
 
   // Initialize the locale data
   await initializeDateFormatting('ko_KR', null);

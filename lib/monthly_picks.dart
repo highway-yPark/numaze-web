@@ -73,7 +73,7 @@ class MonthlyPicks extends ConsumerWidget {
                   );
                 } else {
                   context.go(
-                      '/s/$shopDomain/sisul?treatmentId=${treatment.id}&monthlyPickId=${monthlyPick.styleId}');
+                      '/s/$shopDomain/treatment?treatmentId=${treatment.id}&monthlyPickId=${monthlyPick.styleId}');
                 }
               },
               child: Container(

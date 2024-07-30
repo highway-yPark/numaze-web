@@ -10,6 +10,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import '../components/inkwell_button.dart';
+import '../main.dart';
 import '../model/list_model.dart';
 import '../model/model.dart';
 import '../provider/occupied_dates_provider.dart';
@@ -29,8 +30,11 @@ class CalendarScreen extends ConsumerStatefulWidget {
 }
 
 class _CalendarScreenState extends ConsumerState<CalendarScreen> {
-  DateTime today = DateTime.now();
-  DateTime focusedDate = DateTime.now();
+  // i want to with 00:00:00
+  DateTime now = DateTime.now();
+  late DateTime today;
+
+  late DateTime focusedDate;
   DateTime? selectedDate;
   late ScrollController _scrollController;
 
@@ -67,6 +71,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     // TODO: implement initState
     super.initState();
     _scrollController = ScrollController();
+    today = DateTime(now.year, now.month, now.day);
+    // today = now.subtract(Duration(hours: 9));
+    focusedDate = today;
   }
 
   void scrollToBottomOfWidget() {
@@ -284,6 +291,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   child: ConditionalInkwellButton(
                     onTap: () {
                       if (buttonColor == Colors.black) {
+                        analytics.logEvent(
+                            name: 'calendar_page_reservation_button');
                         ref.read(durationProvider.notifier).state = duration;
                         selectedDate = null;
                         context.go('/s/${widget.shopDomain}/reservation');
@@ -320,12 +329,20 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               0,
                             ),
                             calendarFormat: CalendarFormat.month,
-                            enabledDayPredicate: (day) =>
-                                !occupiedDates.contains(
-                                    DateFormat('yyyy-MM-dd').format(day)) &&
-                                day.isAfter(
-                                    today.subtract(const Duration(days: 1))) &&
-                                day.isBefore(lastDayOfReservation),
+                            enabledDayPredicate: (day) {
+                              final dayKst = day.add(const Duration(hours: 9));
+                              print(dayKst);
+                              print(!occupiedDates.contains(
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(dayKst)) &&
+                                  dayKst.isAfter(today) &&
+                                  dayKst.isBefore(lastDayOfReservation));
+                              return !occupiedDates.contains(
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(dayKst)) &&
+                                  dayKst.isAfter(today) &&
+                                  dayKst.isBefore(lastDayOfReservation);
+                            },
                             selectedDayPredicate: (day) =>
                                 isSameDay(selectedDate, day),
                             onDaySelected: (selectedDay, focusedDay) {

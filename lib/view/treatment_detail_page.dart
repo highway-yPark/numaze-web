@@ -14,6 +14,7 @@ import '../components/common_image.dart';
 import '../components/custom_snackbar.dart';
 import '../components/inkwell_button.dart';
 import '../cursor_pagination_model.dart';
+import '../main.dart';
 import '../model/list_model.dart';
 import '../model/model.dart';
 import '../provider/monthly_pick_provider.dart';
@@ -154,8 +155,17 @@ class TreatmentDetailPage extends ConsumerWidget {
                                   width: 37,
                                   height: 37,
                                   decoration: BoxDecoration(
-                                    color: ContainerColors.sbGrey,
+                                    color: ContainerColors.sBGrey,
                                     borderRadius: BorderRadius.circular(3),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: ContainerColors.black
+                                            .withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -169,6 +179,15 @@ class TreatmentDetailPage extends ConsumerWidget {
                                   decoration: BoxDecoration(
                                     color: ContainerColors.ctaGrey,
                                     borderRadius: BorderRadius.circular(3),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: ContainerColors.black
+                                            .withOpacity(0.1),
+                                        spreadRadius: 0,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -438,6 +457,7 @@ class OverlayImageWithText extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        analytics.logEvent(name: 'treatment_style_button');
         context.go('/s/$shopDomain/treatmentStyles?treatmentId=$treatmentId');
       },
       child: Stack(

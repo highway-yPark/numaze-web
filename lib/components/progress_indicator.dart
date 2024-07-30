@@ -151,15 +151,15 @@ class StepIndicator extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: isActive ? BrandColors.orange : StrokeColors.grey,
+              color: isActive ? BrandColors.pink : StrokeColors.grey,
               width: 2,
             ),
-            color: filled ? BrandColors.orange : Colors.transparent,
+            color: filled ? BrandColors.pink : Colors.transparent,
           ),
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isActive ? BrandColors.orange : StrokeColors.white,
+              color: isActive ? BrandColors.pink : StrokeColors.white,
             ),
             margin: const EdgeInsets.all(1.5),
           ),
@@ -179,7 +179,7 @@ class StepConnector extends StatelessWidget {
     return Container(
       width: 121,
       height: 2,
-      color: isActive ? BrandColors.orange : StrokeColors.grey,
+      color: isActive ? BrandColors.pink : StrokeColors.grey,
     );
   }
 }

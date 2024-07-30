@@ -80,7 +80,7 @@ class Announcements extends ConsumerWidget {
                               Container(
                                 width: 64,
                                 height: 21,
-                                color: BrandColors.orange,
+                                color: BrandColors.pink,
                                 child: Center(
                                   child: Text(
                                     announcement.announcementType.name ==

@@ -34,7 +34,7 @@ class CustomDialog extends StatelessWidget {
               width: 96,
               height: 25,
               decoration: const BoxDecoration(
-                color: BrandColors.orange,
+                color: BrandColors.pink,
               ),
               child: Center(
                 child: Text(
@@ -69,22 +69,20 @@ class CustomDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            SizedBox(
+            Container(
+              color: ContainerColors.black,
               height: 57,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Ink(
-                    color: ContainerColors.black,
-                    child: Center(
-                      child: Text(
-                        '확인',
-                        style: TextDesign.bold16W,
-                        textAlign: TextAlign.center,
-                      ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Ink(
+                  color: ContainerColors.black,
+                  child: Center(
+                    child: Text(
+                      '확인',
+                      style: TextDesign.bold16W,
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),

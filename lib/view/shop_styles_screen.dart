@@ -127,6 +127,8 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
                                 ),
                                 MenuButton(
                                   onTap: () {
+                                    analytics.logEvent(
+                                        name: 'shop_info_button');
                                     context.go('/s/${widget.shopDomain}/info');
                                   },
                                   title: '정보',
@@ -178,7 +180,7 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
                                 //       '/s/${widget.shopDomain}/sisul?treatmentId=${treatment.id}&styleId=${style.styleId}');
                                 // }
                                 context.go(
-                                    '/s/${widget.shopDomain}/sisul?treatmentId=${treatment.id}&styleId=${style.styleId}');
+                                    '/s/${widget.shopDomain}/treatment?treatmentId=${treatment.id}&styleId=${style.styleId}');
                               },
                               child: GridItem(
                                 style: style,
@@ -199,7 +201,6 @@ class _ShopStylesScreenState extends ConsumerState<ShopStylesScreen> {
               if (selectedTreatments.isNotEmpty &&
                   !(shopData.takeReservation ^ shopData.approval))
                 TreatmentReservationButton(
-                  // analytics: analytics,
                   shopDomain: widget.shopDomain,
                   futureReservationDays: shopData.futureReservationDays,
                 ),

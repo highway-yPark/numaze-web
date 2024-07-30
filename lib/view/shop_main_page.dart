@@ -1,6 +1,5 @@
 import 'dart:html' as html;
 
-// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +35,6 @@ class ShopMainPage extends ConsumerStatefulWidget {
 }
 
 class _ShopMainPageState extends ConsumerState<ShopMainPage> {
-  // FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   final ScrollController _scrollController = ScrollController();
   int _selectedCategoryIndex = 0;
   final Map<int, GlobalKey> _categoryKeys = {};
@@ -155,21 +153,19 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  SliverAppBar(
-                    backgroundColor: ContainerColors.white,
-                    flexibleSpace: SizedBox(
-                      height: 52,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          // vertical: 10.0,
-                        ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      height: 42,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Image.asset(
                               'assets/images/numaze_logo.png',
-                              height: 29,
+                              height: 18,
                             ),
                             InkWell(
                               onTap: () {
@@ -349,14 +345,19 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                 ),
                                 MenuButton(
                                   onTap: () {
+                                    analytics.logEvent(
+                                        name: 'shop_style_button');
+
                                     context.go(
-                                        '/s/${widget.shopDomain}/thirdStyles');
+                                        '/s/${widget.shopDomain}/shopStyles');
                                   },
                                   title: '스타일',
                                   isSelected: false,
                                 ),
                                 MenuButton(
                                   onTap: () {
+                                    analytics.logEvent(
+                                        name: 'shop_info_button');
                                     context.go('/s/${widget.shopDomain}/info');
                                   },
                                   title: '정보',
@@ -399,10 +400,6 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                                 _scrollToCategory(index);
                               },
                               child: Container(
-                                // padding: const EdgeInsets.symmetric(
-                                //   horizontal: 15,
-                                //   vertical: 5,
-                                // ),
                                 padding: EdgeInsets.only(
                                   left: 15,
                                   right: hasSelectedTreatments ? 10 : 15,
@@ -514,7 +511,7 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                         onTap: () {
                           html.window.open(
                             'https://numaze.co.kr',
-                            'new tab',
+                            '_blank',
                           );
                         },
                         child: Container(
@@ -578,7 +575,6 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
             if (selectedTreatments.isNotEmpty &&
                 !(shopData.takeReservation ^ shopData.approval))
               TreatmentReservationButton(
-                // analytics: analytics,
                 shopDomain: widget.shopDomain,
                 futureReservationDays: shopData.futureReservationDays,
               ),

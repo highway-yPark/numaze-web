@@ -1,16 +1,14 @@
 import 'dart:html' as html;
 
-// import 'package:flutter/cupertino.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
-import 'package:numaze_web/view/not_found_page.dart';
 
 import '../common/const/colors.dart';
 import '../common/const/text.dart';
 import '../common/const/widgets.dart';
+import '../main.dart';
 import '../model/model.dart';
 import '../provider/provider.dart';
 import '../treatment_reservation_button.dart';
@@ -29,8 +27,6 @@ class ShopInfoPage extends ConsumerStatefulWidget {
 }
 
 class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-
   @override
   Widget build(BuildContext context) {
     final shopBasicInfoState =
@@ -75,8 +71,10 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                                 ),
                                 MenuButton(
                                   onTap: () {
+                                    analytics.logEvent(
+                                        name: 'shop_style_button');
                                     context.go(
-                                        '/s/${widget.shopDomain}/thirdStyles');
+                                        '/s/${widget.shopDomain}/shopStyles');
                                   },
                                   title: '스타일',
                                   isSelected: false,
@@ -259,7 +257,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                     onTap: () {
                       html.window.open(
                         'https://numaze.co.kr',
-                        'new tab',
+                        '_blank',
                       );
                     },
                     child: Container(
@@ -320,7 +318,6 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
               if (selectedTreatments.isNotEmpty &&
                   !(shopData.takeReservation ^ shopData.approval))
                 TreatmentReservationButton(
-                  // analytics: analytics,
                   shopDomain: widget.shopDomain,
                   futureReservationDays: shopData.futureReservationDays,
                 ),

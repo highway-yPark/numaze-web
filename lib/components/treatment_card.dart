@@ -56,7 +56,8 @@ class TreatmentBox extends ConsumerWidget {
               );
               return;
             } else {
-              context.go('/s/$shopDomain/sisul?treatmentId=${treatment.id}');
+              context
+                  .go('/s/$shopDomain/treatment?treatmentId=${treatment.id}');
               // Navigator.push(
               //   context,
               //   MaterialPageRoute(
@@ -94,7 +95,7 @@ class TreatmentBox extends ConsumerWidget {
                   Positioned(
                     right: 8,
                     bottom: 9,
-                    child: CommonIcons.check(),
+                    child: CommonIcons.hasTreatmentCheck(),
                   ),
               ],
             ),

@@ -11,14 +11,6 @@ class CommonIcons {
     );
   }
 
-  static check() {
-    return SvgPicture.asset(
-      'assets/images/check.svg',
-      width: 24,
-      height: 24,
-    );
-  }
-
   static clock() {
     return SvgPicture.asset(
       'assets/images/clock.svg',
@@ -57,20 +49,13 @@ class CommonIcons {
     );
   }
 
-  static redError() {
+  static error() {
     return SvgPicture.asset(
-      'assets/images/red_error.svg',
-      height: 32,
-      width: 32,
+      'assets/images/error.svg',
     );
   }
 
   static treatmentHome() {
-    // return SvgPicture.asset(
-    //   'assets/images/treatment_home.svg',
-    //   // width: 32,
-    //   // height: 32,
-    // );
     return Image.asset(
       'assets/images/treatment_home.png',
       width: 32,
@@ -259,18 +244,42 @@ class CommonIcons {
   }
 
   static hasTreatmentCheck() {
-    return SvgPicture.asset(
-      'assets/images/has_treatment_check.svg',
-      width: 23,
-      height: 23,
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            spreadRadius: 0,
+            blurRadius: 6.7,
+            offset: const Offset(0, 0),
+          ),
+        ],
+      ),
+      child: SvgPicture.asset(
+        'assets/images/has_treatment_check.svg',
+        width: 23,
+        height: 23,
+      ),
     );
   }
 
   static hasTreatmentCheckBlack() {
-    return SvgPicture.asset(
-      'assets/images/has_treatment_check_black.svg',
-      width: 23,
-      height: 23,
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            spreadRadius: 0,
+            blurRadius: 6.7,
+            offset: const Offset(0, 0),
+          ),
+        ],
+      ),
+      child: SvgPicture.asset(
+        'assets/images/has_treatment_check_black.svg',
+        width: 23,
+        height: 23,
+      ),
     );
   }
 
