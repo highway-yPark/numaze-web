@@ -4,6 +4,7 @@ import 'dart:html' as html;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image/image.dart' as img;
@@ -167,8 +168,96 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
   bool isLoadingThree = false;
   bool isLoadingFour = false;
 
+  // Future<void> pickAndCropImage(int index) async {
+  //   try {
+  //     setState(() {
+  //       switch (index) {
+  //         case 1:
+  //           isLoadingOne = true;
+  //           break;
+  //         case 2:
+  //           isLoadingTwo = true;
+  //           break;
+  //         case 3:
+  //           isLoadingThree = true;
+  //           break;
+  //         case 4:
+  //           isLoadingFour = true;
+  //           break;
+  //       }
+  //     });
+  //
+  //     // Uint8List? bytesFromPicker = await ImagePickerWeb.getImageAsBytes();
+  //     final imagePicker = ImagePickerPlugin();
+  //     // final imagePicker = ImagePicker();
+  //     final pickedFile = await imagePicker.getImageFromSource(
+  //       source: ImageSource.gallery,
+  //       options: const ImagePickerOptions(
+  //         maxWidth: 720,
+  //         maxHeight: 720,
+  //         imageQuality: 100,
+  //       ),
+  //     );
+  //
+  //     if (pickedFile != null) {
+  //       final bytesFromPicker = await pickedFile.readAsBytes();
+  //       setState(() async {
+  //         switch (index) {
+  //           case 1:
+  //             imageOne = await processImage(bytesFromPicker);
+  //             break;
+  //           case 2:
+  //             imageTwo = await processImage(bytesFromPicker);
+  //             break;
+  //           case 3:
+  //             imageThree = await processImage(bytesFromPicker);
+  //             break;
+  //           case 4:
+  //             imageFour = await processImage(bytesFromPicker);
+  //         }
+  //       });
+  //     } else {
+  //       setState(() {
+  //         switch (index) {
+  //           case 1:
+  //             isLoadingOne = false;
+  //             break;
+  //           case 2:
+  //             isLoadingTwo = false;
+  //             break;
+  //           case 3:
+  //             isLoadingThree = false;
+  //             break;
+  //           case 4:
+  //             isLoadingFour = false;
+  //             break;
+  //         }
+  //       });
+  //     }
+  //   } catch (e) {
+  //     showError();
+  //   } finally {
+  //     setState(() {
+  //       switch (index) {
+  //         case 1:
+  //           isLoadingOne = false;
+  //           break;
+  //         case 2:
+  //           isLoadingTwo = false;
+  //           break;
+  //         case 3:
+  //           isLoadingThree = false;
+  //           break;
+  //         case 4:
+  //           isLoadingFour = false;
+  //           break;
+  //       }
+  //     });
+  //   }
+  // }
   Future<void> pickAndCropImage(int index) async {
     try {
+      // Set loading state before starting the image processing
       setState(() {
         switch (index) {
           case 1:
@@ -186,36 +275,41 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         }
       });
 
-      // Uint8List? bytesFromPicker = await ImagePickerWeb.getImageAsBytes();
+      // Pick the image
       final imagePicker = ImagePickerPlugin();
-      // final imagePicker = ImagePicker();
       final pickedFile = await imagePicker.getImageFromSource(
         source: ImageSource.gallery,
         options: const ImagePickerOptions(
-          maxWidth: 720,
-          maxHeight: 720,
+          // maxWidth: 720,
+          // maxHeight: 720,
           imageQuality: 100,
         ),
       );
 
+      // If an image is picked, process it
       if (pickedFile != null) {
         final bytesFromPicker = await pickedFile.readAsBytes();
+        final processedImage = await processImage(bytesFromPicker);
+
+        // Update the state with the processed image
         setState(() {
           switch (index) {
             case 1:
-              imageOne = processImage(bytesFromPicker);
+              imageOne = processedImage;
               break;
             case 2:
-              imageTwo = processImage(bytesFromPicker);
+              imageTwo = processedImage;
               break;
             case 3:
-              imageThree = processImage(bytesFromPicker);
+              imageThree = processedImage;
               break;
             case 4:
-              imageFour = processImage(bytesFromPicker);
+              imageFour = processedImage;
+              break;
           }
         });
       } else {
+        // Reset the loading state if no image was picked
         setState(() {
           switch (index) {
             case 1:
@@ -236,6 +330,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     } catch (e) {
       showError();
     } finally {
+      // Reset the loading state
       setState(() {
         switch (index) {
           case 1:
@@ -259,36 +354,72 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     errorSnackBar(context: context);
   }
 
-  Uint8List processImage(Uint8List imageBytes) {
-    final image = img.decodeImage(imageBytes)!;
-
-    int x, y, cropSize;
-    if (image.width > image.height) {
-      cropSize = image.height;
-      x = (image.width - cropSize) ~/ 2;
-      y = 0;
-    } else {
-      cropSize = image.width;
-      x = 0;
-      y = (image.height - cropSize) ~/ 2;
-    }
-
-    final cropped = img.copyCrop(
-      image,
-      x: x,
-      y: y,
-      width: cropSize,
-      height: cropSize,
-    );
-
-    return Uint8List.fromList(
-      img.encodeJpg(
-        // resized,
-        cropped,
+  // Uint8List processImage(Uint8List imageBytes) {
+  //   final image = img.decodeImage(imageBytes)!;
+  //
+  //   int x, y, cropSize;
+  //   if (image.width > image.height) {
+  //     cropSize = image.height;
+  //     x = (image.width - cropSize) ~/ 2;
+  //     y = 0;
+  //   } else {
+  //     cropSize = image.width;
+  //     x = 0;
+  //     y = (image.height - cropSize) ~/ 2;
+  //   }
+  //
+  //   final cropped = img.copyCrop(
+  //     image,
+  //     x: x,
+  //     y: y,
+  //     width: cropSize,
+  //     height: cropSize,
+  //   );
+  //
+  //   return Uint8List.fromList(
+  //     img.encodeJpg(
+  //       // resized,
+  //       cropped,
+  //       quality: 80,
+  //     ),
+  //   );
+  // }
+  Future<Uint8List> processImage(Uint8List imageBytes) async {
+    try {
+      // Compress the image using flutter_image_compress
+      final compressedImageBytes = await FlutterImageCompress.compressWithList(
+        imageBytes,
         quality: 80,
-      ),
-    );
+        format: CompressFormat.jpeg,
+      );
+
+      return compressedImageBytes;
+    } catch (e) {
+      debugPrint('Error compressing image: $e');
+      showError(); // Assuming showError is a custom function to handle errors
+      return imageBytes; // Return the original image if compression fails
+    }
   }
+  // Future<Uint8List> processImage(Uint8List imageBytes) async {
+  //   try {
+  //     // Decode the image
+  //     final image = img.decodeImage(imageBytes);
+  //     if (image == null) {
+  //       throw Exception('Unable to decode image.');
+  //     }
+  //
+  //     // Encode the image to JPEG format with specified quality
+  //     final compressedImageBytes = Uint8List.fromList(
+  //       img.encodeJpg(image, quality: 80),
+  //     );
+  //
+  //     return compressedImageBytes;
+  //   } catch (e) {
+  //     debugPrint('Error compressing image: $e');
+  //     showError();
+  //     return imageBytes;
+  //   }
+  // }
 
   int sumOfEachTreatmentOptionDuration(TreatmentHistoryResponse treatment) {
     int sum = 0;

@@ -244,42 +244,18 @@ class CommonIcons {
   }
 
   static hasTreatmentCheck() {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            spreadRadius: 0,
-            blurRadius: 6.7,
-            offset: const Offset(0, 0),
-          ),
-        ],
-      ),
-      child: SvgPicture.asset(
-        'assets/images/has_treatment_check.svg',
-        width: 23,
-        height: 23,
-      ),
+    return SvgPicture.asset(
+      'assets/images/has_treatment_check.svg',
+      width: 23,
+      height: 23,
     );
   }
 
   static hasTreatmentCheckBlack() {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.25),
-            spreadRadius: 0,
-            blurRadius: 6.7,
-            offset: const Offset(0, 0),
-          ),
-        ],
-      ),
-      child: SvgPicture.asset(
-        'assets/images/has_treatment_check_black.svg',
-        width: 23,
-        height: 23,
-      ),
+    return SvgPicture.asset(
+      'assets/images/has_treatment_check_black.svg',
+      width: 23,
+      height: 23,
     );
   }
 

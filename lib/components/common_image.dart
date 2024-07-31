@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:numaze_web/common/const/colors.dart';
 
 class CommonImage extends StatelessWidget {
   final String imageUrl;
@@ -19,16 +20,8 @@ class CommonImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      // placeholder: (context, url) => SvgPicture.asset(
-      //   'assets/images/landscape-placeholder.svg',
-      //   width: width,
-      //   height: height,
-      //   fit: fit,
-      // ),
       placeholder: (context, url) => Container(
-        color: Colors.grey[200],
-        width: width,
-        height: height,
+        color: ContainerColors.mediumGrey,
       ),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       fadeOutDuration: const Duration(milliseconds: 300),
