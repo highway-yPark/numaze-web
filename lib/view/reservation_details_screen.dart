@@ -282,7 +282,7 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         options: const ImagePickerOptions(
           // maxWidth: 720,
           // maxHeight: 720,
-          imageQuality: 100,
+          imageQuality: 80,
         ),
       );
 
@@ -393,6 +393,28 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         format: CompressFormat.jpeg,
       );
 
+      final image = img.decodeImage(compressedImageBytes);
+
+      if (image != null && image.width > image.height) {
+        // final cropped = img.copyCrop(
+        //   image,
+        //   x: (image.width - image.height) ~/ 2,
+        //   y: 0,
+        //   width: image.height,
+        //   height: image.height,
+        // );
+        // crop center
+        final cropped = img.copyCrop(
+          image,
+          x: (image.width - image.height) ~/ 2,
+          y: 0,
+          width: image.height,
+          height: image.height,
+        );
+        return Uint8List.fromList(
+          img.encodeJpg(cropped, quality: 80),
+        );
+      }
       return compressedImageBytes;
     } catch (e) {
       debugPrint('Error compressing image: $e');

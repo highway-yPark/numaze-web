@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,7 @@ import '../provider/monthly_pick_provider.dart';
 import '../provider/shop_styles_provider.dart';
 import '../provider/treatments_provider.dart';
 import '../utils.dart';
+import 'empty_treatment_page.dart';
 
 class TreatmentDetailPage extends ConsumerWidget {
   final String shopDomain;
@@ -28,6 +30,7 @@ class TreatmentDetailPage extends ConsumerWidget {
   final int? monthlyPickId;
   final int? styleId;
   final int? treatmentStyleId;
+  // final int? currentIndex;
 
   const TreatmentDetailPage({
     super.key,
@@ -36,6 +39,7 @@ class TreatmentDetailPage extends ConsumerWidget {
     this.monthlyPickId,
     this.styleId,
     this.treatmentStyleId,
+    // this.currentIndex,
   });
 
   @override
@@ -97,17 +101,26 @@ class TreatmentDetailPage extends ConsumerWidget {
     final styles = styleId != null
         ? (stylesState as CursorPagination<StyleModel>).data
         : [];
+
     StyleModel? style = styleId == null
         ? null
-        : styles.firstWhere((element) => element.styleId == styleId);
+        : styles.firstWhereOrNull((element) => element.styleId == styleId);
 
     final treatmentStyles =
-        (treatmentStylesState as CursorPagination<StyleModel>).data;
+        (treatmentStylesState as CursorPagination<StyleModel>);
 
     StyleModel? treatmentStyle = treatmentStyleId == null
         ? null
-        : treatmentStyles
-            .firstWhere((element) => element.styleId == treatmentStyleId);
+        : treatmentStyles.data
+            .firstWhereOrNull((element) => element.styleId == treatmentStyleId);
+
+    if (style == null &&
+        treatmentStyle == null &&
+        (styleId != null || treatmentStyleId != null)) {
+      return EmptyTreatmentPage(
+        shopDomain: shopDomain,
+      );
+    }
 
     return Scaffold(
       body: Align(
@@ -127,24 +140,97 @@ class TreatmentDetailPage extends ConsumerWidget {
                       builder: (context, constraints) {
                         return Stack(
                           children: [
-                            Column(
+                            Stack(
                               children: [
-                                CommonImage(
-                                  imageUrl: styleId == null
-                                      ? monthlyPickId == null
-                                          ? treatmentStyleId == null
-                                              ? treatment.thumbnail
-                                              : treatmentStyle!.thumbnail
-                                          : monthlyPick!.thumbnail
-                                      : style!.thumbnail,
-                                  width: constraints.maxWidth,
-                                  height: constraints.maxWidth,
-                                  fit: BoxFit.cover,
+                                Column(
+                                  children: [
+                                    CommonImage(
+                                      imageUrl: styleId == null
+                                          ? monthlyPickId == null
+                                              ? treatmentStyleId == null
+                                                  ? treatment.thumbnail
+                                                  : treatmentStyle!.thumbnail
+                                              // : treatmentStyles
+                                              //     .data[currentIndex!]
+                                              //     .thumbnail
+                                              : monthlyPick!.thumbnail
+                                          : style!.thumbnail,
+                                      width: constraints.maxWidth,
+                                      height: constraints.maxWidth,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Container(
+                                      height: 23.5,
+                                      color: ContainerColors.white,
+                                    )
+                                  ],
                                 ),
-                                Container(
-                                  height: 23.5,
-                                  color: ContainerColors.white,
-                                )
+                                //     if (treatmentStyleId != null &&
+                                //         currentIndex! > 0)
+                                //       Align(
+                                //         alignment: Alignment.centerLeft,
+                                //         child: Container(
+                                //           color: Colors.pink,
+                                //           child: IconButton(
+                                //             onPressed: () {
+                                //               // i want to change the image shown in above CommonImage widget with the previous style image
+                                //               if (currentIndex! > 0) {
+                                //                 setState(() {
+                                //                   currentIndex = currentIndex! - 1;
+                                //                   treatmentStyleId = treatmentStyles
+                                //                       .data[currentIndex!].styleId;
+                                //                 });
+                                //               }
+                                //
+                                //               // context.go(
+                                //               //     '/s/$shopDomain/styleFullScreen?styleId=${treatmentStyle!.styleId}');
+                                //             },
+                                //             icon: Icon(
+                                //               Icons.arrow_back_ios,
+                                //               color: ContainerColors.black,
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
+                                //     if (treatmentStyleId != null &&
+                                //         currentIndex! <
+                                //             treatmentStyles.meta.total - 1)
+                                //       Align(
+                                //         alignment: Alignment.centerRight,
+                                //         child: Container(
+                                //           color: Colors.pink,
+                                //           child: IconButton(
+                                //             onPressed: () {
+                                //               // i want to change the image shown in above CommonImage widget with the next style image
+                                //               if (currentIndex! <=
+                                //                   treatmentStyles.meta.total - 2) {
+                                //                 ref
+                                //                     .read(stylesProvider(
+                                //                             widget.treatmentId)
+                                //                         .notifier)
+                                //                     .paginate(
+                                //                       fetchMore: true,
+                                //                     );
+                                //               }
+                                //               if (currentIndex! <
+                                //                   treatmentStyles.meta.total - 1) {
+                                //                 setState(() {
+                                //                   currentIndex = currentIndex! + 1;
+                                //                   treatmentStyleId = treatmentStyles
+                                //                       .data[currentIndex!].styleId;
+                                //                 });
+                                //               }
+                                //
+                                //               // context.go(
+                                //               //     '/s/$shopDomain/styleFullScreen?styleId=${treatmentStyle!.styleId}');
+                                //             },
+                                //             icon: Icon(
+                                //               Icons.arrow_forward_ios,
+                                //               color: ContainerColors.black,
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
                               ],
                             ),
                             if (treatment.styleCount > 0)
@@ -199,7 +285,8 @@ class TreatmentDetailPage extends ConsumerWidget {
                                   shopDomain: shopDomain,
                                   treatmentId: treatmentId,
                                   styleCount: treatment.styleCount,
-                                  thumbnail: treatmentStyles.first.thumbnail,
+                                  thumbnail:
+                                      treatmentStyles.data.first.thumbnail,
                                 ),
                               ),
                           ],
@@ -320,10 +407,12 @@ class TreatmentDetailPage extends ConsumerWidget {
                                     monthlyPickImage: monthlyPickId == null
                                         ? null
                                         : monthlyPick!.thumbnail,
-                                    treatmentStyleImage:
-                                        treatmentStyleId == null
-                                            ? null
-                                            : treatmentStyle!.thumbnail,
+                                    treatmentStyleImage: treatmentStyleId ==
+                                            null
+                                        ? null
+                                        // : treatmentStyles
+                                        //     .data[currentIndex!].thumbnail,
+                                        : treatmentStyle!.thumbnail,
                                   )
                                 ],
                               ),
@@ -341,10 +430,12 @@ class TreatmentDetailPage extends ConsumerWidget {
                                     monthlyPickImage: monthlyPickId == null
                                         ? null
                                         : monthlyPick!.thumbnail,
-                                    treatmentStyleImage:
-                                        treatmentStyleId == null
-                                            ? null
-                                            : treatmentStyle!.thumbnail,
+                                    treatmentStyleImage: treatmentStyleId ==
+                                            null
+                                        ? null
+                                        // : treatmentStyles
+                                        //     .data[currentIndex!].thumbnail,
+                                        : treatmentStyle!.thumbnail,
                                   )
                                 ],
                               ),
@@ -383,6 +474,9 @@ class TreatmentDetailPage extends ConsumerWidget {
                                             treatmentStyleImage:
                                                 treatmentStyleId == null
                                                     ? null
+                                                    // : treatmentStyles
+                                                    //     .data[currentIndex!]
+                                                    //     .thumbnail,
                                                     : treatmentStyle!.thumbnail,
                                           )
                                         ],
@@ -405,6 +499,9 @@ class TreatmentDetailPage extends ConsumerWidget {
                                             treatmentStyleImage:
                                                 treatmentStyleId == null
                                                     ? null
+                                                    // : treatmentStyles
+                                                    //     .data[currentIndex!]
+                                                    //     .thumbnail,
                                                     : treatmentStyle!.thumbnail,
                                           )
                                         ],

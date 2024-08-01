@@ -196,14 +196,18 @@ final GoRouter _router = GoRouter(
                     null
                 ? int.tryParse(state.uri.queryParameters['treatmentStyleId']!)
                 : null;
+
+            // final int? currentIndex =
+            //     state.uri.queryParameters['currentIndex'] != null
+            //         ? int.tryParse(state.uri.queryParameters['currentIndex']!)
+            //         : null;
             return TreatmentDetailPage(
-              // categoryId: categoryId,
-              // categoryName: categoryName,
               shopDomain: state.pathParameters['shopDomain']!,
               treatmentId: treatmentId,
               monthlyPickId: monthlyPickId,
               styleId: styleId,
               treatmentStyleId: treatmentStyleId,
+              // currentIndex: currentIndex,
             );
           },
         ),

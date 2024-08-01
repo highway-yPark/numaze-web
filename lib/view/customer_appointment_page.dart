@@ -447,8 +447,8 @@ class _CustomerAppointmentPageState
                                       padding: const EdgeInsets.only(
                                         right: 10,
                                       ),
-                                      child: Image.network(
-                                        customerAppointment
+                                      child: CommonImage(
+                                        imageUrl: customerAppointment
                                             .customerImages![index],
                                         width: 82,
                                         height: 82,

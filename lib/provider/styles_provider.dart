@@ -128,3 +128,7 @@ class StylesStateNotifier extends StateNotifier<CursorPaginationBase> {
     }
   }
 }
+
+// final currentIndexProvider = StateProvider<int>((ref) {
+//   return 0;
+// });
