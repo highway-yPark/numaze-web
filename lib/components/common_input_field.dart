@@ -8,7 +8,6 @@ class CommonInputField extends StatefulWidget {
   final String? hintText;
   final String? errorText;
   final bool obscureText;
-  final bool isLogin;
   final ValueChanged<String>? onChanged;
   final String? initialValue;
   final bool isPhoneNumber;
@@ -21,7 +20,6 @@ class CommonInputField extends StatefulWidget {
     this.obscureText = false,
     this.hintText,
     this.errorText,
-    this.isLogin = false,
     this.initialValue,
     this.isPhoneNumber = false,
     this.maxLength,
@@ -57,7 +55,7 @@ class _CommonInputFieldState extends State<CommonInputField> {
         maxLength: widget.maxLength,
         scrollPadding: const EdgeInsets.all(50),
         initialValue: widget.controller == null ? widget.initialValue : null,
-        maxLines: widget.isLogin ? 1 : null,
+        maxLines: 1,
         cursorColor: FontColors.black,
         cursorHeight: 14,
         onChanged: widget.onChanged,
@@ -75,10 +73,10 @@ class _CommonInputFieldState extends State<CommonInputField> {
               ]
             : [],
         decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 15,
-          ),
+          // contentPadding: const EdgeInsets.symmetric(
+          //   vertical: 12,
+          //   horizontal: 15,
+          // ),
           hintText: widget.hintText,
           hintStyle: TextDesign.medium14G,
           fillColor: ContainerColors.white,

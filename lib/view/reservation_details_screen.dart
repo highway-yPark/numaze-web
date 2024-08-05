@@ -710,13 +710,11 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                           Expanded(
                             child: CommonInputField(
                               maxLength: 10,
-                              // controller: nameController,
                               onChanged: (value) {
                                 setState(() {
                                   name = value;
                                 });
                               },
-                              isLogin: true,
                             ),
                           ),
                         ],
@@ -927,7 +925,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
                             isCentered: false,
                             isPhoneNumber: false,
                             maxLength: 30,
-                            isLogin: true,
                           ),
                         ),
                         Padding(

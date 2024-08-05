@@ -65,7 +65,6 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                               isCentered: true,
                               isPhoneNumber: false,
                               maxLength: 11,
-                              isLogin: true,
                               onChanged: (_) {
                                 setState(() {});
                               },
