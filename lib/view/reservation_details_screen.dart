@@ -280,8 +280,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       final pickedFile = await imagePicker.getImageFromSource(
         source: ImageSource.gallery,
         options: const ImagePickerOptions(
-          maxWidth: 720,
-          maxHeight: 720,
+          // maxWidth: 720,
+          // maxHeight: 720,
           imageQuality: 80,
         ),
       );
@@ -413,26 +413,48 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           height: image.height,
         );
         return Uint8List.fromList(
-          img.encodeJpg(cropped, quality: 80),
+          img.encodeJpg(cropped, quality: 100),
         );
       }
       return compressedImageBytes;
     } catch (e) {
-      debugPrint('Error compressing image: $e');
-      if (!context.mounted) return imageBytes;
-      showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              e.toString(),
-            ),
-          ),
+      final image = img.decodeImage(imageBytes)!;
+
+      const size = 720;
+
+      int x, y, cropSize;
+      if (image.width > image.height) {
+        cropSize = image.height;
+        x = (image.width - cropSize) ~/ 2;
+        y = 0;
+      } else {
+        cropSize = image.width;
+        x = 0;
+        y = (image.height - cropSize) ~/ 2;
+      }
+
+      final cropped = img.copyCrop(
+        image,
+        x: x,
+        y: y,
+        width: cropSize,
+        height: cropSize,
+      );
+
+      final resized = img.copyResize(
+        cropped,
+        width: size,
+        height: size,
+        interpolation: img.Interpolation.cubic,
+      );
+
+      return Uint8List.fromList(
+        img.encodeJpg(
+          resized,
+          // cropped,
+          quality: 100,
         ),
       );
-      showError(); // Assuming showError is a custom function to handle errors
-      return imageBytes; // Return the original image if compression fails
     }
   }
 
