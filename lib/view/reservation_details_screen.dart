@@ -397,14 +397,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       final image = img.decodeImage(compressedImageBytes);
 
       if (image != null && image.width > image.height) {
-        // final cropped = img.copyCrop(
-        //   image,
-        //   x: (image.width - image.height) ~/ 2,
-        //   y: 0,
-        //   width: image.height,
-        //   height: image.height,
-        // );
-        // crop center
         final cropped = img.copyCrop(
           image,
           x: (image.width - image.height) ~/ 2,

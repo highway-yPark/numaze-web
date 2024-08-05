@@ -57,7 +57,6 @@ class _CommonInputFieldState extends State<CommonInputField> {
         initialValue: widget.controller == null ? widget.initialValue : null,
         maxLines: 1,
         cursorColor: FontColors.black,
-        cursorHeight: 14,
         onChanged: widget.onChanged,
         onTapOutside: (_) {
           _focusNode.unfocus();
@@ -73,10 +72,10 @@ class _CommonInputFieldState extends State<CommonInputField> {
               ]
             : [],
         decoration: InputDecoration(
-          // contentPadding: const EdgeInsets.symmetric(
-          //   vertical: 12,
-          //   horizontal: 15,
-          // ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 15,
+          ),
           hintText: widget.hintText,
           hintStyle: TextDesign.medium14G,
           fillColor: ContainerColors.white,
