@@ -3,7 +3,7 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "b67b9fbbd5dc8ac7e555fc74ad73c10b",
+const RESOURCES = {"flutter_bootstrap.js": "9ad0e5e9335f4753fdd2def909285e38",
 "assets/assets/images/clipboard.svg": "ebbe6b2a166111e63aefb009ba83da37",
 "assets/assets/images/has_treatment_check.svg": "0fdb69040a0f608f7b9dfb5693acc2c7",
 "assets/assets/images/clock.svg": "1bb816ce19d4bbe478c12a7e601a534a",
@@ -57,8 +57,8 @@ const RESOURCES = {"flutter_bootstrap.js": "b67b9fbbd5dc8ac7e555fc74ad73c10b",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "e986ebe42ef785b27164c36a9abc7818",
 "assets/packages/flutter_image_compress_web/assets/pica.min.js": "6208ed6419908c4b04382adc8a3053a2",
 "flutter.js": "383e55f7f3cce5be08fcf1f3881f585c",
-"index.html": "76d17ce343e899117fa2a9710b8a6303",
-"/": "76d17ce343e899117fa2a9710b8a6303",
+"index.html": "7af13fd958a8a71ef45101e1013381e8",
+"/": "7af13fd958a8a71ef45101e1013381e8",
 "swipe_back.js": "94641c3be33c5f06906f02e4372953c6",
 "canvaskit/skwasm.worker.js": "bfb704a6c714a75da9ef320991e88b03",
 "canvaskit/skwasm.wasm": "4051bfc27ba29bf420d17aa0c3a98bce",
@@ -76,7 +76,7 @@ const RESOURCES = {"flutter_bootstrap.js": "b67b9fbbd5dc8ac7e555fc74ad73c10b",
 "icons/Icon-192.png": "3650e0b4336642b0f6d3c21268115759",
 "favicon.png": "b20319f00335a4b921bbc27c85b94e6a",
 "manifest.json": "815dd85e208b3fc2332a09e931845dc3",
-"main.dart.js": "2be2002ffe872c6ffad0da4d365272ef",
+"main.dart.js": "5a29ad9a0f6d5266c962e68499934535",
 "version.json": "edbe95246bf0083643aa131546d79d58"};
 // The application shell files that are downloaded before a service worker can
 // start.
