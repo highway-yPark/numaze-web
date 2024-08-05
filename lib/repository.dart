@@ -96,6 +96,12 @@ abstract class Repository {
     @Path('appointment_id') required String appointmentId,
   });
 
+  @GET("/s/{shop_domain}/latestAppointment")
+  Future<BaseResponseModel> getLatestAppointment({
+    @Path('shop_domain') required String shopDomain,
+    @Query('phone_number') required String phoneNumber,
+  });
+
   // @POST("/api/v1/auth/sms")
   // Future<void> requestVerificationCode({
   //   @Query('phone_number') required String phoneNumber,

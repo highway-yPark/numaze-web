@@ -418,6 +418,18 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       return compressedImageBytes;
     } catch (e) {
       debugPrint('Error compressing image: $e');
+      if (!context.mounted) return imageBytes;
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              e.toString(),
+            ),
+          ),
+        ),
+      );
       showError(); // Assuming showError is a custom function to handle errors
       return imageBytes; // Return the original image if compression fails
     }

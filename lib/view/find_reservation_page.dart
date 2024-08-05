@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/provider/customer_appointment_provider.dart';
+import 'package:numaze_web/repository.dart';
 
 import '../common/const/text.dart';
 import '../common/const/widgets.dart';
@@ -26,7 +27,7 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
   final TextEditingController _controller = TextEditingController();
 
   bool checkController() {
-    return _controller.text.trim().isEmpty;
+    return _controller.text.trim().length != 11;
   }
 
   @override
@@ -60,7 +61,7 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                             padding: CommonWidgets.sixteenTenPadding(),
                             child: CommonInputField(
                               controller: _controller,
-                              hintText: '예약 코드를 입력해주세요',
+                              hintText: '휴대폰 번호를 입력해주세요',
                               isCentered: true,
                               isPhoneNumber: false,
                               maxLength: 11,
@@ -94,15 +95,28 @@ class _FindReservationPageState extends ConsumerState<FindReservationPage> {
                   child: ConditionalInkwellButton(
                     onTap: () async {
                       if (checkController()) return;
-                      final resp = await ref
-                          .read(customerAppointmentProvider(_controller.text)
-                              .notifier)
-                          .getCustomerAppointment();
-                      if (!context.mounted) return;
-                      if (resp == 200) {
-                        context.go(
-                            '/appointment/${_controller.text}?shopDomain=${widget.shopDomain}');
-                      } else {
+
+                      try {
+                        final appointmentId = await ref
+                            .read(repositoryProvider)
+                            .getLatestAppointment(
+                              shopDomain: widget.shopDomain,
+                              phoneNumber: _controller.text,
+                            );
+                        final resp = await ref
+                            .read(
+                                customerAppointmentProvider(appointmentId.data)
+                                    .notifier)
+                            .getCustomerAppointment();
+                        if (!context.mounted) return;
+                        if (resp == 200) {
+                          context.go(
+                              '/appointment/${appointmentId.data}?shopDomain=${widget.shopDomain}');
+                        } else {
+                          context
+                              .go('/notFound?shopDomain=${widget.shopDomain}');
+                        }
+                      } catch (e) {
                         context.go('/notFound?shopDomain=${widget.shopDomain}');
                       }
                     },
