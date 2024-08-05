@@ -289,8 +289,8 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
       // If an image is picked, process it
       if (pickedFile != null) {
         final bytesFromPicker = await pickedFile.readAsBytes();
-        // final processedImage = await processImage(bytesFromPicker);
-        final processedImage = processImage(bytesFromPicker);
+        final processedImage = await processImage(bytesFromPicker);
+        // final processedImage = processImage(bytesFromPicker);
 
         // Update the state with the processed image
         setState(() {
@@ -355,86 +355,86 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     errorSnackBar(context: context);
   }
 
-  Uint8List processImage(Uint8List imageBytes) {
-    final image = img.decodeImage(imageBytes)!;
-
-    int x, y, cropSize;
-    if (image.width > image.height) {
-      cropSize = image.height;
-      x = (image.width - cropSize) ~/ 2;
-      y = 0;
-    } else {
-      cropSize = image.width;
-      x = 0;
-      y = (image.height - cropSize) ~/ 2;
-    }
-
-    final cropped = img.copyCrop(
-      image,
-      x: x,
-      y: y,
-      width: cropSize,
-      height: cropSize,
-    );
-
-    return Uint8List.fromList(
-      img.encodeJpg(
-        // resized,
-        cropped,
-        quality: 80,
-      ),
-    );
-  }
-  // Future<Uint8List> processImage(Uint8List imageBytes) async {
-  //   try {
-  //     // Compress the image using flutter_image_compress
-  //     final compressedImageBytes = await FlutterImageCompress.compressWithList(
-  //       imageBytes,
-  //       quality: 80,
-  //       format: CompressFormat.jpeg,
-  //     );
+  // Uint8List processImage(Uint8List imageBytes) {
+  //   final image = img.decodeImage(imageBytes)!;
   //
-  //     final image = img.decodeImage(compressedImageBytes);
-  //
-  //     if (image != null && image.width > image.height) {
-  //       // final cropped = img.copyCrop(
-  //       //   image,
-  //       //   x: (image.width - image.height) ~/ 2,
-  //       //   y: 0,
-  //       //   width: image.height,
-  //       //   height: image.height,
-  //       // );
-  //       // crop center
-  //       final cropped = img.copyCrop(
-  //         image,
-  //         x: (image.width - image.height) ~/ 2,
-  //         y: 0,
-  //         width: image.height,
-  //         height: image.height,
-  //       );
-  //       return Uint8List.fromList(
-  //         img.encodeJpg(cropped, quality: 80),
-  //       );
-  //     }
-  //     return compressedImageBytes;
-  //   } catch (e) {
-  //     debugPrint('Error compressing image: $e');
-  //     if (!context.mounted) return imageBytes;
-  //     showDialog(
-  //       context: context,
-  //       builder: (context) => Dialog(
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(16),
-  //           child: Text(
-  //             e.toString(),
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //     showError(); // Assuming showError is a custom function to handle errors
-  //     return imageBytes; // Return the original image if compression fails
+  //   int x, y, cropSize;
+  //   if (image.width > image.height) {
+  //     cropSize = image.height;
+  //     x = (image.width - cropSize) ~/ 2;
+  //     y = 0;
+  //   } else {
+  //     cropSize = image.width;
+  //     x = 0;
+  //     y = (image.height - cropSize) ~/ 2;
   //   }
+  //
+  //   final cropped = img.copyCrop(
+  //     image,
+  //     x: x,
+  //     y: y,
+  //     width: cropSize,
+  //     height: cropSize,
+  //   );
+  //
+  //   return Uint8List.fromList(
+  //     img.encodeJpg(
+  //       // resized,
+  //       cropped,
+  //       quality: 80,
+  //     ),
+  //   );
   // }
+  Future<Uint8List> processImage(Uint8List imageBytes) async {
+    try {
+      // Compress the image using flutter_image_compress
+      final compressedImageBytes = await FlutterImageCompress.compressWithList(
+        imageBytes,
+        quality: 80,
+        format: CompressFormat.jpeg,
+      );
+
+      final image = img.decodeImage(compressedImageBytes);
+
+      if (image != null && image.width > image.height) {
+        // final cropped = img.copyCrop(
+        //   image,
+        //   x: (image.width - image.height) ~/ 2,
+        //   y: 0,
+        //   width: image.height,
+        //   height: image.height,
+        // );
+        // crop center
+        final cropped = img.copyCrop(
+          image,
+          x: (image.width - image.height) ~/ 2,
+          y: 0,
+          width: image.height,
+          height: image.height,
+        );
+        return Uint8List.fromList(
+          img.encodeJpg(cropped, quality: 80),
+        );
+      }
+      return compressedImageBytes;
+    } catch (e) {
+      debugPrint('Error compressing image: $e');
+      if (!context.mounted) return imageBytes;
+      showDialog(
+        context: context,
+        builder: (context) => Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              e.toString(),
+            ),
+          ),
+        ),
+      );
+      showError(); // Assuming showError is a custom function to handle errors
+      return imageBytes; // Return the original image if compression fails
+    }
+  }
 
   int sumOfEachTreatmentOptionDuration(TreatmentHistoryResponse treatment) {
     int sum = 0;
