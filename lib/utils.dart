@@ -177,13 +177,13 @@ class DataUtils {
   static String getTreatmentText(int treatmentType) {
     switch (treatmentType) {
       case 0:
-        return '시술';
+        return '시술 메뉴';
       case 1:
         return '스타일';
       case 2:
-        return 'Monthly Pick';
+        return 'Best Design';
       default:
-        return '시술';
+        return '시술 메뉴';
     }
   }
 }

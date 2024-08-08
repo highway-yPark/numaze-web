@@ -47,19 +47,6 @@ class _CustomerAppointmentPageState
     return sum;
   }
 
-  String getTreatmentText(int treatmentType) {
-    switch (treatmentType) {
-      case 0:
-        return '시술';
-      case 1:
-        return '스타일';
-      case 2:
-        return 'Monthly Pick';
-      default:
-        return '시술';
-    }
-  }
-
   Widget _treatmentInfo(List<TreatmentHistoryResponse> treatmentHistories) {
     return Column(
       children: [
@@ -75,7 +62,7 @@ class _CustomerAppointmentPageState
                   Row(
                     children: [
                       Text(
-                        getTreatmentText(treatment.treatmentType),
+                        DataUtils.getTreatmentText(treatment.treatmentType),
                         style: TextDesign.bold14B,
                       ),
                       Text(
