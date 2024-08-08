@@ -14,6 +14,7 @@ import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
 import 'package:numaze_web/repository.dart';
 import 'package:numaze_web/utils.dart';
+import 'package:numaze_web/view/404_page.dart';
 import 'package:numaze_web/view/empty_treatment_page.dart';
 
 import '../auth/auth_repository.dart';
@@ -503,6 +504,12 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
     final optionsState = ref.watch(optionsProvider(widget.shopDomain));
     final shopMessagesState = ref.watch(shopMessageProvider(widget.shopDomain));
 
+    if (treatmentsState is ListError ||
+        optionsState is ListError ||
+        shopMessagesState is ShopMessageError) {
+      return const PageNotFound();
+    }
+
     if (treatmentsState is ListLoading ||
         optionsState is ListLoading ||
         shopMessagesState is ShopMessageLoading) {
@@ -510,13 +517,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
         child: CircularProgressIndicator(
           color: StrokeColors.black,
         ),
-      );
-    }
-    if (treatmentsState is ListError ||
-        optionsState is ListError ||
-        shopMessagesState is ShopMessageError) {
-      return const Center(
-        child: Text('에러가 발생했습니다.'),
       );
     }
 

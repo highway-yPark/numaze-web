@@ -3,7 +3,6 @@ import 'package:numaze_web/common/const/colors.dart';
 import 'package:numaze_web/common/const/data.dart';
 import 'package:numaze_web/common/const/text.dart';
 
-import 'inkwell_button.dart';
 
 class CustomDialog extends StatelessWidget {
   final String subject;

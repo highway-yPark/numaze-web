@@ -31,10 +31,7 @@ class MonthlyPickStateNotifier extends BaseStateNotifier {
       final resp = await repository.getShopMonthlyPicks(
         shopDomain: shopDomain,
       );
-      // final pState = state as ShopBasicInfo;
-      // state = pState.copyWith(takeReservation: takeReservation);
       state = resp;
-
       return 200;
     });
   }

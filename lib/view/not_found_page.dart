@@ -35,13 +35,7 @@ class _NotFoundPageState extends ConsumerState<NotFoundPage> {
                       const SizedBox(
                         height: 202,
                       ),
-                      // Image.asset(
-                      //   'assets/images/alert.png',
-                      //   height: 88,
-                      //   width: 88,
-                      // ),
                       CommonIcons.alert(),
-
                       const SizedBox(
                         height: 31,
                       ),

@@ -71,7 +71,7 @@ class _TimeSlotGridState extends ConsumerState<TimeSlotGrid> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Container(

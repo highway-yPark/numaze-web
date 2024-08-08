@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/list_model.dart';
-import '../model/model.dart';
 import '../repository.dart';
 
 final treatmentProvider =
@@ -84,16 +82,19 @@ abstract class BaseStateNotifier<T extends ListBase>
     } on DioException catch (e) {
       if (e.response != null) {
         final statusCode = e.response!.statusCode;
-        debugPrint('Error: Status code $statusCode');
-        debugPrint('Error response data: ${e.response!.data}');
-        return statusCode ?? -1;
+        // return statusCode ?? -1;
+        if (statusCode != null) {
+          return statusCode;
+        } else {
+          state = ListError(data: e.response!.data.toString());
+          return -1;
+        }
       } else {
-        debugPrint('Error: ${e.message}');
+        state = ListError(data: e.toString());
         return -1;
       }
-    } catch (e, stackTrace) {
-      debugPrint('Exception: $e');
-      debugPrint('Stack trace: $stackTrace');
+    } catch (e) {
+      state = ListError(data: e.toString());
       return -1;
     }
   }

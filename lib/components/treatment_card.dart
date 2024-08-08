@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:numaze_web/common/const/icons.dart';
 import 'package:numaze_web/common/const/widgets.dart';
-import 'package:numaze_web/view/treatment_detail_page.dart';
 
 import '../common/const/colors.dart';
 import '../common/const/text.dart';

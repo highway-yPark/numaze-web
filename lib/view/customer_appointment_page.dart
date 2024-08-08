@@ -18,6 +18,7 @@ import '../components/progress_indicator.dart';
 import '../model/model.dart';
 import '../provider/provider.dart';
 import '../utils.dart';
+import '404_page.dart';
 import 'reservation_details_screen.dart';
 
 class CustomerAppointmentPage extends ConsumerStatefulWidget {
@@ -156,60 +157,29 @@ class _CustomerAppointmentPageState
   Widget build(BuildContext context) {
     final shopBasicInfoState =
         ref.watch(shopBasicInfoProvider(widget.shopDomain));
-    if (shopBasicInfoState is ShopBasicLoading) {
+    final shopMessagesState = ref.watch(shopMessageProvider(widget.shopDomain));
+    final customerAppointmentState =
+        ref.watch(customerAppointmentProvider(widget.appointmentId));
+
+    if (shopBasicInfoState is ShopBasicError ||
+        shopMessagesState is ShopMessageError ||
+        customerAppointmentState is CustomerAppointmentError) {
+      return const PageNotFound();
+    }
+
+    if (shopBasicInfoState is ShopBasicLoading ||
+        shopMessagesState is ShopMessageLoading ||
+        customerAppointmentState is CustomerAppointmentLoading) {
       return const Center(
         child: CircularProgressIndicator(
           color: StrokeColors.black,
         ),
       );
     }
-    if (shopBasicInfoState is ShopBasicError) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Error'),
-        ),
-        body: Center(
-          child: Text(shopBasicInfoState.data),
-        ),
-      );
-    }
+
     final shopData = shopBasicInfoState as ShopBasicInfo;
 
-    final shopMessagesState = ref.watch(shopMessageProvider(widget.shopDomain));
-
-    if (shopMessagesState is ShopMessageLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            color: StrokeColors.black,
-          ),
-        ),
-      );
-    }
-
-    if (shopMessagesState is ShopMessageError) {
-      context.go('/s/${widget.shopDomain}');
-      // Navigator.popUntil(context, (route) => route.isFirst);
-    }
-
     final shopMessages = shopMessagesState as ShopMessageInfo;
-
-    final customerAppointmentState =
-        ref.watch(customerAppointmentProvider(widget.appointmentId));
-
-    if (customerAppointmentState is CustomerAppointmentLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            color: StrokeColors.black,
-          ),
-        ),
-      );
-    }
-
-    if (customerAppointmentState is CustomerAppointmentError) {
-      context.go('/s/${widget.shopDomain}');
-    }
 
     final customerAppointment =
         customerAppointmentState as CustomerAppointmentResponse;

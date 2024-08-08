@@ -64,6 +64,10 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
     final treatmentState = ref.watch(treatmentProvider(widget.shopDomain));
     final stylesState = ref.watch(stylesProvider(widget.treatmentId));
 
+    if (stylesState is CursorPaginationError || treatmentState is ListError) {
+      return const PageNotFound();
+    }
+
     if (stylesState is CursorPaginationLoading ||
         treatmentState is ListLoading) {
       return const Center(
@@ -71,10 +75,6 @@ class _TreatmentStylesScreenState extends ConsumerState<TreatmentStylesScreen> {
           color: StrokeColors.black,
         ),
       );
-    }
-
-    if (stylesState is CursorPaginationError || treatmentState is ListError) {
-      return const PageNotFound();
     }
 
     final styles = (stylesState as CursorPagination<StyleModel>).data;

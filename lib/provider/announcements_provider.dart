@@ -32,10 +32,7 @@ class ShopAnnouncementsStateNotifier extends BaseStateNotifier {
       final resp = await repository.getShopAnnouncements(
         shopDomain: shopDomain,
       );
-      // final pState = state as ShopBasicInfo;
-      // state = pState.copyWith(takeReservation: takeReservation);
       state = resp;
-
       return 200;
     });
   }

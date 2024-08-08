@@ -61,22 +61,12 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   html.window.location.href = 'https://numaze.co.kr';
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      html.window.location.href = 'https://numaze.co.kr';
+    });
 
     return const Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Home Page'),
-      // ),
-      body: Center(
-          // child: ElevatedButton(
-          //   onPressed: () {
-          //     context.go('/s/dodu');
-          //   },
-          //   child: const Text('Go to Details Page'),
-          // ),
-          ),
+      body: Center(),
     );
   }
 }
