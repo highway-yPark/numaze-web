@@ -55,7 +55,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 59,
+                      height: 58,
                       child: Column(
                         children: [
                           Expanded(
@@ -88,7 +88,7 @@ class _ShopInfoPageState extends ConsumerState<ShopInfoPage> {
                             ),
                           ),
                           Container(
-                            height: 3,
+                            height: 4,
                             color: ContainerColors.black,
                           ),
                         ],

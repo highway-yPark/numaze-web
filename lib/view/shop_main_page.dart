@@ -330,8 +330,8 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: _CustomHeaderDelegate(
-                      minHeight: 59,
-                      maxHeight: 59,
+                      minHeight: 58,
+                      maxHeight: 58,
                       child: Column(
                         children: [
                           Expanded(
