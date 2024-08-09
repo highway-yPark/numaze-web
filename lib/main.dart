@@ -61,9 +61,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      html.window.location.href = 'https://numaze.co.kr';
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   html.window.location.href = 'https://numaze.co.kr';
+    // });
 
     return const Scaffold(
       body: Center(),
