@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CommonIcons {
-  static rightArrow() {
+  static arrowDown14() {
     return SvgPicture.asset(
-      'assets/images/right_arrow.svg',
-      width: 14,
-      height: 14,
+      'assets/images/arrow_down_14.svg',
+      width: 20,
+      height: 20,
     );
   }
 

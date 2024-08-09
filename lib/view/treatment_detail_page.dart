@@ -308,7 +308,7 @@ class TreatmentDetailPage extends ConsumerWidget {
                           ),
                           Text(
                             treatment.description,
-                            style: TextDesign.regular14G,
+                            style: TextDesign.regular14MDG,
                           ),
                           const SizedBox(
                             height: 10.0,
@@ -330,6 +330,7 @@ class TreatmentDetailPage extends ConsumerWidget {
                                       "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
                                       style: TextDesign.regular14G.copyWith(
                                         decoration: TextDecoration.lineThrough,
+                                        decorationColor: FontColors.grey,
                                       ),
                                       textAlign: TextAlign.start,
                                     ),
@@ -358,7 +359,7 @@ class TreatmentDetailPage extends ConsumerWidget {
                               ),
                               Text(
                                 '소요시간 ${DataUtils.formatDurationWithZero(treatment.duration)}',
-                                style: TextDesign.medium14G,
+                                style: TextDesign.medium14MDG,
                               ),
                             ],
                           ),
@@ -689,12 +690,19 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                       padding: CommonWidgets.sixteenTenPadding(),
                       child: Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            // color: (isExpanded[category.name] == true)
-                            //     ? StrokeColors.black
-                            //     : StrokeColors.grey,
-                            color: StrokeColors.grey,
-                            width: 1.0,
+                          border: const Border(
+                            top: BorderSide(
+                              color: StrokeColors.grey,
+                              width: 1.0,
+                            ),
+                            left: BorderSide(
+                              color: StrokeColors.grey,
+                              width: 1.0,
+                            ),
+                            right: BorderSide(
+                              color: StrokeColors.grey,
+                              width: 1.0,
+                            ),
                           ),
                           borderRadius: BorderRadius.circular(3),
                         ),
@@ -763,7 +771,7 @@ class _OptionsBottomSheetState extends State<OptionsBottomSheet> {
                                         const SizedBox(height: 10),
                                         Text(
                                           option.description,
-                                          style: TextDesign.medium12G,
+                                          style: TextDesign.medium12MDG,
                                         ),
                                       ],
                                     ),

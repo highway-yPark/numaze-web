@@ -3,7 +3,6 @@ import 'package:numaze_web/common/const/colors.dart';
 import 'package:numaze_web/common/const/data.dart';
 import 'package:numaze_web/common/const/text.dart';
 
-
 class CustomDialog extends StatelessWidget {
   final String subject;
   final double width;
@@ -60,7 +59,7 @@ class CustomDialog extends StatelessWidget {
                     width: double.infinity,
                     child: Text(
                       content,
-                      style: TextDesign.regular14G,
+                      style: TextDesign.regular14MDG,
                       textAlign: TextAlign.center,
                     ),
                   ),

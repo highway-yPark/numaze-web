@@ -20,20 +20,6 @@ class Announcements extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final shopAnnouncementsState =
-    //     ref.watch(shopAnnouncementsProvider(shopDomain));
-    // if (shopAnnouncementsState is ListLoading) {
-    //   return const Center(child: CircularProgressIndicator());
-    // }
-    //
-    // if (shopAnnouncementsState is ListError) {
-    //   return Center(
-    //     child: Text(shopAnnouncementsState.data),
-    //   );
-    // }
-    // final announcements =
-    //     shopAnnouncementsState as ListModel<ShopAnnouncementsModel>;
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = MediaQuery.sizeOf(context).width > 500
@@ -62,13 +48,13 @@ class Announcements extends ConsumerWidget {
               },
               child: Container(
                 width: width * 312 / 389,
-                // height: 500,
                 margin: const EdgeInsets.only(
                   left: 16,
                 ),
                 padding: const EdgeInsets.all(16),
                 decoration: CommonWidgets.commonDecoration(),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
                       child: Column(
@@ -110,7 +96,7 @@ class Announcements extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               announcement.content,
-                              style: TextDesign.regular12G,
+                              style: TextDesign.regular12MDG,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -121,7 +107,7 @@ class Announcements extends ConsumerWidget {
                     const SizedBox(
                       width: 12,
                     ),
-                    CommonIcons.rightArrow(),
+                    CommonIcons.arrowDown14(),
                   ],
                 ),
               ),

@@ -117,8 +117,7 @@ class TreatmentBox extends ConsumerWidget {
                   ),
                   Text(
                     treatment.description,
-                    style: TextDesign.regular14G,
-                    // textAlign: TextAlign.start,
+                    style: TextDesign.regular14MDG,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -143,6 +142,7 @@ class TreatmentBox extends ConsumerWidget {
                                 "${DataUtils.formatKoreanWon(treatment.minPrice)}${treatment.maxPrice != null ? ' ~ ${DataUtils.formatKoreanWon(treatment.maxPrice!)}' : ''}",
                                 style: TextDesign.regular12G.copyWith(
                                   decoration: TextDecoration.lineThrough,
+                                  decorationColor: FontColors.grey,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -176,7 +176,7 @@ class TreatmentBox extends ConsumerWidget {
                       CommonIcons.clock(),
                       Text(
                         '소요시간 : ${DataUtils.formatDurationWithZero(treatment.duration)}',
-                        style: TextDesign.regular14G,
+                        style: TextDesign.regular14MDG,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

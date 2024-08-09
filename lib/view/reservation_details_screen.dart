@@ -66,11 +66,6 @@ class _UserProfileScreenState extends ConsumerState<ReservationDetailsScreen> {
           setState(() {
             timer.cancel();
             codeVerified = false;
-            // customSnackBar(
-            //   message: '인증번호 유효시간이 만료되었어요.',
-            //   context: context,
-            //   error: true,
-            // );
           });
         } else {
           setState(() {

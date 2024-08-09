@@ -247,7 +247,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             child: Center(
                               child: Text(
                                 day,
-                                style: TextDesign.regular16B,
+                                style: TextDesign.semiBold16B,
                               ),
                             ),
                           );
@@ -369,7 +369,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         ),
                                         Text(
                                           '${day.day}',
-                                          style: TextDesign.regular16B,
+                                          style: TextDesign.medium16B,
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -395,7 +395,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         ),
                                         Text(
                                           '${day.day}',
-                                          style: TextDesign.regular16B,
+                                          style: TextDesign.medium16B,
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -421,7 +421,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         ),
                                         Text(
                                           '${day.day}',
-                                          style: TextDesign.regular16BO,
+                                          style: TextDesign.medium16B,
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -451,8 +451,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         Text(
                                           '${day.day}',
                                           style: isToday
-                                              ? TextDesign.regular16BO
-                                              : TextDesign.regular16W,
+                                              ? TextDesign.medium16BO
+                                              : TextDesign.medium16W,
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -481,8 +481,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         Text(
                                           '${day.day}',
                                           style: isToday
-                                              ? TextDesign.regular16BO
-                                              : TextDesign.regular16MG,
+                                              ? TextDesign.medium16BO
+                                              : TextDesign.medium16W,
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -507,8 +507,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                                     ? '오픈전'
                                                     : '마감',
                                                 style: isToday
-                                                    ? TextDesign.regular12BO
-                                                    : TextDesign.regular12MG,
+                                                    ? TextDesign.medium12BO
+                                                    : TextDesign.medium12MG,
                                               ),
                                               const SizedBox(
                                                 height: 10,

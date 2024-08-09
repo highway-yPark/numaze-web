@@ -367,7 +367,7 @@ class _ShopMainPageState extends ConsumerState<ShopMainPage> {
                             ),
                           ),
                           Container(
-                            height: 3,
+                            height: 4,
                             color: ContainerColors.black,
                           ),
                         ],
@@ -619,7 +619,7 @@ class MenuButton extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: 56,
+          height: 54,
           color: isSelected ? ContainerColors.black : ContainerColors.white,
           child: Center(
             child: Text(
