@@ -36,18 +36,6 @@ final GoRouter _router = GoRouter(
           appointmentId: appointmentId,
         );
       },
-      // routes: <GoRoute>[
-      //   GoRoute(
-      //     path: 'payment',
-      //     builder: (BuildContext context, GoRouterState state) {
-      //       final String appointmentId = state.pathParameters['appointmentId']!;
-      //       // print('appointmentId: $appointmentId');
-      //       return PaymentComplete(
-      //         appointmentId: appointmentId,
-      //       );
-      //     },
-      //   ),
-      // ],
     ),
     GoRoute(
       path: '/payment',
@@ -103,18 +91,6 @@ final GoRouter _router = GoRouter(
         return ShopMainPage(shopDomain: shopDomain);
       },
       routes: <GoRoute>[
-        // GoRoute(
-        //   path: 'styles',
-        //   builder: (BuildContext context, GoRouterState state) {
-        //     final String shopDomain = state.pathParameters['shopDomain']!;
-        //     final int categoryId =
-        //         int.parse(state.uri.queryParameters['categoryId']!);
-        //     return StyleScreen(
-        //       shopDomain: shopDomain,
-        //       categoryId: categoryId,
-        //     );
-        //   },
-        // ),
         GoRoute(
           path: 'calendar',
           builder: (BuildContext context, GoRouterState state) {
