@@ -64,8 +64,6 @@ class StylesStateNotifier extends StateNotifier<CursorPaginationBase> {
         count: fetchCount, // Use lastKeyword if fetching more
       );
 
-      print(paginationParams.toJson());
-
       if (fetchMore) {
         final pState = state as CursorPagination<StyleModel>;
         // print(pState.data.length);
@@ -77,7 +75,6 @@ class StylesStateNotifier extends StateNotifier<CursorPaginationBase> {
         paginationParams = paginationParams.copyWith(
           after: pState.data.last.styleId,
         );
-        print('this is last id: ${pState.data.last.styleId}');
       } else {
         if (state is CursorPagination && !forceRefetch) {
           final pState = state as CursorPagination<StyleModel>;
@@ -122,8 +119,6 @@ class StylesStateNotifier extends StateNotifier<CursorPaginationBase> {
         state = resp;
       }
     } catch (e, s) {
-      print(e);
-      print(s);
       state = CursorPaginationError(message: '데이터를 가져오지 못했습니다');
     }
   }

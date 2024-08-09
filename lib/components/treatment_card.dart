@@ -174,6 +174,9 @@ class TreatmentBox extends ConsumerWidget {
                   Row(
                     children: [
                       CommonIcons.clock(),
+                      const SizedBox(
+                        width: 4,
+                      ),
                       Text(
                         '소요시간 : ${DataUtils.formatDurationWithZero(treatment.duration)}',
                         style: TextDesign.regular14MDG,

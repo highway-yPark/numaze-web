@@ -303,11 +303,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           calendarFormat: CalendarFormat.month,
                           enabledDayPredicate: (day) {
                             final dayKst = day.add(const Duration(hours: 9));
-                            print(dayKst);
-                            print(!occupiedDates.contains(
-                                    DateFormat('yyyy-MM-dd').format(dayKst)) &&
-                                dayKst.isAfter(today) &&
-                                dayKst.isBefore(lastDayOfReservation));
                             return !occupiedDates.contains(
                                     DateFormat('yyyy-MM-dd').format(dayKst)) &&
                                 dayKst.isAfter(today) &&
@@ -482,7 +477,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                           '${day.day}',
                                           style: isToday
                                               ? TextDesign.medium16BO
-                                              : TextDesign.medium16W,
+                                              : TextDesign.medium16MG,
                                         ),
                                         const SizedBox(
                                           height: 5,

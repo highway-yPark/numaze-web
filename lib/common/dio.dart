@@ -24,7 +24,7 @@ class CustomInterceptor extends Interceptor {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    print('[REQ] [${options.method}] ${options.uri}');
+    // print('[REQ] [${options.method}] ${options.uri}');
 
     return super.onRequest(options, handler);
   }
@@ -32,8 +32,8 @@ class CustomInterceptor extends Interceptor {
   // 2 응답을 받을때
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print(
-        '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
+    // print(
+    //     '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
     // print(' this is the dio resp: ${response.data}');
     return super.onResponse(response, handler);
   }
@@ -41,7 +41,7 @@ class CustomInterceptor extends Interceptor {
   // 3 에러가 났을때
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
+    // print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
 
     return super.onError(err, handler);
   }

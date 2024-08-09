@@ -88,7 +88,6 @@ class ShopStylesStateNotifier extends StateNotifier<CursorPaginationBase> {
         state = resp;
       }
     } catch (e) {
-      print("Error fetching data: $e");
       // print(s);
       state = CursorPaginationError(message: 'Failed to fetch data');
     }
