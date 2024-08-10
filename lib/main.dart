@@ -17,7 +17,7 @@ late FirebaseAnalyticsWeb analytics;
 
 void main() async {
   // setPathUrlStrategy();
-  setUrlStrategy(PathUrlStrategy());
+  setPathUrlStrategy();
   // usePathUrlStrategy();
   // Ensure all widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
