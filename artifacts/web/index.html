@@ -54,7 +54,7 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "2241093216";
+    const serviceWorkerVersion = "4066707091";
   </script>
 
   <!-- This script adds the flutter initialization JS code -->
@@ -76,22 +76,27 @@
 <script>
 
   window.addEventListener("load", function (ev) {
-    // Download main.dart.js
-    const baseUri = document.baseURI;
-    _flutter.loader.loadEntrypoint({
-      entrypointUrl: `${baseUri}main.dart.js`,
-      serviceWorker: {
-        serviceWorkerVersion: serviceWorkerVersion,
-        serviceWorkerUrl: `${baseUri}flutter_service_worker.js?version=${serviceWorkerVersion}`,
-      },
-      onEntrypointLoaded: function(engineInitializer) {
-        let config = { renderer: 'html' };
-        engineInitializer.initializeEngine().then(function(appRunner) {
-          appRunner.runApp();
-        });
-      }
-    });
+  // Check if the browser is Chrome
+  const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+
+  // Set baseUri only if the browser is Chrome
+  const baseUri = isChrome ? document.baseURI : '';
+
+  // Download main.dart.js
+  _flutter.loader.loadEntrypoint({
+    entrypointUrl: `${baseUri}main.dart.js`,
+    serviceWorker: {
+      serviceWorkerVersion: serviceWorkerVersion,
+      serviceWorkerUrl: `${baseUri}flutter_service_worker.js?version=${serviceWorkerVersion}`,
+    },
+    onEntrypointLoaded: function(engineInitializer) {
+      let config = { renderer: 'html' };
+      engineInitializer.initializeEngine().then(function(appRunner) {
+        appRunner.runApp();
+      });
+    }
   });
+});
 </script>
 </body>
 </html>
