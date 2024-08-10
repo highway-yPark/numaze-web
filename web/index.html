@@ -54,7 +54,7 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "{{flutter_service_worker_version}}"
+    const serviceWorkerVersion = "{{flutter_service_worker_version}}"; // new
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
@@ -72,41 +72,7 @@
   <!--  <script defer src="swipe_back.js"></script>-->
 </head>
 <body>
-<!-- Add your web app and content here -->
-    <script>
-      window.addEventListener('load', function(ev) {
-        {{flutter_js}}
-        {{flutter_build_config}}
-
-        _flutter.loader.load({
-          serviceWorker: {
-            serviceWorkerVersion: {{flutter_service_worker_version}},
-          },
-          onEntrypointLoaded: function(engineInitializer) {
-            engineInitializer.initializeEngine().then(function(appRunner) {
-              appRunner.runApp();
-            });
-          }
-        });
-      });
-    </script>
-
-
-<!--  <script>-->
-<!--    window.addEventListener('load', function(ev) {-->
-<!--      // Download main.dart.js-->
-<!--      _flutter.loader.load({-->
-<!--        serviceWorker: {-->
-<!--          serviceWorkerVersion: serviceWorkerVersion,-->
-<!--        },-->
-<!--        onEntrypointLoaded: function(engineInitializer) {-->
-<!--          let config = { renderer: 'html' };-->
-<!--          engineInitializer.initializeEngine().then(function(appRunner) {-->
-<!--            appRunner.runApp();-->
-<!--          });-->
-<!--        }-->
-<!--      });-->
-<!--    });-->
-<!--  </script>-->
+    <script src="flutter_bootstrap.js" async></script>
+</body>
 </body>
 </html>
