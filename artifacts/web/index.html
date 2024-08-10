@@ -53,13 +53,6 @@
   <link rel="manifest" href="manifest.json">
 
   <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "1482651481";
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
-
-  <script>
     // Function to dynamically change the title
     function changeTitle(newTitle) {
       document.title = newTitle;
@@ -72,21 +65,6 @@
   <!--  <script defer src="swipe_back.js"></script>-->
 </head>
 <body>
-<script>
-  window.addEventListener('load', function(ev) {
-    // Download main.dart.js
-    _flutter.loader.load({
-      serviceWorker: {
-        serviceWorkerVersion: serviceWorkerVersion,
-        serviceWorkerUrl: "/flutter_service_worker.js?v=",
-      },
-      onEntrypointLoaded: function(engineInitializer) {
-        engineInitializer.initializeEngine().then(function(appRunner) {
-          appRunner.runApp();
-        });
-      }
-    });
-  });
-</script>
+<script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
