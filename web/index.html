@@ -52,12 +52,7 @@
   <title>누메이즈</title>
   <link rel="manifest" href="manifest.json">
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
 
   <script>
     // Function to dynamically change the title
@@ -73,19 +68,22 @@
 </head>
 <body>
 <script>
-  window.addEventListener('load', function(ev) {
-    // Download main.dart.js
-    _flutter.loader.loadEntrypoint({
+  {{flutter_js}}
+  {{flutter_build_config}}
+  const serviceWorkerVersion = {{flutter_service_worker_version}};
+
+  window.addEventListener('load', () => {
+    _flutter.loader.load({
       entrypointUrl: "/main.dart.js",
       serviceWorker: {
         serviceWorkerVersion: serviceWorkerVersion,
         serviceWorkerUrl: "/flutter_service_worker.js?v=",
       },
-      onEntrypointLoaded: function(engineInitializer) {
-        let config = { renderer: 'html' };
-        engineInitializer.initializeEngine().then(function(appRunner) {
-          appRunner.runApp();
+      onEntrypointLoaded: async (engineInitializer) => {
+        const appRunner = await engineInitializer.initializeEngine({
+            hostElement: document.querySelector("#app-wrapper"),
         });
+        appRunner.runApp();
       }
     });
   });
