@@ -53,13 +53,6 @@
   <link rel="manifest" href="manifest.json">
 
   <script>
-    // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = null;
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
-
-  <script>
     // Function to dynamically change the title
     function changeTitle(newTitle) {
       document.title = newTitle;
@@ -73,19 +66,30 @@
 </head>
 <body>
 <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        }
-      }).then(function(engineInitializer) {
-        return engineInitializer.initializeEngine();
-      }).then(function(appRunner) {
-        return appRunner.runApp();
-      });
-    });
+  {{flutter_js}}
+  {{flutter_build_config}}
 
+  const serviceWorkerVersion = {{flutter_service_worker_version}};
+
+  let baseUri = document.baseURI;
+  if (baseUri.endsWith('/')) {
+      baseUri = baseUri.slice(0, -1);
+  }
+
+  _flutter.loader.load({
+      config: {
+        canvasKitBaseUrl: `${baseUri}/canvaskit/`,
+      },
+      serviceWorkerSettings: {
+        serviceWorkerVersion: serviceWorkerVersion,
+        serviceWorkerUrl: `${baseUri}/flutter_service_worker.js?v=${serviceWorkerVersion}`,
+      },
+      onEntrypointLoaded: function (engineInitializer) {
+        engineInitializer.initializeEngine().then(function (appRunner) {
+          appRunner.runApp();
+        });
+      },
+  });
 </script>
 </body>
 </html>
