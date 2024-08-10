@@ -73,7 +73,23 @@
 </head>
 <body>
 <!-- Add your web app and content here -->
-    <script src="flutter_bootstrap.js" async></script>
+    <script>
+      window.addEventListener('load', function(ev) {
+        {{flutter_js}}
+        {{flutter_build_config}}
+
+        _flutter.loader.load({
+          serviceWorker: {
+            serviceWorkerVersion: {{flutter_service_worker_version}},
+          },
+          onEntrypointLoaded: function(engineInitializer) {
+            engineInitializer.initializeEngine().then(function(appRunner) {
+              appRunner.runApp();
+            });
+          }
+        });
+      });
+    </script>
 
 
 <!--  <script>-->
