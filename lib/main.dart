@@ -16,7 +16,8 @@ import 'firebase_options.dart';
 late FirebaseAnalyticsWeb analytics;
 
 void main() async {
-  setPathUrlStrategy();
+  // setPathUrlStrategy();
+  setUrlStrategy(const PathUrlStrategy());
   // usePathUrlStrategy();
   // Ensure all widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
