@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:numaze_web/common/const/colors.dart';
-// import 'package:url_strategy/url_strategy.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'common/router.dart';
@@ -16,8 +16,8 @@ import 'firebase_options.dart';
 late FirebaseAnalyticsWeb analytics;
 
 void main() async {
-  // setPathUrlStrategy();
-  usePathUrlStrategy();
+  setPathUrlStrategy();
+  // usePathUrlStrategy();
   // Ensure all widgets are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
