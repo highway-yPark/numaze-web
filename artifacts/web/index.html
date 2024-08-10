@@ -52,13 +52,8 @@
   <title>누메이즈</title>
   <link rel="manifest" href="manifest.json">
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "1469112227";
-  </script>
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
-
+  <script src="main.dart.js" type="application/javascript"></script>
   <script>
     // Function to dynamically change the title
     function changeTitle(newTitle) {
@@ -72,31 +67,5 @@
   <!--  <script defer src="swipe_back.js"></script>-->
 </head>
 <body>
-<script>
-  window.addEventListener('load', function(ev) {
-    // Download main.dart.js
-    _flutter.loader.loadEntrypoint({
-      serviceWorker: {
-        serviceWorkerVersion: serviceWorkerVersion,
-      },
-      onEntrypointLoaded: function(engineInitializer) {
-        let config = { renderer: 'html' };
-        engineInitializer.initializeEngine().then(function(appRunner) {
-          appRunner.runApp();
-        });
-      }
-    });
-  });
-</script>
-<!--  <script>-->
-<!--    document.addEventListener(-->
-<!--      'touchstart',-->
-<!--      (startEvent) => {-->
-<!--        if (startEvent.touches.length > 1) return;-->
-<!--        startEvent.preventDefault();-->
-<!--      },-->
-<!--      { passive: false }-->
-<!--    );-->
-<!--  </script>-->
 </body>
 </html>
